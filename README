@@ -1,0 +1,3 @@
+= Forum
+
+This is a simple but clean forum implementation that plugs into radiant. It sits separately alongside the page hierarchy unless you enable page comments.

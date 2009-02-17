@@ -1,0 +1,14 @@
+<% 
+	list ||= @posts
+	connection ||= 'from'
+%>
+
+<p class="pagination">
+  <%= page_entries_info list %>
+	<% if @searching %>
+		<% if @user %><%= connection %> <%= link_to @user.name, url_for(@user) %><% end %>
+		<% if @forum %>in the forum <%= link_to @forum.name, url_for(@forum) %><% end %>
+		<% unless params[:q].blank? %>containing the phrase '<%= params[:q] %>'<% end %>
+	<% end %><br />
+	<%= will_paginate list %>
+</p>

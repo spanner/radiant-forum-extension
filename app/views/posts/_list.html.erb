@@ -1,0 +1,41 @@
+<%
+	page ||= @page
+	posts ||= @posts || page.posts
+	with_context ||= false
+%>
+
+<table class="wide posts topped">
+<% for post in posts do %>
+<% trclass = cycle("even", "odd", :name => 'posts') %>
+<tr class="post_row <%= trclass %>" id="<%= post.dom_id %>-row">
+  <td class="post_author">
+    <p>
+      <%= link_to gravatar(post.user, {:size => 60}, {:class => 'gravatar'}), url_for(post.user) %>
+      posted <%= time_ago_in_words(post.created_at) %> ago by
+			<%= link_to truncate(h(post.user.display_name), 15), user_path(post.user) %>
+    </p>
+
+    <% if post.user.admin? or post.forum.moderators.include?(post.user) %>
+      <p class="status">
+        <% if post.user.developer? %>
+          Site builder
+        <% elsif post.user.admin? %>
+          Administrator
+        <% elsif post.forum.moderators.include?(post.user) %>
+          Moderator
+        <% end %>
+        <br />
+        <%= post.user.posts_count %> <%= pluralize(post.user.posts_count, 'post') %>
+      </p>
+    <% end %>
+  </td>
+  <td class="post_body" id="post-body-<%= post.id %>">
+		<% if with_context %>
+    	<p class="topic_note"><%= link_to h(post.forum_name), forum_path(post.forum_id) %> &raquo; <%= link_to h(post.topic_title), topic_path(post.forum_id, post.topic_id) %> &raquo;</p>
+		<% end %>
+		
+    <%= post.body_html %>
+  </td>
+</tr>
+<% end %>
+</table>

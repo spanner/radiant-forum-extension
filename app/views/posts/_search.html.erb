@@ -1,0 +1,28 @@
+<div id="search_form" class="contentblock">
+	<h2>Search and select</h2>
+	
+	<form class="friendly" action="<%= all_posts_path %>">
+		<p>
+			<label for="q">Look for this text</label><br />
+			<%= text_field_tag "q", params[:q], :class => 'standard' %>
+		</p>
+		
+		<p class="halfcolumn" style="margin-right: 20px;">
+			<label for="user_id">from this person...</label><br />
+			<select name="user_id" class="narrow">
+				<option value=""></option>
+				<%= options_from_collection_for_select(User.find(:all), "id", "name", params[:user_id].to_i) %>
+			</select>
+		</p>
+
+		<p class="halfcolumn">
+			<label for="forum_id">and in this forum</label><br />
+			<select name="forum_id" class="narrow">
+				<option value=""></option>
+				<%= options_from_collection_for_select(Forum.find(:all), "id", "name", params[:forum_id].to_i) %>
+			</select>
+		</p>
+		
+		<p><%= submit_tag "search" %></p>
+	</form>		
+</div>

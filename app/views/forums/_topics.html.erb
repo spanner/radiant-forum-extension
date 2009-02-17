@@ -1,0 +1,46 @@
+<%
+  topics ||= @topics || @forum.topics
+%>
+
+<% if topics.empty? %>
+  <div class="notable">
+  <p>No discussion here yet.</p>
+  </div>
+<% else %>
+
+  <table class="wide topics">
+  <thead>
+  <tr>
+    <th>Topic</th>
+    <th class="minor">Posts</th>
+    <th class="minor">Views</th>
+    <th>Last post</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% for topic in topics %>
+  <% trclass = cycle("odd", "even", :name => 'topics') %>
+  <tr class="topic_row <%= trclass %>">
+    <td class="topic_title">
+      <h3><%= link_to topic.title, topic_url(@forum, topic) %></h3>
+    </td>
+    <td class="topic_posts minor"><%= topic.posts_count-1 %></td>
+    <td class="topic_views minor"><%= number_with_delimiter(topic.views) %></td>
+    <td class="topic_lastpost">
+      <% if topic.replied_by_user %>
+        <%= gravatar(topic.replied_by_user, {:size => 24}, {:class => 'thumbnail_gravatar'}) %>
+        <%= link_to %{#{time_ago_in_words(topic.replied_at)} ago by <span class="author"><strong class="fn">#{topic.replied_by_user.display_name}</strong></span>}, topic_url(@forum, topic), :page => topic.last_page, :anchor => "posts-#{topic.last_post_id}" %>
+      <% end %>
+    </td>
+  </tr>
+  <tr class="summary_row <%= trclass %>">
+    <td colspan ="4" class="topic_sample">
+      <p><span class="explanatory">started by <%= topic.posts.first.user.name %> <%= time_ago_in_words(topic.created_at) %> ago with:</span><br />
+      <%= truncate(topic.posts.first.body, 160) %></p>
+    </td>
+  </tr>
+  </tbody>
+  <% end %>
+  </table>
+
+<% end %>

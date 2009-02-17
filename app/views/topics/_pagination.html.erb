@@ -1,0 +1,4 @@
+<p class="pagination">
+  <%= page_entries_info @posts %> (from <%= @topic.voice_count %> <%= pluralize(@topic.voice_count, 'person') %>)<br />
+	<%= will_paginate @posts %>
+</p>

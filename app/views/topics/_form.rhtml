@@ -1,0 +1,26 @@
+<p>
+<label for="topic_title" class="required">Title</label><br />
+<%= f.text_field :title, :class => "titular", :tabindex => 10 %>
+<% if admin? or current_user.moderator_of?(@topic.forum) %>
+  <label class="admin">
+  Admin:
+  <%= f.check_box :sticky %> Sticky
+  </label>
+  <label class="admin">
+  <%= f.check_box :locked %> Locked
+  </label>
+<% end %>
+</p>
+
+<% if @topic.new_record? %>
+  <p>
+  <label for="topic_body" class="required">Message</label><br />
+  <%= f.text_area :body, :rows => 12, :tabindex => 20 %></p>
+<% end %>
+
+<% if @topic.new_record? || admin? %>
+  <p id="topic_forum_id">
+    <label for="topic_forum_id">Forum</label><br />
+    <%= f.select :forum_id, Forum.find(:all, :order => "position").map {|x| [x.name, x.id] } %></p>
+  </p>
+<% end %>

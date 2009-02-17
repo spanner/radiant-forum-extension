@@ -1,0 +1,14 @@
+Hello <%= @user.name %>.
+
+A new comment has been added to the conversation '<%= @post.topic.name %>' by <%= @post.creator.name %>:
+
+_______________________________________________________________________
+
+<%= @post.body %>
+
+_______________________________________________________________________
+
+
+To see the comment in context and to reply, please visit the topic page at <%= @url %>
+
+On that page you will also find the link to switch off this email notification service.

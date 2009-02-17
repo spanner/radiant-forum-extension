@@ -1,0 +1,29 @@
+%h1 Forums
+%p Forums are broad discussion areas each containing many discussion topics. You can have as many as you like and pull them into pages either selectively or as a group.
+%table#forums.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
+  %thead
+    %tr
+      %th.forum Forum
+      %th.topics Topics
+      %th.latest Latest Topic
+      %th.action Action
+  %tbody
+    - @forums.each do |forum|
+      %tr.node.level-1
+        %td.forum
+          = image('forum', :alt => 'forum-icon')
+          %span= link_to forum.name, forum_edit_url(:id => forum)
+          -if forum.for_comments
+            %small.info (comments forum)
+        %td.topics
+          %span= link_to "#{forum.topics.count || 0} #{pluralize(forum.topics.count || 0, 'topic')}", forum_moderate_url(:id => forum)
+        %td.latest
+          %span= link_to forum.recent_topics.first.title, topic_url(forum, forum.recent_topics.first) unless forum.recent_topics.empty? 
+        %td.remove
+          -if forum.for_comments
+            = image('noremove', :alt => 'Remove Forum')
+          -else
+            = link_to image('remove', :alt => 'Remove Forum'), forum_remove_url(:id => forum) 
+
+%p
+  = link_to image('new-forum', :alt => 'New Forum'), forum_new_url

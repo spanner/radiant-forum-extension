@@ -1,0 +1,48 @@
+<% content_for :title do %>
+	<% if @searching %>
+		Searching posts
+	<% else %>
+		Everything by date
+	<% end %>
+<% end %>
+
+<%= render :partial => 'forums/controls' %>
+<%= render :partial => 'forums/notification' %>
+
+<div id="search_preamble" class="contentblock">
+
+	<% if @searching %>
+		<%= feed_tag('search', formatted_all_posts_path(params.merge(:format => 'rss'))) %>
+	<% else %>
+		<%= feed_tag('all posts', formatted_all_posts_path(:rss)) %>
+	<% end %>
+
+	<h1>
+    <%= yield :title %>
+	</h1>
+
+	<% if @searching %>
+		<p>Bookmark this search as an <%= link_to "rss feed", formatted_all_posts_path(params.merge(:format => 'rss')) %> to be alerted to new matches.</p>
+	<% else %>
+	<p>You can bookmark this as an <%= link_to "rss feed", formatted_all_posts_path(:format => 'rss') %> to keep up with new additions to the forum.</p>
+	<% end %>
+</div>
+
+<%= render :partial => 'pagination' %>
+
+<% if @posts.total_entries > 0 %>
+
+	<%= render :partial => 'list', :locals => {:with_context => true} %>
+
+	<%= render :partial => 'pagination' %>
+
+<% end %>
+
+<%= render :partial => 'search' %>
+
+<% content_for :breadcrumbs do %>
+  <%= link_to 'Home', '/' %> &gt;
+  <%= link_to 'Forum', '/forums' %> &gt;
+  <%= yield :title %>
+<% end %>
+

@@ -1,0 +1,41 @@
+<%= render :partial => 'forums/controls' %>
+<%= render :partial => 'forums/notification' %>
+
+<div class="forum_description contentblock">
+	<%= feed_tag('this topic', formatted_topic_path(@topic.forum, @topic, :rss)) %>
+
+  <h1><%= link_to "#{@topic.forum.name} &raquo;", url_for(@topic.forum), :class => 'breadhead' %> <br /><%= @topic.title %></h1>
+
+	<% if @topic.page %>
+	  <p>This topic holds together all the comments on <%= link_to @topic.page.title, @topic.page.url %>.</p>
+	<% end %>
+
+
+	<%= watch_tag(@topic, 'watch this', 'monitor_form') %>
+
+</div>
+
+<%= render :partial => 'pagination' %>
+
+<%= render :partial => 'posts/list', :locals => {:with_context => false} %>
+
+<% if @posts.next_page %>
+	<%= render :partial => 'pagination' %>
+	
+<% else %>
+	<% if current_user %>
+	  <%= render :partial => 'post_reply' %>
+	<% else %>
+	  <%= render :partial => 'login_form' %>
+	<% end %>
+<% end %>
+
+<% content_for :breadcrumbs do %>
+  <%= link_to 'Forum', '/forums' %> &gt;
+  <%= link_to @forum.name, forum_url(@forum) %> &gt;
+  <%= @topic.title %>
+<% end %>
+
+<% content_for :title do %>
+  <%= @topic.title %>
+<% end %>

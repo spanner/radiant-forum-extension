@@ -1,0 +1,10 @@
+<p>
+  <label for="topic_body">
+    <% if @page %>
+      add a comment on <%= link_to @page.title, @page.url %>
+    <% else %>
+      post a reply
+    <% end %>
+  </label><br />
+  <%= f.text_area :body, :rows => 10, :id => "edit_post_body" %><br />
+</p>

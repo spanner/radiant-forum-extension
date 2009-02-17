@@ -1,0 +1,38 @@
+<%
+  topic ||= @topic
+  forum ||= topic.forum
+  trclass = cycle("even", "odd", :name => 'posts')
+%>
+
+<table class="wide posts">
+<tr class="post_row <%= trclass %>" id="new-post-row">
+  <td class="post_author">
+    posted <strong>now</strong> by 
+    <span class="fn"><%= link_to truncate(h(current_user.display_name), 15), user_path(current_user), :class => (current_user == topic.posts.first.user ? "threadauthor" : nil) %></span>
+    <% if current_user.admin? or forum.moderators.include?(current_user) %>
+    <span class="admin">
+      <% if current_user.admin? %>
+        Administrator
+      <% elsif forum.moderators.include?(current_user) %>
+        Moderator
+      <% end %>
+    </span>
+    <% end %>
+    <span class="posts"><%= pluralize(current_user.posts_count, 'post') %></span>
+  </td>
+  <td class="post_body" id="post-body-new">
+
+    <% 
+      @post ||= Post.new 
+      @post.topic ||= topic
+      @post.forum ||= forum
+    %>
+    <% form_for :post, :url  => posts_path(forum, topic), :html => {:id => 'reply_form', :class => 'friendly'} do |f| -%>
+
+      <%= render :partial => "posts/form", :locals => {:f => f} %>
+
+      <%= submit_tag 'Post Reply' %>
+    <% end -%>
+  </td>
+</tr>
+</table>
