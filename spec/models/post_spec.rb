@@ -40,13 +40,8 @@ describe Post do
     end
   end
   
-  it "should allow editing by its author" do
-  end
-
-  it "should refuse editing by readers other than its author" do
-  end
-
-  it "should know on what page of its topic it can be found" do
+  it "should report on which page of its topic it can be found" do
+    
   end
 
 end

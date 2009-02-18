@@ -3,7 +3,8 @@ class ForumsController < ApplicationController
   radiant_layout { |controller| controller.find_readers_layout }
  
   def index
-    @forums = Forum.paginate(:all, :order => "position", :page => params[:page] || 1)
+    @forums = Forum.find(:all, :order => "position")
+    @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :include => :forum)
   end
 
   def show
@@ -17,7 +18,17 @@ class ForumsController < ApplicationController
         render :layout => false 
       }
     end
-    
   end
+
+  def no_changes_here
+    redirect_to admin_forums_url
+  end
+  
+  alias_method :new, :no_changes_here
+  alias_method :create, :no_changes_here
+  alias_method :edit, :no_changes_here
+  alias_method :update, :no_changes_here
+  alias_method :remove, :no_changes_here
+  alias_method :destroy, :no_changes_here
 
 end

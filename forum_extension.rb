@@ -37,8 +37,6 @@ class ForumExtension < Radiant::Extension
     ReaderNotifier.send :include, ForumReaderNotifier
     Page.send :include, ForumPage
     Page.send :include, ForumTags
-    Radiant::AdminUI.send :include, ForumAdminUI
-    Radiant::AdminUI.instance.forum = Radiant::AdminUI.load_default_forum_regions
     ApplicationHelper.module_eval { include ForumHelper }
     ActionView::Base.field_error_proc = Proc.new do |html_tag, instance_tag| 
       "<span class='field_error'>#{html_tag}</span>" 

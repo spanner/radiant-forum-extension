@@ -2,14 +2,13 @@ class PostsController < ApplicationController
   no_login_required
   before_filter :find_or_create_topic, :only => [:create]
   before_filter :find_post, :except => [:index, :new, :create, :monitored, :search]
-  before_filter :find_forum_and_topic, :except => :index
   before_filter :authenticate_reader, :except => [:index, :show]
   radiant_layout { |controller| controller.find_readers_layout }
-  protect_from_forgery :except => :create # because the create form is generated from radius tags, which are defined in a model with no access to the controller
+  protect_from_forgery :except => :create # because the create form is typically generated from radius tags, which are defined in a model with no access to the controller
 
-  @@query_options = { :per_page => 25, :select => 'posts.*, topics.title as topic_title, forums.name as forum_name', :joins => 'inner join topics on posts.topic_id = topics.id inner join forums on topics.forum_id = forums.id', :order => 'posts.created_at desc' }
+  @@query_options = { :per_page => 25, :select => 'posts.*, topics.name as topic_name, forums.name as forum_name', :joins => 'inner join topics on posts.topic_id = topics.id inner join forums on topics.forum_id = forums.id', :order => 'posts.created_at desc' }
   
-  # how do we clear the cache under 0.7?
+  # *** clear the cache
 
   # def initialize
   #   super
@@ -28,7 +27,7 @@ class PostsController < ApplicationController
     @user = User.find(params[:user_id]) unless params[:user_id].blank?
     @topic = Topic.find(params[:topic_id]) unless params[:topic_id].blank?
     @forum = Forum.find(params[:forum_id]) unless params[:forum_id].blank?
-    @readers = Reader.find(:all, :select => 'distinct *', :conditions => ['id in (?)', @posts.collect(&:user_id).uniq]).index_by(&:id)
+    @readers = Reader.find(:all, :select => 'distinct *', :conditions => ['id in (?)', @posts.collect(&:reader_id).uniq]).index_by(&:id)
     render_page_or_feed
   end
 
@@ -73,7 +72,7 @@ class PostsController < ApplicationController
     @post  = @topic.posts.build(params[:post])
     @post.reader = current_reader
     @post.save!
-    # @cache.expire_response(@topic.page.url) if @topic.page
+    # @cache.expire_response(@topic.page.url) if @topic.page          # *** clear the cache
     redirect_to_page_or_topic
     
   rescue ActiveRecord::RecordInvalid
@@ -138,9 +137,11 @@ class PostsController < ApplicationController
     
     def redirect_to_page_or_topic
       if (@post.topic.page)
+        STDERR.puts "redirecting to page"
         redirect_to @post.topic.page.url + "#comment_#{@post.id}"
       else
-        redirect_to topic_path(:forum_id => params[:forum_id], :id => params[:topic_id], :page => params[:page] || '1')
+        STDERR.puts "redirecting to topic"
+        redirect_to topic_path(:forum_id => params[:forum_id], :id => params[:topic_id], :page => params[:page] || '1')     # *** fix to redirect to correct page
       end
       
     end
