@@ -7,6 +7,7 @@ class TopicsDataset < Dataset::Base
     create_topic "sticky", :reader_id => reader_id(:normal), :forum_id => forum_id(:private), :replied_at => 3.days.ago, :sticky => true
     create_topic "private", :reader_id => reader_id(:normal), :forum_id => forum_id(:private), :replied_at => 1.day.ago
     create_topic "minimal", :reader_id => reader_id(:normal), :forum_id => forum_id(:public)
+    create_topic "locked", :reader_id => reader_id(:normal), :forum_id => forum_id(:public), :locked => true
   end
   
   helpers do

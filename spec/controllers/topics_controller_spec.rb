@@ -43,7 +43,7 @@ describe TopicsController do
   describe "on get to new" do
     describe "without a logged-in reader" do
       before do
-        reader_logout
+        logout_reader
         get :new, :forum_id => forum_id(:public)
       end
       it "should redirect to login" do
@@ -57,7 +57,7 @@ describe TopicsController do
 
     describe "with a logged-in reader" do
       before do
-        reader_login_as(:normal)
+        login_as_reader(:normal)
         get :new, :forum_id => forum_id(:public)
       end
       it "should render the new topic form" do
@@ -68,29 +68,49 @@ describe TopicsController do
   end
 
   describe "on post to create" do
-    before do
-      
-    end
-    
     describe "without a logged-in reader" do
+      before do
+        logout_reader
+        post :create, :forum_id => forum_id(:public), :topic => {:name => 'another test topic', :body => 'topic body'}
+      end
       it "should redirect to login" do
-
+        response.should be_redirect
+        response.should redirect_to(reader_login_url)
       end
     end
 
     describe "with a logged-in reader" do
+      before do
+        login_as_reader(:normal)
+      end
       describe "but an invalid request" do
+        before do
+          post :create, :forum_id => forum_id(:public), :topic => {:body => 'topic body'}
+        end
         it "should rerender the topic form" do
-          
+          response.should be_success
+          response.should render_template("new")
         end
       end
 
       describe "and a valid request" do
+        before do
+          post :create, :forum_id => forum_id(:public), :topic => {:name => 'another test topic', :body => 'topic body'}
+          @topic = Topic.find_by_name('another test topic')
+        end
         it "should create the topic" do
-          
+          @topic.should_not be_nil
+          @topic.forum.should == forums(:public)
+          @topic.posts.first.should_not be_nil
+          @topic.posts.first.body.should == 'topic body'
+        end
+        it "should assign the topic to the current reader" do
+          @topic.reader.should_not be_nil
+          @topic.reader.should == readers(:normal)
         end
         it "should redirect to the topic page" do
-          
+          response.should be_redirect
+          response.should redirect_to(topic_url(@topic.forum, @topic))
         end
       end
     end

@@ -1,7 +1,9 @@
 class PostsController < ApplicationController
   no_login_required
-  before_filter :find_or_create_topic, :only => [:create]
-  before_filter :find_post, :except => [:index, :new, :create, :monitored, :search]
+  before_filter :find_topic, :except => [:create, :index]
+  before_filter :find_or_create_page_topic, :only => [:create]
+  before_filter :find_page, :only => [:new, :create]
+  before_filter :find_post, :except => [:index, :new, :create, :monitored]
   before_filter :authenticate_reader, :except => [:index, :show]
   radiant_layout { |controller| controller.find_readers_layout }
   protect_from_forgery :except => :create # because the create form is typically generated from radius tags, which are defined in a model with no access to the controller
@@ -46,38 +48,46 @@ class PostsController < ApplicationController
     end
   end
 
-  # new is normally only called by ajax in order to bring the right form into a cached page
-  # the view chooses between page-post form and login form
-  # page-topic need not exist at this stage.
+  # this is typically called by ajax to bring a comment form into a page or a reply form into a topic
+  # if the reader is not logged in, authenticate_reader should intervene and return a login form instead
 
   def new
-    @page = Page.find(params[:page_id])
+    return topic_locked if @topic.locked?
     respond_to do |format|
       format.html
-      format.js { render :layout => false, :template => 'posts/new.html.erb' }
+      format.js { 
+        render :template => 'posts/new.html.erb', :layout => false
+      }
     end
   end
-
+  
   def create
-    if @topic.locked?
-      respond_to do |format|
-        format.html do
-          flash[:notice] = 'This topic is locked.'
-          redirect_to_page_or_topic
-        end
-      end
-      return
-    end
+    return topic_locked if @topic.locked?
     @forum = @topic.forum
     @post  = @topic.posts.build(params[:post])
     @post.reader = current_reader
     @post.save!
     # @cache.expire_response(@topic.page.url) if @topic.page          # *** clear the cache
-    redirect_to_page_or_topic
+    respond_to do |format|
+      format.html { 
+        redirect_to_page_or_topic
+      }
+      format.js {
+        render :action => 'show', :layout => false
+      }
+    end
     
-  rescue ActiveRecord::RecordInvalid
-    flash[:bad_reply] = 'Oi! Post something.'
-    redirect :back
+  rescue ActiveRecord::RecordInvalid => oops
+    flash[:error] = oops
+    respond_to do |format|
+      format.html { 
+        render :action => 'new' 
+      }
+      format.js {
+        render :action => 'new', :layout => false
+      }
+    end
+
   end
   
   def edit
@@ -114,8 +124,12 @@ class PostsController < ApplicationController
     def authorized?
       action_name == 'create' || @post.editable_by?(current_user)
     end
-    
-    def find_or_create_topic
+            
+    def find_topic
+      @topic = Topic.find_by_id(params[:topic_id], :include => :forum) || raise(ActiveRecord::RecordNotFound)
+    end
+
+    def find_or_create_page_topic
       if params[:page_id] && !params[:topic_id]
         @page = Page.find(params[:page_id])
         @topic = @page.find_or_create_topic
@@ -123,9 +137,13 @@ class PostsController < ApplicationController
         @topic = Topic.find(params[:topic_id], :include => :forum)
       end
     end
-        
+
+    def find_page
+      @page = Page.find(params[:page_id]) if params[:page_id]
+    end
+
     def find_post
-      @post = Post.find_by_id_and_topic_id(params[:id], params[:topic_id]) || raise(ActiveRecord::RecordNotFound)
+      @post = @topic.posts.find(params[:id]) || raise(ActiveRecord::RecordNotFound)
     end
     
     def render_page_or_feed(template_name = action_name)
@@ -137,12 +155,22 @@ class PostsController < ApplicationController
     
     def redirect_to_page_or_topic
       if (@post.topic.page)
-        STDERR.puts "redirecting to page"
         redirect_to @post.topic.page.url + "#comment_#{@post.id}"
       else
-        STDERR.puts "redirecting to topic"
-        redirect_to topic_path(:forum_id => params[:forum_id], :id => params[:topic_id], :page => params[:page] || '1')     # *** fix to redirect to correct page
+        redirect_to topic_url(@topic.forum, @topic, {:page => @post.page, :anchor => "post_#{@post.id}"})
       end
-      
     end
+    
+    def topic_locked
+      respond_to do |format|
+        format.html {
+          flash[:notice] = 'This topic is locked.'
+          redirect_to topic_url(@topic.forum, @topic)
+        }
+        format.js {
+          render :template => 'locked', :layout => false
+        }
+      end
+    end
+    
 end

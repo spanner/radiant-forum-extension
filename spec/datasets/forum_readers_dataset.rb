@@ -24,14 +24,14 @@ class ForumReadersDataset < Dataset::Base
       attributes
     end
 
-    def reader_login_as(reader)
+    def login_as_reader(reader)
       login_reader = reader.is_a?(Reader) ? reader : readers(reader)
       flunk "Can't login as non-existing reader #{reader.to_s}." unless login_reader
       request.session['reader_id'] = login_reader.id
       login_reader
     end
     
-    def reader_logout
+    def logout_reader
       request.session['reader_id'] = nil
     end
 
