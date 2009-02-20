@@ -69,8 +69,8 @@ class Topic < ActiveRecord::Base
   
   protected
     def set_default_replied_at_and_sticky
-      self.replied_at = Time.now.utc
-      self.sticky   ||= 0
+      self.replied_at ||= Time.now.utc
+      self.sticky ||= 0
     end
 
     def set_post_forum_id

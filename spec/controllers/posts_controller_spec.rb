@@ -3,19 +3,15 @@ Radiant::Config['reader.layout'] = 'Main'
 
 describe PostsController do
   dataset :layouts
-  dataset :forums
-  dataset :topics
-  dataset :forum_readers
-  dataset :forum_pages
+  dataset :posts
   
   before do
-    @forum = Forum.create(:name => "test forum")
-    @topic = @forum.topics.build(:name => "test topic")
-    @topic.reader = readers(:normal)
-    @topic.save!
-    @post = @topic.posts.build(:body => "test post body")
-    @post.reader = readers(:normal)
-    @post.save!
+    controller.stub!(:request).and_return(request)
+    controller.set_current_site
+    @forum = forums(:public)
+    @topic = topics(:older)
+    @post = posts(:first)
+    @comment = posts(:comment)
   end
 
   describe "on get to index" do
@@ -23,7 +19,7 @@ describe PostsController do
       get :index
     end
 
-    it "should render the list of posts by date" do
+    it "should render the index page" do
       response.should be_success
       response.should render_template("index")
     end  
@@ -33,14 +29,13 @@ describe PostsController do
     
     describe "for a page comment" do
       before do
+        @comment = posts(:comment)
         @page = pages(:commentable)
-        @topic.page = @page
-        @topic.save!
-        get :show, :id => @post.id, :topic_id => @topic.id
+        get :show, :id => post_id(:comment), :topic_id => topic_id(:comments)
       end
       it "should redirect to the page address and post anchor" do
         response.should be_redirect
-        response.should redirect_to(@topic.page.url + "#comment_#{@post.id}")
+        response.should redirect_to(@page.url + "#comment_#{@comment.id}")
       end
     end
     
@@ -48,17 +43,15 @@ describe PostsController do
       before do
         get :show, :id => @post.id, :topic_id => @topic.id
       end
-      it "should redirect to the topic address and post anchor" do
+      it "should redirect to the topic address, post page and post anchor" do
         response.should be_redirect
         response.should redirect_to(topic_url(@topic.forum, @topic, {:page => @post.page, :anchor => "post_#{@post.id}"}))
       end
     end
             
-    if defined? MultiSiteExtension
-      describe "for a post on another site" do
-        it "should return a file not found error" do
-          
-        end
+    describe "for a post on another site" do
+      it "should raise a file not found error" do
+        lambda { get :show, :id => post_id(:elsewhere) }.should raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end
@@ -71,7 +64,7 @@ describe PostsController do
 
       describe "over normal http" do
         before do
-          get :new, :topic_id => @topic.id
+          get :new, :topic_id => topic_id(:older)
         end
         
         it "should redirect to login" do
@@ -86,7 +79,7 @@ describe PostsController do
       
       describe "by xmlhttprequest" do
         before do
-          xhr :get, :new, :topic_id => @topic.id
+          xhr :get, :new, :topic_id => topic_id(:older)
         end
 
         it "should render a bare login form for inclusion in the page" do
@@ -245,8 +238,9 @@ describe PostsController do
 
       it "should create the post" do
         post :create, :post => {:body => 'test post body'}, :topic_id => @topic.id
-        @topic.reload
-        @topic.posts.last.body.should == 'test post body'
+        topic = Topic.find(@topic.id)
+        topic.should_not be_nil
+        topic.posts[-1].body.should == 'test post body'
       end
       
       describe "over xmlhttp" do
@@ -281,12 +275,8 @@ describe PostsController do
       end
     end
 
-    if defined? MultiSiteExtension
-      describe "when using multisite" do
-        it "should not allow the creation of a post on another site" do
+    it "should not allow the creation of a post on another site" do
         
-        end
-      end
     end
   end
 end

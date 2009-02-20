@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Forum do
-  dataset :forums
   dataset :topics
   
   before do
+    @site = Page.current_site = sites(:test)
     @forum = forums(:public)
   end
   

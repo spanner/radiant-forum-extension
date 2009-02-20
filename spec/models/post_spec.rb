@@ -2,10 +2,11 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Post do
   dataset :posts
-  dataset :topics
-  dataset :forum_readers
   
   describe "on creation" do
+    before do
+      @site = Page.current_site = sites(:test)
+    end
     
     [:body, :topic, :reader].each do |field|
       it "should require a #{field}" do
@@ -21,7 +22,7 @@ describe Post do
     it "should update topic reply data" do
       @topic = Topic.new(:name => 'testing')
       @topic.forum = forums(:public)
-      @topic.reader = readers(:industrious)
+      @topic.reader = readers(:idle)
       @topic.replied_at = 1.week.ago
       @topic.save!
       @post = Post.new(:body => 'hullabaloo')

@@ -2,6 +2,10 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Topic do
   dataset :topics
+
+  before do
+    @site = Page.current_site = sites(:test)
+  end
   
   describe "on creation" do
     before do

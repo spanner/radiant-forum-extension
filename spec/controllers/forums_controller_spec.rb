@@ -2,9 +2,16 @@ require File.dirname(__FILE__) + '/../spec_helper'
 Radiant::Config['reader.layout'] = 'Main'
 
 describe ForumsController do
+  dataset :forum_sites
+  dataset :forum_readers
   dataset :forums
   dataset :layouts
 
+  before do
+    controller.stub!(:request).and_return(request)
+    controller.set_current_site
+  end
+    
   describe "on get to index" do
     before do
       get :index
@@ -27,15 +34,8 @@ describe ForumsController do
       response.should render_template("show")
     end
         
-    if defined? MultiSiteExtension
-      describe "when using multisite" do
-        it "should  show a forum from this site" do
-        
-        end
-        it "should not show a forum from another site" do
-        
-        end
-      end
+    it "should not show a forum from another site" do
+      
     end
   end
   
