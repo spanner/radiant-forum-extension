@@ -2,13 +2,16 @@ class Post < ActiveRecord::Base
   belongs_to :forum, :counter_cache => true
   belongs_to :reader,  :counter_cache => true
   belongs_to :topic, :counter_cache => true
+  belongs_to :site
 
-  before_create { |r| r.forum_id = r.topic.forum_id }
-  after_create  { |r| Topic.update_all(['replied_at = ?, replied_by = ?, last_post_id = ?', r.created_at, r.reader_id, r.id], ['id = ?', r.topic_id]) }
-  after_destroy { |r| t = Topic.find(r.topic_id) ; Topic.update_all(['replied_at = ?, replied_by = ?, last_post_id = ?', t.posts.last.created_at, t.posts.last.reader_id, t.posts.last.id], ['id = ?', t.id]) if t.posts.last }
+  attr_writer :name
 
+  before_validation :set_reader
+  before_create :set_site_and_forum
+  after_create :set_topic_reply_data
+  after_destroy :revert_topic_reply_data
+  
   validates_presence_of :reader, :body, :topic
-  attr_accessible :body
   
   def editable_by?(reader)
     reader && (reader.id == reader_id)
@@ -23,4 +26,24 @@ class Post < ActiveRecord::Base
     options[:except] << :topic_title << :forum_name
     super
   end
+  
+  protected
+  
+    def set_reader
+      self.reader ||= Reader.current_reader
+    end
+  
+    def set_site_and_forum
+      self.site ||= self.topic.site
+      self.forum ||= self.topic.forum
+    end
+    
+    def set_topic_reply_data
+      self.topic.refresh_reply_data(self)
+    end
+
+    def revert_topic_reply_data
+      self.topic.refresh_reply_data
+    end
+  
 end

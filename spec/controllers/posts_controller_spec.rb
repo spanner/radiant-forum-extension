@@ -267,16 +267,12 @@ describe PostsController do
           response.should redirect_to(topic_url(@forum, @topic, {:page => @post.page, :anchor => "post_#{@post.id}"}))
         end
       end
-    end
 
-    describe "to attach a comment to a page" do
-      it "should uncache the page" do
+      describe "to attach a comment to a page" do
+        it "should uncache the page" do
 
+        end
       end
-    end
-
-    it "should not allow the creation of a post on another site" do
-        
     end
   end
 end

@@ -5,28 +5,33 @@ describe Topic do
 
   before do
     @site = Page.current_site = sites(:test)
+    @reader = Reader.current_reader = readers(:normal)
   end
   
   describe "on creation" do
     before do
-      @topic = Topic.new(:name => 'testing')
-      @topic.forum = forums(:public)
-      @topic.reader = readers(:normal)
+      @topic = Topic.create!(:name => 'testing', :forum => forums(:public))
     end
     
     it "should set default values" do
-      @topic.save!
       @topic.sticky.should be_false
       @topic.replied_at.should be_close(Time.now, 5.seconds)
     end
 
-    [:name, :forum, :reader].each do |field|
+    [:name, :forum].each do |field|
       it "should require a #{field}" do
         @topic.send("#{field}=".intern, nil)
         @topic.should_not be_valid
         @topic.errors.on(field).should_not be_empty
       end
     end
+    
+    it "should get a reader automatically" do
+      topic = forums(:public).topics.build(:name => 'testing again')
+      topic.should be_valid
+      topic.reader.should == @reader
+    end
+    
   end
   
   describe "with posts" do

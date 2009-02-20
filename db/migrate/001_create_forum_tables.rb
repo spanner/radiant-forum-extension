@@ -51,7 +51,7 @@ class CreateForumTables < ActiveRecord::Migration
       t.column "posts_count",      :integer,  :default => 0
       t.column "last_post_id",     :integer
       t.column "locked",           :boolean,  :default => false
-      t.column "replied_by",       :integer
+      t.column "replied_by_id",    :integer
     end
 
     add_index "topics", ["site_id"], :name => "index_topics_on_site_id"

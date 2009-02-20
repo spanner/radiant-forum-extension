@@ -30,13 +30,10 @@ class TopicsController < ApplicationController
     # this is icky - move the topic/first post workings into the topic model?
     Topic.transaction do
       @topic = @forum.topics.build(params[:topic])
-      assign_protected
       @post = @topic.posts.build(params[:topic])
-      @post.topic = @topic
-      @post.reader = current_reader
-      @topic.body = @post.body # in case save fails and we go back to the form
+      @post.topic = @topic    # wtf this doesn't just happen i have no idea.
       @topic.save! if @post.valid? # so if post is invalid, topic will still be a new record
-      @post.save! 
+      @post.save!
     end
     respond_to do |format|
       format.html { redirect_to topic_path(@forum, @topic) }
@@ -67,10 +64,7 @@ class TopicsController < ApplicationController
   end
   
   protected
-    def assign_protected
-      @topic.reader = current_reader if @topic.new_record?
-    end
-    
+
     def find_forum_and_topic
       @forum = Forum.find(params[:forum_id]) if params[:forum_id]
       @topic = @forum.topics.find(params[:id]) if params[:id]

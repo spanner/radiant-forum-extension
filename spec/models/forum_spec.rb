@@ -6,6 +6,7 @@ describe Forum do
   before do
     @site = Page.current_site = sites(:test)
     @forum = forums(:public)
+    @reader = Reader.current_reader = readers(:normal)
   end
   
   it "should require a name" do
