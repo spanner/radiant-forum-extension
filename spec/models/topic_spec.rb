@@ -39,19 +39,49 @@ describe Topic do
 
     before do
       @topic = topics(:older)
+      60.times do |i|
+        @topic.posts.create!(:body => "test #{i}")
+      end
+      @topic.posts.create!(:body => "test by another", :reader => readers(:idle))
+      @topic.reload
+    end
+
+    it "should paginate posts" do
+      @topic.posts_count.should == 63
+      @topic.paged?.should be_true
     end
 
     it "should know on which page to find a given post" do
-      
+      post = Post.find_by_body("test 55")
+      @topic.page_for(post).should == 2
     end
 
     it "should know who last replied to it" do
-      
+      @topic.replied_by.should == readers(:idle)
     end
-  end
-  
 
-  it "should revise counter caches when it moves to another forum" do
-    
+    describe "when moved to another forum" do
+      before do
+        @oldcount = @topic.forum.posts_count
+        newforum = forums(:private)
+        @newcount = newforum.posts_count
+        @topic.forum = newforum
+        @topic.save!
+      end
+
+      it "should move its posts too" do
+        t = Topic.find(@topic.id)
+        t.posts.each do |p|
+          p.forum_id.should == forum_id(:private)
+        end
+      end
+
+      it "should revise counter caches" do
+        ff = Forum.find(forum_id(:public))
+        tf = Forum.find(forum_id(:private))
+        ff.posts_count.should < @oldcount
+        tf.posts_count.should > @newcount
+      end
+    end
   end
 end

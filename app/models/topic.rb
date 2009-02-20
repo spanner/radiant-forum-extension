@@ -21,7 +21,7 @@ class Topic < ActiveRecord::Base
     return if new_record?
     old = Topic.find(id)
     if old.forum_id != forum_id
-      set_post_forum_id
+      set_posts_forum_id
       Forum.update_all ["posts_count = posts_count - ?", posts_count], ["id = ?", old.forum_id]
       Forum.update_all ["posts_count = posts_count + ?", posts_count], ["id = ?", forum_id]
     end
@@ -83,7 +83,7 @@ class Topic < ActiveRecord::Base
       self.sticky ||= 0
     end
 
-    def set_post_forum_id
+    def set_posts_forum_id
       Post.update_all ['forum_id = ?', forum_id], ['topic_id = ?', id]
     end
 end
