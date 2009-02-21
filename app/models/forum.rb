@@ -1,19 +1,11 @@
 class Forum < ActiveRecord::Base
+  is_site_scoped
   acts_as_list
   order_by 'name'
-  belongs_to :site
   belongs_to :created_by, :class_name => 'User'
   belongs_to :updated_by, :class_name => 'User'
   validates_presence_of :name
 
-  class << self
-    def find_with_site(*args)
-      # raise(MultiSite::SiteNotFound, "no site found", caller) unless current_site
-      current_site.forums.find_without_site(*args)
-    end
-    alias_method_chain :find, :site
-  end
-  
   has_many :topics, :order => 'sticky desc, replied_at desc', :dependent => :destroy do
     def first
       @first_topic ||= find(:first)
@@ -43,14 +35,6 @@ class Forum < ActiveRecord::Base
       :created_at => Time.now,
       :for_comments => true
       )
-  end
-
-  def self.current_site
-    Page.current_site
-  end
-  
-  def current_site
-    self.class.current_site
   end
 
 end

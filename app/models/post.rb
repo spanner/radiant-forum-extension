@@ -1,13 +1,14 @@
 class Post < ActiveRecord::Base
+  is_site_scoped
+
   belongs_to :forum, :counter_cache => true
   belongs_to :reader,  :counter_cache => true
   belongs_to :topic, :counter_cache => true
-  belongs_to :site
 
   attr_writer :name
 
   before_validation :set_reader
-  before_create :set_site_and_forum
+  before_create :set_forum
   after_create :set_topic_reply_data
   after_destroy :revert_topic_reply_data
   
@@ -33,8 +34,7 @@ class Post < ActiveRecord::Base
       self.reader ||= Reader.current_reader
     end
   
-    def set_site_and_forum
-      self.site ||= self.topic.site
+    def set_forum
       self.forum ||= self.topic.forum
     end
     

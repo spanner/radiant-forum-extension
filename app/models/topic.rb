@@ -1,6 +1,7 @@
 class Topic < ActiveRecord::Base
+  is_site_scoped
+
   belongs_to :forum, :counter_cache => true
-  belongs_to :site
   belongs_to :page
   belongs_to :reader
   belongs_to :replied_by, :class_name => 'Reader'
