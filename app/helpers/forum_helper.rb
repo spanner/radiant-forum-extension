@@ -3,7 +3,7 @@ module ForumHelper
   def self.included(base)
     base.module_eval {
 
-      def gravatar(user, gravatar_options={}, img_options ={})
+      def gravatar_for(user, gravatar_options={}, img_options ={})
         image_tag user.gravatar_url(gravatar_options), img_options
       end
       

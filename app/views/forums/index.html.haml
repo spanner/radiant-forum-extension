@@ -1,0 +1,12 @@
+= render :partial => 'readers/flasher'
+= render :partial => 'readers/controls'
+
+#forum
+- if @forums.empty?
+    %p No discussion areas defined here yet.
+
+- else
+    %h1. Discussion Categories
+    %ul.biglist
+      - @forums.each do |forum|
+        = render :partial => 'summary', :locals => {:forum => forum}

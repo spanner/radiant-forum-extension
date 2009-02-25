@@ -1,0 +1,28 @@
+%li.summary
+  %a{:href => topic_url(topic), :class => 'main'}
+    %span.markers
+    = gravatar_for(topic.reader, {}, {:alt => topic.reader.name})
+    = topic.name
+  %br
+  %span.context
+    begun under 
+    = link_to topic.forum.name, forum_url(topic.forum)
+    by
+    = link_to topic.reader.name, reader_url(topic.reader)
+    - if topic.replied_at
+      \.
+      = topic.posts.count
+      = pluralize(topic.posts.count, 'comment')
+      - if topic.posts.count > 1
+        , most recently
+      from
+      = link_to topic.replied_by.name, reader_url(topic.replied_by)
+      = time_ago_in_words(topic.replied_at)
+      ago
+    - else 
+      = time_ago_in_words(topic.created_at)
+      ago
+  %span.preview
+    %br
+    = topic.preview
+    

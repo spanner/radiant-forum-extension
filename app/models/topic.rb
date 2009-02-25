@@ -37,6 +37,10 @@ class Topic < ActiveRecord::Base
     posts.map { |p| p.reader }.uniq
   end
   
+  def preview
+    posts.first.body
+  end
+  
   def hit!
     self.class.increment_counter :hits, id
   end

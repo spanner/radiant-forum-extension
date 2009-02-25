@@ -14,6 +14,9 @@ class ForumExtension < Radiant::Extension
         topic.resource :monitorship, :controller => :monitorships, :name_prefix => nil
       end
     end
+    
+    map.resources :forums
+    map.resources :topics
 
     %w(user forum).each do |attr|
       map.resources :posts, :name_prefix => "#{attr}_", :path_prefix => "/#{attr.pluralize}/:#{attr}_id"
@@ -22,8 +25,6 @@ class ForumExtension < Radiant::Extension
     map.with_options :controller => 'posts' do |page|
       page.resources :posts, :path_prefix => '/pages/:page_id', :name_prefix => 'page_'
     end
-
-    map.resources :posts, :name_prefix => 'all_', :collection => { :search => :get }
 
     map.namespace :admin do |admin|
       admin.resources :forums
@@ -39,9 +40,6 @@ class ForumExtension < Radiant::Extension
     Page.send :include, ForumTags
     Site.send :include, ForumSite
     ApplicationHelper.module_eval { include ForumHelper }
-    ActionView::Base.field_error_proc = Proc.new do |html_tag, instance_tag| 
-      "<span class='field_error'>#{html_tag}</span>" 
-    end 
 
     admin.tabs.add "Forum", "/admin/forums", :after => "Readers", :visibility => [:all]
   end

@@ -3,8 +3,7 @@ class ForumsController < ApplicationController
   radiant_layout { |controller| controller.find_readers_layout }
  
   def index
-    @forums = Forum.find(:all, :order => "position")
-    @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :include => :forum)
+    @forums = Forum.paginate(:all, :order => "position")
   end
 
   def show

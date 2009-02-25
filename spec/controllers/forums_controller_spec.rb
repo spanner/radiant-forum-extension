@@ -33,10 +33,6 @@ describe ForumsController do
       response.should be_success
       response.should render_template("show")
     end
-        
-    it "should not show a forum from another site" do
-      
-    end
   end
   
   [:new, :edit, :update, :create, :destroy].each do |action|

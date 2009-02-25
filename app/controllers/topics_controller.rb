@@ -5,7 +5,7 @@ class TopicsController < ApplicationController
   radiant_layout { |controller| controller.find_readers_layout }
 
   def index
-    redirect_to forum_path(params[:forum_id])
+    @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :include => [:forum, :reader])
   end
 
   def new
