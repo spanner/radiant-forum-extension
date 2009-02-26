@@ -15,8 +15,8 @@ class ForumExtension < Radiant::Extension
       end
     end
     
-    map.resources :forums
-    map.resources :topics
+    # map.resources :forums
+    # map.resources :topics
 
     %w(user forum).each do |attr|
       map.resources :posts, :name_prefix => "#{attr}_", :path_prefix => "/#{attr.pluralize}/:#{attr}_id"

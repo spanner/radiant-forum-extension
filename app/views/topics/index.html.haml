@@ -2,11 +2,16 @@
 = render :partial => 'readers/controls'
 
 #forum
-  - if @topics.empty?
-    %p No talk here yet.
-
+  - if @forum
+    %h1.forum_head
+      = @forum.name
+    #forum_preamble
+      = textilize(@forum.description)
   - else
     %h1 All Discussions
+  - if @topics.empty?
+    %p No talk here yet.
+  - else
     %ul.biglist
       - @topics.each do |topic|
         = render :partial => 'summary', :locals => {:topic => topic}

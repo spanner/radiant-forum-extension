@@ -1,0 +1,12 @@
+- topic ||= @topic
+- forum ||= topic.forum
+- post ||= @post || Post.new 
+- post.topic ||= topic
+- post.forum ||= forum
+
+%div.post{:id => post.dom_id}
+  %h2 
+    Post a reply
+  - form_for :post, :url  => posts_path(forum, topic), :html => {:id => 'reply_form', :class => 'friendly'} do |f|
+    = render :partial => "posts/form", :locals => {:form => f}
+    = submit_tag 'Post Reply'

@@ -2,7 +2,7 @@ class CreateForumTables < ActiveRecord::Migration
   def self.up
     create_table "forums", :force => true do |t|
       t.column "name",             :string
-      t.column "description",      :string
+      t.column "description",      :text
       t.column "site_id",          :integer
       t.column "topics_count",     :integer, :default => 0
       t.column "posts_count",      :integer, :default => 0

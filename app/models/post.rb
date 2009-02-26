@@ -28,6 +28,10 @@ class Post < ActiveRecord::Base
     super
   end
   
+  def dom_id
+    "post_#{self.id}"
+  end
+  
   protected
   
     def set_reader

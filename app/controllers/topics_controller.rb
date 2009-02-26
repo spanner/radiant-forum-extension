@@ -1,11 +1,15 @@
 class TopicsController < ApplicationController
   no_login_required
-  before_filter :find_forum_and_topic, :except => :index
+  before_filter :find_forum_and_topic
   before_filter :authenticate_reader, :except => [:index, :show]
   radiant_layout { |controller| controller.find_readers_layout }
 
   def index
-    @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :include => [:forum, :reader])
+    if @forum
+      @topics = @forum.topics.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :include => [:reader])
+    else
+      @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :include => [:forum, :reader])
+    end
   end
 
   def new
@@ -17,7 +21,7 @@ class TopicsController < ApplicationController
       format.html do
         # authors of topics don't get counted towards total hits
         @topic.hit! unless current_reader and @topic.reader == current_reader
-        @posts = Post.paginate_by_topic_id(@topic.id, :page => params[:page], :include => :user, :order => 'posts.created_at asc')
+        @posts = Post.paginate_by_topic_id(@topic.id, :page => params[:page], :include => :reader, :order => 'posts.created_at asc')
       end
       format.rss do
         @posts = @topic.posts.find(:all, :order => 'created_at desc', :limit => 25)
