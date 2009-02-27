@@ -7,14 +7,10 @@
     = @topic.name
     = feed_link(formatted_topic_path(@topic.forum, @topic, :rss))
 
-  = render :partial => 'posts/list', :locals => {:with_context => false}
-  - if @posts.next_page
-    = render :partial => 'pagination'
-  - else 
-    - if current_reader
-      = render :partial => 'post_reply'
-    - else
-      = render :partial => 'login_form'
+  - paginated_section @posts do
+    = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false, :first_post => @topic.posts.first }
+  - unless @posts.next_page
+    = render :partial => 'post_reply'
 
 = render :partial => 'readers/controls'
 

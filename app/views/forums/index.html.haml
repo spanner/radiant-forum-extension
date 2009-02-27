@@ -1,12 +1,28 @@
 = render :partial => 'readers/flasher'
-= render :partial => 'readers/controls'
 
 #forum
-- if @forums.empty?
-    %p No discussion areas defined here yet.
+  %h1 Discussion Categories
+  #forum_preamble
+    %p
+      These are the broad filing areas we use to organise the forum. 
+      You can also see a list of 
+      = link_to "all the most recent conversation", topic_list_url
+      in any category.
 
-- else
-    %h1. Discussion Categories
-    %ul.biglist
-      - @forums.each do |forum|
-        = render :partial => 'summary', :locals => {:forum => forum}
+  - if @forums.empty?
+    %p No categories defined here yet.
+
+  - else
+    - paginated_section @forums do
+      %ul.main
+        = render :partial => 'forums/forum', :collection => @forums
+
+= render :partial => 'readers/controls'
+
+- content_for :breadcrumbs do
+  = link_to 'Forum', forums_url
+  \&gt;
+  Categories
+
+- content_for :title do
+  Discussion Categories

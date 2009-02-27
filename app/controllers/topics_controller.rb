@@ -1,15 +1,11 @@
 class TopicsController < ApplicationController
   no_login_required
-  before_filter :find_forum_and_topic
+  before_filter :find_forum_and_topic, :except => :index
   before_filter :authenticate_reader, :except => [:index, :show]
   radiant_layout { |controller| controller.find_readers_layout }
 
   def index
-    if @forum
-      @topics = @forum.topics.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :include => [:reader])
-    else
-      @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :include => [:forum, :reader])
-    end
+    @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :include => [:forum, :reader])
   end
 
   def new

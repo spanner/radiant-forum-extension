@@ -1,0 +1,29 @@
+= render :partial => 'readers/flasher'
+
+#forum
+  %h1.forum_head
+    = link_to "Discussion Categories &raquo;", forums_url, {:class => 'breadhead'}
+    %br
+    = @forum.name
+    = feed_link(formatted_forum_path(@forum, :rss))
+
+  #forum_preamble
+    = textilize(@forum.description)
+
+  - if @topics.empty?
+    %p No talk here yet.
+
+  - else
+    - paginated_section @topics do
+      %ul.main
+        = render :partial => 'topics/topic', :collection => @topics, :locals => { :with_context => false }
+
+= render :partial => 'readers/controls'
+
+- content_for :breadcrumbs do
+  = link_to 'Forum', forums_url
+  \&gt;
+  = link_to @forum.name, forum_url(@forum) 
+
+- content_for :title do
+  = @forum.name

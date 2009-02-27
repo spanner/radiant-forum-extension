@@ -25,7 +25,11 @@ class Forum < ActiveRecord::Base
       @last_post ||= find(:first, :include => :user)
     end
   end
-    
+  
+  def dom_id
+    "forum_#{self.id}"
+  end
+  
   def self.find_or_create_comments_forum
     @comments_forum = self.find_by_for_comments(true) || self.create(
       :name => 'Page Comments',

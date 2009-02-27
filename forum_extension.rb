@@ -26,6 +26,10 @@ class ForumExtension < Radiant::Extension
       page.resources :posts, :path_prefix => '/pages/:page_id', :name_prefix => 'page_'
     end
 
+    map.with_options :controller => 'topics' do |map|
+      map.topic_list '/topics', :action => 'index'
+    end
+
     map.namespace :admin do |admin|
       admin.resources :forums
     end

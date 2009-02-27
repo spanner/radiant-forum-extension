@@ -1,0 +1,11 @@
+/ this form is usually brought in by a remote call to sit on the page in the place of the post itself.
+
+- message_type = @topic.page ? 'comment' : 'message'
+
+%div.post{:id => 'replyform'}
+  %h2 
+    Edit 
+    = message_type
+  - form_for :post, :html => {:method => 'put', :id => 'post_form', :class => 'friendly'} do |f|
+    = render :partial => "posts/form", :object => f
+    = submit_tag "Post #{message_type}"

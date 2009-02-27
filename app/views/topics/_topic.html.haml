@@ -1,13 +1,18 @@
-%li.summary
+- with_context ||= false
+
+%li.topic{:id => topic.dom_id}
   %a{:href => topic_url(topic.forum, topic), :class => 'main'}
     %span.markers
     = gravatar_for(topic.reader, {:size => 46}, {:alt => topic.reader.name, :class => 'gravatar'})
     = topic.name
   %br
   %span.context
-    begun under 
-    = link_to topic.forum.name, forum_url(topic.forum)
-    by
+    - if with_context
+      begun under 
+      = link_to topic.forum.name, forum_url(topic.forum)
+      by
+    - else
+      from
     = link_to topic.reader.name, reader_url(topic.reader)
     - if topic.replied_at
       \.
@@ -22,7 +27,6 @@
     - else 
       = time_ago_in_words(topic.created_at)
       ago
-  %span.preview
-    %br
-    = truncate_words(topic.preview, 40)
+  %br
+  = truncate_words(topic.preview, 40)
     

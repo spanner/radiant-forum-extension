@@ -1,0 +1,26 @@
+= render :partial => 'readers/flasher'
+
+#forum
+  %h1
+    = link_to "#{@forum.name} &raquo;", forum_url(@forum), {:class => 'breadhead'}
+    %br
+    Edit discussion 
+
+  #new_topic
+    = form_for :topic, :url  => topic_path(@forum, @topic), :html => {:method => :put, :class => 'friendly'} do |f|
+      = render :partial => "form", :object => f
+	    = submit_tag 'save changes' 
+	    or 
+	    = link_to('Cancel', topic_path(@forum, @topic))
+
+= render :partial => 'readers/controls'
+
+- content_for :breadcrumbs do
+  = link_to 'Forum', forums_url
+  \&gt;
+  = link_to @forum.name, forum_url(@forum) 
+  \&gt;
+  Edit Discussion
+
+- content_for :title do
+  Edit Discussion

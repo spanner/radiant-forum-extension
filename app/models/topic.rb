@@ -77,6 +77,10 @@ class Topic < ActiveRecord::Base
     self.save!
   end
   
+  def dom_id
+    "topic_#{self.id}"
+  end
+  
   protected
 
     def set_reader

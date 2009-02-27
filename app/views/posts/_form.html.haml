@@ -1,9 +1,13 @@
 %p
   %label{:for =>"post_body"}
     -if @page
-      add a comment on
-      = link_to @page.title, @page.url
+      Your comment
     - else
       Your message
   %br
-  = form.text_area :body, :rows => 10, :id => "edit_post_body"
+  = form.text_area :body, :rows => 10
+  %br
+  %span.formnote
+    You can use 
+    = link_to "textile", "http://hobix.com/textile/quick.html", :class => 'textile_help'
+    here.

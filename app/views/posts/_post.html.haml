@@ -1,0 +1,22 @@
+- post ||= @post
+- first_post ||= nil
+
+%div.post{:id => post.dom_id}
+  %div{:class => post == first_post ? 'first_post' : 'reply'}
+    %div.post_header
+      %h2
+        %a{:href => reader_url(post.reader), :class => 'main'}
+          = gravatar_for(post.reader, {:size => 40}, {:alt => post.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
+          = post.reader.name
+      %p.context
+        - if post == first_post
+          began this discussion
+        - else
+          replied
+        - if with_context
+          under
+          = link_to post.topic.name, topic_url(post.forum, post.topic)
+        = time_ago_in_words(post.created_at)
+        ago
+    %div.post_body
+      = textilize(post.body)

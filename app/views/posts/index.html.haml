@@ -1,0 +1,26 @@
+= render :partial => 'readers/flasher'
+= render :partial => 'readers/controls'
+
+#forum
+  %h1 
+    Everything by date
+    = feed_link(formatted_posts_path(:rss))
+
+- if @posts.empty?
+  %p No talk here yet.
+
+- else
+  %ul.biglist
+    - @posts.each do |posts|
+      = render :partial => 'posts/post', :locals => {:with_context => true}
+
+  - if @posts.next_page
+    = render :partial => 'shared/pagination', :locals => {:list => @posts}
+
+- content_for :breadcrumbs do
+  = link_to 'Forum', forums_url
+  \&gt;
+  Everything
+
+- content_for :title do
+  Everything
