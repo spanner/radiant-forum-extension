@@ -13,6 +13,7 @@
   %h2 
     Messages from
     = @reader.name
+    = feed_link(formatted_reader_posts_path(@reader, :rss))
   - if @posts
     %ul.main
       - paginated_section @posts do

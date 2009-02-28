@@ -26,10 +26,20 @@ class PostsController < ApplicationController
     conditions << Post.send(:sanitize_sql, ['LOWER(posts.body) LIKE ?', "%#{params[:q]}%"]) unless params[:q].blank?
     conditions = conditions.any? ? conditions.collect { |c| "(#{c})" }.join(' AND ') : nil
     @posts = Post.paginate(:all, @@query_options.merge(:conditions => conditions, :page => params[:page] || 1))
-    @user = User.find(params[:user_id]) unless params[:user_id].blank?
+    @reader = Reader.find(params[:reader_id]) unless params[:reader_id].blank?
     @topic = Topic.find(params[:topic_id]) unless params[:topic_id].blank?
     @forum = Forum.find(params[:forum_id]) unless params[:forum_id].blank?
     @readers = Reader.find(:all, :select => 'distinct *', :conditions => ['id in (?)', @posts.collect(&:reader_id).uniq]).index_by(&:id)
+
+    @title = current_site.name
+    @title << ": posts"
+    @title << " matching '#{params[:q]}'" if params[:q]
+    @title << " from #{@reader.name}" if @reader
+    if @topic
+      @title << " under #{@topic.name}"
+    elsif @forum
+      @title << " in #{@forum.name}"
+    end
     render_page_or_feed
   end
 

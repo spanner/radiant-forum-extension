@@ -9,9 +9,9 @@
       - if without_author
         %h4
           - if post.first?
-            Started the discussion 
+            A new discussion
           - else
-            Replied to 
+            A reply to 
           = link_to post.topic.name, topic_url(post.forum, post.topic)
           = time_ago_in_words(post.created_at)
           ago
@@ -22,7 +22,7 @@
             = post.reader.name
         %p.context
           - if post.first?
-            began the discussion
+            started this discussion
           - else
             replied
           - if with_context

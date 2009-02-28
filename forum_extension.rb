@@ -19,7 +19,7 @@ class ForumExtension < Radiant::Extension
       admin.resources :forums
     end
 
-    %w(user forum).each do |attr|
+    %w(reader forum).each do |attr|
       map.resources :posts, :name_prefix => "#{attr}_", :path_prefix => "/#{attr.pluralize}/:#{attr}_id"
     end
 
