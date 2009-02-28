@@ -49,6 +49,7 @@ class CreateForumTables < ActiveRecord::Migration
       t.column "hits",             :integer,  :default => 0
       t.column "sticky",           :boolean,  :default => false
       t.column "posts_count",      :integer,  :default => 0
+      t.column "first_post_id",     :integer
       t.column "last_post_id",     :integer
       t.column "locked",           :boolean,  :default => false
       t.column "replied_by_id",    :integer

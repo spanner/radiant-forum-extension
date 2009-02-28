@@ -10,7 +10,7 @@ describe Topic do
   
   describe "on creation" do
     before do
-      @topic = Topic.create!(:name => 'testing', :forum => forums(:public))
+      @topic = Topic.create!(:name => 'testing', :body => 'this is the first post body but validation requires it', :forum => forums(:public))
     end
     
     it "should set default values" do
@@ -27,11 +27,13 @@ describe Topic do
     end
     
     it "should get a reader automatically" do
-      topic = forums(:public).topics.build(:name => 'testing again')
-      topic.should be_valid
-      topic.reader.should == @reader
+      @topic.reader.should == @reader
     end
     
+    it "should get a first post automatically" do
+      @topic.first_post.should_not be_nil
+      @topic.first_post.body.should == 'this is the first post body but validation requires it'
+    end
   end
   
   describe "with posts" do
@@ -47,7 +49,7 @@ describe Topic do
     end
 
     it "should paginate posts" do
-      @topic.posts_count.should == 63
+      @topic.posts_count.should == 64
       @topic.paged?.should be_true
     end
 

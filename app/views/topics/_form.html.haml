@@ -11,13 +11,14 @@
     = form.check_box :locked
      %label{:for => 'topic_locked', :class => 'admin'} Locked
 
-%p{ :class => @topic.errors.on(:body) ? 'with_errors' : '' }
-  %label{:for => 'topic_body', :class => 'required'} Opening message
-  %br
-  = form.text_area :body, :class=> 'standard', :rows => 12
-  - if @topic.errors.on(:body)
+- form.fields_for :post do |fields|
+  %p{ :class => @post.errors.on(:body) ? 'with_errors' : '' }
+    %label{:for => 'post_body', :class => 'required'} Opening message
     %br
-    = @topic.errors.on(:body).to_a.to_sentence
+    = fields.text_area :body, :class=> 'standard', :rows => 12
+    - if @post.errors.on(:body)
+      %br
+      = @post.errors.on(:body).to_a.to_sentence
     
 - if @topic.new_record? || admin?
   %p 

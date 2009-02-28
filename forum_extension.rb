@@ -15,8 +15,9 @@ class ForumExtension < Radiant::Extension
       end
     end
     
-    # map.resources :forums
-    # map.resources :topics
+    map.namespace :admin do |admin|
+      admin.resources :forums
+    end
 
     %w(user forum).each do |attr|
       map.resources :posts, :name_prefix => "#{attr}_", :path_prefix => "/#{attr.pluralize}/:#{attr}_id"
@@ -26,12 +27,12 @@ class ForumExtension < Radiant::Extension
       page.resources :posts, :path_prefix => '/pages/:page_id', :name_prefix => 'page_'
     end
 
-    map.with_options :controller => 'topics' do |map|
-      map.topic_list '/topics', :action => 'index'
+    map.with_options :controller => 'topics' do |topics|
+      topics.topics_list '/forums/topics', :action => 'index'
     end
 
-    map.namespace :admin do |admin|
-      admin.resources :forums
+    map.with_options :controller => 'posts' do |posts|
+      posts.posts_list '/forums/posts', :action => 'index'
     end
 
   end
@@ -40,6 +41,7 @@ class ForumExtension < Radiant::Extension
     Forum; Topic; Post
     Reader.send :include, ForumReader
     ReaderNotifier.send :include, ForumReaderNotifier
+    ReadersController.send :include, ForumReadersController
     Page.send :include, ForumPage
     Page.send :include, ForumTags
     Site.send :include, ForumSite

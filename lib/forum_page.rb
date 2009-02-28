@@ -6,9 +6,9 @@ module ForumPage
       include InstanceMethods
     }
   end
-  
+
   module InstanceMethods     
-    
+  
     def find_or_create_topic
       if (self.topic)
         logger.warn "got topic"
@@ -21,16 +21,14 @@ module ForumPage
         topic
       end
     end
-    
+  
     def has_posts?
       self.topic.posts_count > 1
     end
-    
+  
     # def cache?
     #   false unless self.topic.nil?
     # end
-    
+  
   end
-
 end
-

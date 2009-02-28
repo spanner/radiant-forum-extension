@@ -8,5 +8,4 @@ module ForumSite
     } 
     super
   end
-
 end

@@ -157,7 +157,7 @@ class PostsController < ApplicationController
       if (@post.topic.page)
         redirect_to @post.topic.page.url + "#comment_#{@post.id}"
       else
-        redirect_to topic_url(@topic.forum, @topic, {:page => @post.page, :anchor => "post_#{@post.id}"})
+        redirect_to topic_url(@topic.forum, @topic, {:page => @post.topic_page, :anchor => "post_#{@post.id}"})
       end
     end
     

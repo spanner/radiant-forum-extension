@@ -18,7 +18,7 @@ class Post < ActiveRecord::Base
     reader && (reader.id == reader_id)
   end
   
-  def page
+  def topic_page
     self.topic.page_for(self)
   end
   
@@ -30,6 +30,10 @@ class Post < ActiveRecord::Base
   
   def dom_id
     "post_#{self.id}"
+  end
+  
+  def first?
+    self.topic.first_post == self
   end
   
   protected

@@ -27,28 +27,22 @@ class TopicsController < ApplicationController
   end
   
   def create
-    # this is icky - move the topic/first post workings into the topic model?
-    Topic.transaction do
-      @topic = @forum.topics.build(params[:topic])
-      @post = @topic.posts.build(params[:topic])
-      @post.topic = @topic    # wtf this doesn't just happen i have no idea.
-      @topic.save! if @post.valid? # so if post is invalid, topic will still be a new record
-      @post.save!
-    end
+    # post creation is handled by a before_create in the topic model
+    # and then calls back to set initial reply data in the topic
+    @topic = @forum.topics.create!(params[:topic])
     respond_to do |format|
       format.html { redirect_to topic_path(@forum, @topic) }
     end
   rescue ActiveRecord::RecordInvalid => invalid
-    flash[:error] = "Sorry: something is missing. Please check the form"
+    flash[:error] = "Sorry: #{invalid}. Please check the form"
     respond_to do |format|
       format.html { render :action => 'new' }
     end
-    
   end
   
   def update
+    # post update is handled by a before_update in the topic model
     @topic.attributes = params[:topic]
-    assign_protected
     @topic.save!
     respond_to do |format|
       format.html { redirect_to topic_path(@forum, @topic) }

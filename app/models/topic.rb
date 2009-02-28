@@ -4,29 +4,25 @@ class Topic < ActiveRecord::Base
   belongs_to :forum, :counter_cache => true
   belongs_to :page
   belongs_to :reader
-  belongs_to :replied_by, :class_name => 'Reader'
-  belongs_to :last_post, :class_name => 'Post'
+
+  belongs_to :first_post, :class_name => 'Post', :include => :reader                                                # aka topic.body. should not change
+  belongs_to :last_post, :class_name => 'Post', :include => :reader                                                 # this is just for display efficiency.
+  belongs_to :replied_by, :class_name => 'Reader'                                                                   # this too.
+  has_many :posts, :order => 'posts.created_at', :include => :reader, :dependent => :destroy
+
   has_many :monitorships, :dependent => :destroy
   has_many :monitors, :through => :monitorships, :conditions => ['monitorships.active = ?', true], :source => :user, :order => 'users.login'
-  has_many :posts, :order => 'posts.created_at', :dependent => :destroy
 
   validates_presence_of :forum, :reader, :name
 
   before_validation :set_reader
   before_create :set_default_replied_at_and_sticky
-  before_save   :check_for_changing_forums
-
-  attr_accessor :body # for ease on forms: body is actually first_post.body
-
-  def check_for_changing_forums
-    return if new_record?
-    old = Topic.find(id)
-    if old.forum_id != forum_id
-      set_posts_forum_id
-      Forum.update_all ["posts_count = posts_count - ?", posts_count], ["id = ?", old.forum_id]
-      Forum.update_all ["posts_count = posts_count + ?", posts_count], ["id = ?", forum_id]
-    end
-  end
+  before_save :check_for_changing_forums
+  before_validation_on_create :post_valid?
+  after_create :save_post
+  before_update :update_post
+  
+  attr_accessor :body
 
   def voice_count
     posts.count(:select => "DISTINCT reader_id")
@@ -36,11 +32,7 @@ class Topic < ActiveRecord::Base
     # TODO - move into sql
     posts.map { |p| p.reader }.uniq
   end
-  
-  def preview
-    posts.first.body
-  end
-  
+    
   def hit!
     self.class.increment_counter :hits, id
   end
@@ -70,7 +62,7 @@ class Topic < ActiveRecord::Base
   end
   
   def refresh_reply_data(post=nil)
-    post ||= self.posts[-1]
+    post ||= self.posts.last
     self.last_post = post
     self.replied_by = post.reader
     self.replied_at = post.created_at
@@ -92,7 +84,44 @@ class Topic < ActiveRecord::Base
       self.sticky ||= 0
     end
 
+    def check_for_changing_forums
+      return if new_record?
+      old = Topic.find(id)
+      if old.forum_id != forum_id
+        set_posts_forum_id
+        Forum.update_all ["posts_count = posts_count - ?", posts_count], ["id = ?", old.forum_id]
+        Forum.update_all ["posts_count = posts_count + ?", posts_count], ["id = ?", forum_id]
+      end
+    end
+
     def set_posts_forum_id
       Post.update_all ['forum_id = ?', forum_id], ['topic_id = ?', id]
     end
+
+    def post_valid?
+      post = Post.new(:body => self.body, :topic => self)
+      unless post.valid?
+        self.errors.add(:body, post.errors.on(:body))
+        self.errors.add(:reader, post.errors.on(:reader))
+        raise ActiveRecord::RecordInvalid.new(self)
+      end
+      true
+    end
+
+    def save_post
+      self.first_post = self.posts.create!(:body => self.body, :created_at => self.created_at)
+      self.save
+    end
+
+    def update_post
+      post = self.first_post
+      if !self.body.nil? && self.body != post.body
+        post.body = self.body
+        post.save!
+      end
+    rescue ActiveRecord::RecordInvalid => ow
+      self.errors.add(:body, post.errors.on(:body))
+      raise
+    end
+
 end

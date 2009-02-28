@@ -41,6 +41,7 @@ describe Post do
       topicbefore = topics(:older)
       last = topicbefore.last_post
       post = topicbefore.posts.create!(:body => 'uh oh')
+
       post.destroy
       topicafter = Topic.find(topic_id(:older))
       topicafter.last_post.should == last

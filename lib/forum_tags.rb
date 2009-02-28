@@ -3,12 +3,11 @@ module ForumTags
 
   class TagError < StandardError; end
 
-
   #### FORUMS
-  
+
   desc %{
     Root tag for the forums collection. At the moment, just expands.
-    
+  
     *Usage:*
     <pre><code><r:forums>...</r:forums></code></pre>
   }
@@ -23,12 +22,12 @@ module ForumTags
   tag 'forums:count' do |tag|
     tag.locals.forums.count
   end
-      
+    
   desc %{
     Cycles through each of the forums. Inside this tag all forum and topic tags
     are mapped to the current forum. As usual, takes same sorting options as
     @<r:children:each>@, except that status options are: (what?)
-    
+  
     *Usage:*
     <pre><code><r:forums:each [offset="number"] [limit="number"] [by="attribute"] [order="asc|desc"]>
      ...
@@ -45,11 +44,11 @@ module ForumTags
     end 
     result
   end
-  
+
   desc %{
     Inside this tag all forum tags refer to the first forum matching the supplied title, 
     if any, or else the forum locally set by forums:each
-     
+   
     *Usage:*
     <pre><code><r:forum name="name_of_forum">...</r:forum></code></pre>
   }
@@ -75,7 +74,7 @@ module ForumTags
     # can't get at routing helpers in a model. grr.
     "/forums/#{tag.locals.forum.id}"
     end
-  
+
   desc %{
     Renders a link to the currently active forum. Link text defaults to name of forum.
     As with all forum tags, name can be supplied or forums:each can define forum.
@@ -104,7 +103,7 @@ module ForumTags
     raise TagError, "`forum:name' tag requires that a forum be present." unless tag.locals.forum
     tag.locals.forum.name
   end
-  
+
   desc %{
     Renders the description of the currently active forum.
   }
@@ -128,12 +127,12 @@ module ForumTags
     options['class'] ||= 'newtopic'
     %{<a href="#{forum_new_topic_url(tag.locals.forum)}" class="#{options['class']}">#{text}</a>}
   end
-  
+
   #### TOPICS 
 
   desc %{
     Root tag for the topics collection. Preloads and expands. Requires that a forum be set.
-    
+  
     *Usage:*
     <pre><code><r:topics>...</r:topics></code></pre>
   }
@@ -152,7 +151,7 @@ module ForumTags
   desc %{
     Cycles through each of the topics in the currently active forum.
     Usual sorting options.
-    
+  
     *Usage:*
     <pre><code><r:topics:each [offset="number"] [limit="number"] [by="attribute"] [order="asc|desc"]>
      ...
@@ -172,7 +171,7 @@ module ForumTags
   desc %{
     Inside this tag all topic tags refer to the first topic matching the supplied title, 
     if any, or else the forum locally set by forums:each
-     
+   
     *Usage:*
     <pre><code>
       <r:topic name="name_of_topic">...</r:topic>
@@ -201,7 +200,7 @@ module ForumTags
     raise TagError, "`topic:title' tag requires that a topic be present." unless tag.locals.topic
     tag.locals.topic.title
   end
-  
+
   desc %{
     Renders the title of the currently active topic.
   }
@@ -249,7 +248,7 @@ module ForumTags
     Root tag for the posts collection. Preloads and expands.
     if no topic, gathers all posts from all forums, much like the latest feed.
     if you want to show page comments, use r:comments:*
-    
+  
     *Usage:*
     <pre><code><r:posts>...</r:posts></code></pre>
   }
@@ -266,11 +265,11 @@ module ForumTags
   tag 'posts:count' do |tag|
     tag.locals.posts.count
   end
-  
+
   desc %{
     Cycles through each of the posts in the currently active topic
     Usual sorting options.
-    
+  
     *Usage:*
     <pre><code><r:posts:each [offset="number"] [limit="number"] [by="attribute"] [order="asc|desc"]>
      ...
@@ -342,7 +341,7 @@ module ForumTags
   desc %{
     Renders the date of the current post
     strftime format as for page date tag
-    
+  
     *Usage:*
     <pre><code><r:post:date [format="%A, %B %d, %Y"] /></code></pre>
   }
@@ -359,7 +358,7 @@ module ForumTags
   tag 'post:url' do |tag|
     raise TagError, "`post:url' tag requires that a post be present." unless tag.locals.post
     post = tag.locals.post
-    "/forums/#{post.topic.forum.id}/topics/#{post.topic.id}?page_id=#{post.page}##{post.dom_id}"
+    "/forums/#{post.topic.forum.id}/topics/#{post.topic.id}?page_id=#{post.topic_page}##{post.dom_id}"
   end
 
   desc %{
@@ -386,13 +385,13 @@ module ForumTags
 
 
   #### PAGES
-  
+
   desc %{
     Puts the topic attached to this page in the foreground
     so that topic and post tags can be used to display page comments. 
     If no topic exists, it is because no comments have been posted 
     yet, so the tag will not expand.
-     
+   
     *Usage:*
     <pre><code>
       <r:comments>
@@ -411,7 +410,7 @@ module ForumTags
   desc %{
     A shortcut that returns all attached posts in standard page-comment form. 
     To enable page-comments all you need to do is put this in your layout:
-     
+   
     *Usage:*
     <pre><code>
       <r:comments:all />
@@ -430,7 +429,7 @@ module ForumTags
 
   desc %{
     A shortcut that displays the present post in a simple standard form. 
-     
+   
     *Usage:*
     <pre><code>
       <r:comments>
@@ -460,7 +459,7 @@ module ForumTags
     cached world of the public site. For a better user experience, just 
     turn the link into an ajax call to its destination, which will 
     return a bare form suitable for dropping into the page.
-    
+  
     takes a class parameter and applies it to the link.
     if double, enclosed text or html becomes link contents
 
@@ -488,11 +487,11 @@ module ForumTags
     may appear in the form.
     You can supply id and class parameters for the table, and a label 
     parameter for the body field. Default there is 'add a comment'.
-    
+  
     You probably don't want to do this unless you know that everyone
     looking at this page is logged in: there's no way to tell from here
     and the page will be cached with the form on it.
-    
+  
     *Usage:*
     <pre><code><r:comment_form class="inlineform" /></code></pre>
   }
@@ -568,7 +567,7 @@ module ForumTags
   desc %{
     Inside this tag all tags refer to the first user matching the supplied title or login,
     if any, or else the user locally set by topic:user or forum:user
-     
+   
     *Usage:*
     <pre><code>
       <r:user name="Joe">...</r:user>
@@ -630,7 +629,7 @@ module ForumTags
       <r:user:gravatar size="60" />
     </code></pre>
   }
-  
+
   tag 'user:gravatar' do |tag|
     raise TagError, "`user:gravatar' tag requires that a user be present." unless tag.locals.user
     gravatar_options = { :size => tag.attr['size'] || 40 }
@@ -670,7 +669,7 @@ module ForumTags
 
   desc %{
     Renders contents if current user is logged in
-    
+  
     *Usage:*
     <pre><code><r:if_logged_in />...</r:if_logged_in></code></pre>
   }
@@ -680,7 +679,7 @@ module ForumTags
 
   desc %{
     Renders contents unless current user is logged in
-    
+  
     *Usage:*
     <pre><code><r:unless_logged_in />...</r:unless_logged_in></code></pre>
   }
@@ -690,14 +689,14 @@ module ForumTags
 
 
   private
-  
+
   # remember this is going to be an instance method of Page
-  
+
   def forums_find_options(tag, model=Forum)
     attr = tag.attr.symbolize_keys
-    
+  
     options = {}
-    
+  
     [:limit, :offset].each do |symbol|
       if number = attr[symbol]
         if number =~ /^\d{1,4}$/
@@ -707,7 +706,7 @@ module ForumTags
         end
       end
     end
-    
+  
     by = (attr[:by] || 'created_at').strip
     order = (attr[:order] || 'asc').strip
     order_string = ''
@@ -722,12 +721,12 @@ module ForumTags
       raise TagError.new(%{`order' attribute of `each' tag must be set to either "asc" or "desc"})
     end
     options[:order] = order_string
-    
+  
     options
   end
-  
+
   # you are going to do this properly at some point, aren't you?
-  
+
   def forum_url(forum)
     "/forums/#{forum.id}"
   end

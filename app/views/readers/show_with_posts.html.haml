@@ -1,0 +1,33 @@
+= render :partial => 'flasher'
+
+#reader
+  = gravatar_for(@reader, {:size => 128}, {:class => 'big_gravatar'})
+  %h1.reader
+    = @reader.name
+  - if @reader.description.blank?
+    %p No description available.
+  - else
+    = textilize @reader.description
+
+#forum
+  %h2 
+    Messages from
+    = @reader.name
+  - if @posts
+    %ul.main
+      - paginated_section @posts do
+        = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => true, :without_author => true }
+  - else
+    %p None yet
+
+= render :partial => 'controls'
+    
+- content_for :breadcrumbs do
+  = link_to 'Home', '/'
+  &gt;
+  = link_to 'Readers', '/readers'
+  &gt;
+  = @reader.name
+
+- content_for :title do
+  = @reader.name

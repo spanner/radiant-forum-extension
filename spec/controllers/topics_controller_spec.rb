@@ -14,12 +14,12 @@ describe TopicsController do
 
   describe "on get to index" do
     before do
-      get :index, :forum_id => forum_id(:public)
+      get :index
     end
 
-    it "should redirect to the forum page" do
-      response.should be_redirect
-      response.should redirect_to(forum_url(forums(:public)))
+    it "should render the topic list" do
+      response.should be_success
+      response.should render_template("index")
     end  
   end
     
@@ -85,9 +85,19 @@ describe TopicsController do
       before do
         login_as_reader(:normal)
       end
-      describe "but an invalid request" do
+      describe "but an invalid topic field" do
         before do
-          post :create, :forum_id => forum_id(:public), :topic => {:body => 'topic body'}
+          post :create, :forum_id => forum_id(:public), :topic => {:name => '', :body => 'topic body'}
+        end
+        it "should rerender the topic form" do
+          response.should be_success
+          response.should render_template("new")
+        end
+      end
+
+      describe "but an invalid post field" do
+        before do
+          post :create, :forum_id => forum_id(:public), :topic => {:name => 'topic name', :body => ''}
         end
         it "should rerender the topic form" do
           response.should be_success
@@ -109,6 +119,16 @@ describe TopicsController do
         it "should assign the topic to the current reader" do
           @topic.reader.should_not be_nil
           @topic.reader.should == readers(:normal)
+        end
+        it "should create the topic's first post" do
+          @topic.first_post.should_not be_nil
+          @topic.first_post.body.should == 'topic body'
+          @topic.first_post.topic.should == @topic
+        end
+        it "should trigger a callback that sets initial reply data" do
+          @topic.replied_at.should_not be_nil
+          @topic.replied_at.should be_close(@topic.created_at, 1.minute)
+          @topic.replied_by.should == @topic.reader
         end
         it "should redirect to the topic page" do
           response.should be_redirect
