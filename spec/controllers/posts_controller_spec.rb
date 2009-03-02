@@ -88,7 +88,6 @@ describe PostsController do
           response.layout.should be_nil
         end
       end
-      
     end
 
     describe "with a logged-in reader" do

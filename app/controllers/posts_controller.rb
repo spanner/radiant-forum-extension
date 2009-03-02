@@ -1,8 +1,6 @@
 class PostsController < ApplicationController
   no_login_required
-  before_filter :find_topic, :except => [:create, :index]
-  before_filter :find_or_create_page_topic, :only => [:create]
-  before_filter :find_page, :only => [:new, :create]
+  before_filter :find_topic_or_page, :except => [:index]
   before_filter :find_post, :except => [:index, :new, :create, :monitored]
   before_filter :authenticate_reader, :except => [:index, :show]
   radiant_layout { |controller| controller.find_readers_layout }
@@ -72,12 +70,11 @@ class PostsController < ApplicationController
   end
   
   def create
-    return topic_locked if @topic.locked?
+    @topic = @page.find_or_build_topic if @page && !@topic
     @forum = @topic.forum
-    @post  = @topic.posts.build(params[:post])
-    @post.reader = current_reader
-    @post.save!
-    # @cache.expire_response(@topic.page.url) if @topic.page          # *** clear the cache
+    return topic_locked if @topic.locked?
+    @post  = @topic.posts.create!(params[:post])
+    @cache.expire_response(@page.url) if @page
     respond_to do |format|
       format.html { 
         redirect_to_page_or_topic
@@ -97,9 +94,21 @@ class PostsController < ApplicationController
         render :action => 'new', :layout => false
       }
     end
-
   end
-  
+
+  def topic_locked
+    respond_to do |format|
+      format.html do
+        flash[:notice] = 'Topic is locked.'
+        redirect_to(topic_url(@topic.forum, @topic))
+      end
+      format.js do
+        render :partial => 'topics/locked'
+      end
+    end
+    return
+  end
+    
   def edit
     respond_to do |format| 
       format.html
@@ -135,25 +144,16 @@ class PostsController < ApplicationController
       action_name == 'create' || @post.editable_by?(current_user)
     end
             
-    def find_topic
-      @topic = Topic.find_by_id(params[:topic_id], :include => :forum) || raise(ActiveRecord::RecordNotFound)
-    end
-
-    def find_or_create_page_topic
-      if params[:page_id] && !params[:topic_id]
+    def find_topic_or_page
+      if params[:page_id]
         @page = Page.find(params[:page_id])
-        @topic = @page.find_or_create_topic
       else
         @topic = Topic.find(params[:topic_id], :include => :forum)
       end
     end
 
-    def find_page
-      @page = Page.find(params[:page_id]) if params[:page_id]
-    end
-
     def find_post
-      @post = @topic.posts.find(params[:id]) || raise(ActiveRecord::RecordNotFound)
+      @post = @topic.posts.find(params[:id])
     end
     
     def render_page_or_feed(template_name = action_name)

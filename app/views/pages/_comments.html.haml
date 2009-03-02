@@ -1,0 +1,15 @@
+#forum
+  %h2
+    Comments on 
+    = page.title
+
+- if posts.nil?
+  %p None yet
+  %pre 
+    = posts.inspect
+
+- else
+  %pre 
+    = posts.inspect
+  %p
+    = current_reader.inspect

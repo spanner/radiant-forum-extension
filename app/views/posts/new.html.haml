@@ -3,12 +3,17 @@
 / it has the advantage that the page can still be cached. that's why a login form might be returned.
 
 - message_type = @page ? 'comment' : 'message'
+- formurl = @page ? page_posts_url(@page) : topic_posts_url(@forum, @topic)
+
 - if current_reader
   %div.post{:id => 'replyform'}
     %h2 
       Post a 
       = message_type
-    - form_for :post, :url  => topic_posts_url(@forum, @topic), :html => {:id => 'reply_form', :class => 'friendly'} do |f|
+      - if @page
+        on
+        = link_to @page.title, @page.url
+    - form_for :post, :url  => formurl, :html => {:id => 'reply_form', :class => 'friendly'} do |f|
       = render :partial => "posts/form", :object => f
       = submit_tag "Post #{message_type}"
 

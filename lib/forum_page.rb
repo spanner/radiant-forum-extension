@@ -9,21 +9,22 @@ module ForumPage
 
   module InstanceMethods     
   
-    def find_or_create_topic
+    def find_or_build_topic
       if (self.topic)
-        logger.warn "got topic"
         self.topic
       else 
-        logger.warn "creating topic"
-        topic = self.build_topic(:title => self.title)
+        topic = self.build_topic(:name => self.title)
         topic.forum = Forum.find_or_create_comments_forum
-        topic.save!
         topic
       end
     end
   
+    def posts
+      self.topic ? self.topic.posts : []
+    end
+  
     def has_posts?
-      self.topic.posts_count > 1
+      self.topic && self.topic.posts_count > 1
     end
   
     # def cache?
