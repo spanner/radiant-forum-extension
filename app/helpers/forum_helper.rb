@@ -25,8 +25,6 @@ module ForumHelper
         clean_textilize( truncate_words(text, length) )
       end
 
-      # odd. i get that old erbout error if i use form_tag here:
-
       def watch_tag(topic, label='watching', formclass=nil)
         if current_user
           monitoring = current_user.monitoring?(topic)

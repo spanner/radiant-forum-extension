@@ -1,0 +1,3 @@
+- extension: reader
+- extension: paperclipped
+- gem: mislav-will_paginate

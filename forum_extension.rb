@@ -10,7 +10,7 @@ class ForumExtension < Radiant::Extension
   define_routes do |map|
     map.resources :forums do |forum|
       forum.resources :topics, :name_prefix => nil do |topic|
-        topic.resources :posts, :name_prefix => nil
+        topic.resources :posts, :name_prefix => nil, :collection => 'preview'
         topic.resource :monitorship, :controller => :monitorships, :name_prefix => nil
       end
     end
@@ -19,12 +19,8 @@ class ForumExtension < Radiant::Extension
       admin.resources :forums
     end
 
-    %w(reader forum).each do |attr|
-      map.resources :posts, :name_prefix => "#{attr}_", :path_prefix => "/#{attr.pluralize}/:#{attr}_id"
-    end
-
-    map.with_options :controller => 'posts' do |page|
-      page.resources :posts, :path_prefix => '/pages/:page_id', :name_prefix => 'page_'
+    %w(reader forum page).each do |attr|
+      map.resources :posts, :name_prefix => "#{attr}_", :path_prefix => "/#{attr.pluralize}/:#{attr}_id", :collection => 'preview'
     end
 
     map.with_options :controller => 'topics' do |topics|
@@ -47,6 +43,9 @@ class ForumExtension < Radiant::Extension
     Site.send :include, ForumSite
     RedCloth.send :include, ForumRedCloth
     ApplicationHelper.send :include, ForumHelper
+    ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(
+      :human_date => %{<span class="date">%e %b %Y</span> at <span class="time">%l:%M</span><span class="meridian">%p</span>}
+    )
 
     admin.tabs.add "Forum", "/admin/forums", :after => "Readers", :visibility => [:all]
   end
@@ -56,3 +55,4 @@ class ForumExtension < Radiant::Extension
   end
   
 end
+

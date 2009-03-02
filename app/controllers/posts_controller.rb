@@ -1,7 +1,10 @@
+require 'cgi'
+
 class PostsController < ApplicationController
   no_login_required
   before_filter :find_topic_or_page, :except => [:index]
-  before_filter :find_post, :except => [:index, :new, :create, :monitored]
+  before_filter :find_post, :except => [:index, :new, :preview, :create, :monitored]
+  before_filter :build_post, :only => [:new, :preview, :create]
   before_filter :authenticate_reader, :except => [:index, :show]
   radiant_layout { |controller| controller.find_readers_layout }
   # protect_from_forgery :except => :create # because the create form is typically generated from radius tags, which are defined in a model with no access to the controller
@@ -53,6 +56,7 @@ class PostsController < ApplicationController
   def show
     respond_to do |format|
       format.html { redirect_to_page_or_topic }
+      format.js { render :layout => false }
     end
   end
 
@@ -60,39 +64,46 @@ class PostsController < ApplicationController
   # if the reader is not logged in, authenticate_reader should intervene and return a login form instead
 
   def new
-    return topic_locked if @topic.locked?
+    return topic_locked if @topic && @topic.locked?
     respond_to do |format|
-      format.html
-      format.js { 
-        render :template => 'posts/new.html.erb', :layout => false
-      }
+      format.html { render :template => 'posts/new' } # we specify because sometimes we're reverting from a post to create 
+      format.js { render :template => 'posts/new', :layout => false }
     end
   end
   
-  def create
-    @topic = @page.find_or_build_topic if @page && !@topic
-    @forum = @topic.forum
-    return topic_locked if @topic.locked?
-    @post  = @topic.posts.create!(params[:post])
-    @cache.expire_response(@page.url) if @page
+  def preview
+    return topic_locked if @topic && @topic.locked?
+    @post.created_at = Time.now()
     respond_to do |format|
-      format.html { 
-        redirect_to_page_or_topic
-      }
-      format.js {
-        render :action => 'show', :layout => false
-      }
+      format.html { render :template => 'posts/preview' }
+      format.js { render :template => 'posts/preview', :layout => false }
     end
-    
-  rescue ActiveRecord::RecordInvalid => oops
-    flash[:error] = oops
+  end
+  
+  # javascript form sender sets params[:dispatch]
+  # params[:commit] is set by clicking one of the submit buttons
+  
+  def create
+    if (params[:dispatch] == 'revise' || params[:commit] =~ /revise/i)
+      return new
+    elsif (params[:dispatch] == 'preview' || params[:commit] =~ /preview/i)
+      return preview
+    else
+      @topic = @page.find_or_build_topic if @page && !@topic
+      @forum = @topic.forum
+      return topic_locked if @topic.locked?
+      @post  = @topic.posts.create!(params[:post])
+      @cache.expire_response(@page.url) if @page
+      respond_to do |format|
+        format.html { redirect_to_page_or_topic }
+        format.js { render :action => 'show', :layout => false }
+      end
+    end
+  rescue ActiveRecord::RecordInvalid
+    flash[:error] = 'Please post something!'
     respond_to do |format|
-      format.html { 
-        render :action => 'new' 
-      }
-      format.js {
-        render :action => 'new', :layout => false
-      }
+      format.html { render :action => 'new' }
+      format.js { render :action => 'new', :layout => false }
     end
   end
 
@@ -100,19 +111,17 @@ class PostsController < ApplicationController
     respond_to do |format|
       format.html do
         flash[:notice] = 'Topic is locked.'
-        redirect_to(topic_url(@topic.forum, @topic))
+        redirect_to_page_or_topic
       end
-      format.js do
-        render :partial => 'topics/locked'
-      end
+      format.js { render :partial => 'topics/locked' }
     end
     return
   end
     
   def edit
     respond_to do |format| 
-      format.html
-      format.js
+      format.html { render }
+      format.js { render :layout => false }
     end
   end
   
@@ -120,11 +129,11 @@ class PostsController < ApplicationController
     @post.attributes = params[:post]
     @post.save!
   rescue ActiveRecord::RecordInvalid
-    flash[:bad_reply] = 'An error occurred'
+    flash[:bad_reply] = 'Zut Alors!'
   ensure
     respond_to do |format|
       format.html { redirect_to_page_or_topic }
-      format.js {}
+      format.js { render :layout => false }
       format.json {}
     end
   end
@@ -147,7 +156,7 @@ class PostsController < ApplicationController
     def find_topic_or_page
       if params[:page_id]
         @page = Page.find(params[:page_id])
-      else
+      elsif params[:topic_id]
         @topic = Topic.find(params[:topic_id], :include => :forum)
       end
     end
@@ -156,6 +165,13 @@ class PostsController < ApplicationController
       @post = @topic.posts.find(params[:id])
     end
     
+    def build_post
+      @post = Post.new(params[:post])
+      @post.body.gsub!(/ +/, ' ') if @post.body
+      @post.topic = @topic if @topic
+      @post.reader = current_reader
+    end
+
     def render_page_or_feed(template_name = action_name)
       respond_to do |format|
         format.html { render :action => template_name }

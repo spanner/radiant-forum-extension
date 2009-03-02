@@ -1,6 +1,8 @@
 class Post < ActiveRecord::Base
+  include WhiteListHelper
+  
   is_site_scoped
-
+  
   belongs_to :forum, :counter_cache => true
   belongs_to :reader,  :counter_cache => true
   belongs_to :topic, :counter_cache => true
@@ -34,6 +36,16 @@ class Post < ActiveRecord::Base
   
   def first?
     self.topic.first_post == self
+  end
+  
+  # this is a special case for page comments that need to be rendered from a radius tag
+  
+  def body_html
+    white_list(RedCloth.new(self.body, [ :hard_breaks, :filter_html ]).to_html(:textile, :smilies)) if self.body
+  end
+  
+  def date_html
+    self.created_at.to_s(:human_date)
   end
   
   protected

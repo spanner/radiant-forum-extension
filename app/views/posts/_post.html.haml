@@ -4,7 +4,7 @@
 - without_author ||= false
 
 %div.post{:id => post.dom_id}
-  %div{:class => post == first_post ? 'first_post' : 'reply'}
+  %div{:class => post.first? ? 'first_post' : 'reply'}
     %div.post_header
       - if without_author
         %h4
