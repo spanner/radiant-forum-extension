@@ -11,18 +11,18 @@ This is a simple but clean forum implementation that plugs into radiant. It's fa
 
 but I've tried to keep it clean and simple on the inside. You should find it very easy to adapt and extend. 
 
-The forum was derived long ago from Beast and the bones will still be visible here and there. It has been in use on various sites in various versions for the last two years, but in consolidating it here and making it ready for publication I've pretty much refactored the whole thing. Some of it is quite new, then, and may have exciting new bugs in it. It's properly specced and tests clean, though.
+The forum was derived long ago from Beast and the bones will still be visible here and there. It has been in use on various sites in various versions for the last two years, but in consolidating it here and making it ready for publication I've pretty much refactored the whole thing. Some of it is quite new, then, and may have exciting new bugs in it. If I were you I'd give it a few days to settle down. It's properly specced and tests clean, though.
 
 ###Installation
 
-  rake rake ray:extension:install name=forum
-  
-(If you don't have Ray, stop reading this and go to http://github.com/johnmuhl/radiant-ray-extension/tree)
- 
-	rake production db:migrate:extensions
-	rake production radiant:extensions:forum:update
+This ought to be all you need:
 
-The update task brings in some basic forum css that you will want to change.
+  rake ray:extension:install name="multi-site" hub="spanner"
+  rake rake ray:extension:install name="forum"
+  
+If you don't have Ray, stop reading this and go to http://github.com/johnmuhl/radiant-ray-extension/tree
+
+The update task brings in some basic forum css that you will want to improve upon.
 
 ###Requirements
 
