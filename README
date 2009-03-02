@@ -4,7 +4,7 @@ This is a simple but clean forum implementation that plugs into radiant. It's fa
 
 * rss feeds at several levels
 * email monitoring of topics
-* moderation by readers and your site users (soon)
+* moderation by readers and radiant users (soon)
 * message attachments (soon)
 * message preview
 * textile-formatted messages with html whitelisting
@@ -40,7 +40,7 @@ The forum is very simple to use and almost entirely separate from your page hier
 
 ###Page Comments
 
-To enable page comments, all you have to do is put <r:comments /> somewhere in the layout (or in a snippet or even on an individual page). Behind the scenes this will create a dedicated forum for page comments and a topic for each page as it is commented upon. The rest of the mechanism is the same and comments are just posts really. At the moment they are brought into the page by means of Chris Parrish's nasty but clever hack to read template partials from within a radius tag. I'll probably re-enable the old <r:comments:each> tags some time soon to give more control over the presentation but for now I'm keeping it simple to make sure that page caches are properly expired in 0.7.x.
+To enable page comments, all you have to do is put <r:comments /> somewhere in the layout (or in a snippet or even on an individual page). Behind the scenes this will create a dedicated forum for page comments and a topic for each page as it is commented upon. The rest of the mechanism is the same and comments are just posts really. Because this is done through radius tags you don't get much control over comment formatting at the moment. I'll break it down further at some point so that you can place the parts yourself. 
 
 ###Security & Spam
 
