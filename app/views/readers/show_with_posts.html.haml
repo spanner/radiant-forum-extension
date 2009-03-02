@@ -7,7 +7,7 @@
   - if @reader.description.blank?
     %p No description available.
   - else
-    = textilize @reader.description
+    = clean_textilize @reader.description
 
 #forum
   %h2 

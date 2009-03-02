@@ -31,4 +31,4 @@
           = time_ago_in_words(post.created_at)
           ago
     %div.post_body
-      = textilize(post.body)
+      = clean_textilize(post.body)

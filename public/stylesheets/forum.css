@@ -1,0 +1,114 @@
+/*
+
+cool grey 3: #cacac8
+cool grey 6: #afafaf
+cool grey 11: #4d4e53
+rubine red: #d1005d
+agreeable green: #5da454
+
+*/
+
+div#forum {
+
+}
+
+div#forum h1, div#forum h2 {
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+div#forum h1 a.breadhead {
+  margin: 0;
+  font-size: 60%;
+  color: #afafaf;
+}
+
+div#forum a.floating {
+  float: right;
+  margin: 0 0 10px 20px;
+}
+
+div#forum a.feedlink {
+  background: url(/images/forum/feed_14.png) no-repeat 0 4px;
+  padding-left: 18px;
+  color: #f58822;
+}
+
+div#forum img.feedicon {
+  margin: 3px 0 0 4px;
+}
+
+div#forum img.gravatar {
+  float: left;
+  margin: 1px 10px 3px 0;
+}
+
+div#forum_preamble {
+  color: #afafaf;
+  margin-bottom: 24px;
+}
+
+div#forum_preamble p {
+  margin-top: 0;
+}
+
+/***** big lists of topics and forums ********/
+
+ul.main {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+} 
+
+ul.main li {
+  clear: left;
+  margin-bottom: 20px;
+}
+
+ul.main li a.main {
+  font-size: 200%;
+  line-height: 1.1;
+}
+
+ul.main li span.context {
+  font-size: 80%;
+  color: #afafaf;
+}
+
+ul.main li span.preview {
+  font-size: 80%;
+}
+
+div#forum p.context {
+  margin: 0;
+  font-size: 80%;
+  color: #afafaf;
+}
+
+/***** message display ********/
+
+div#forum div.post {
+  margin: 10px 0 30px 0;
+}
+
+div#forum div.first_post div.post_header {
+  float: right;
+  width: 250px;
+  padding: 0;
+  margin: 0 0 10px 20px;
+}
+
+div#forum div.post_header h2 {
+  margin: 0;
+}
+
+div#forum div.post_body div.post p {
+  margin-top: 4px;
+}
+
+/***** the people love smileys ********/
+
+img.smiley {
+  margin: 3px 3px 0 3px;
+}
+

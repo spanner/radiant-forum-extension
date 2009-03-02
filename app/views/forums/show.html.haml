@@ -8,7 +8,7 @@
     = feed_link(formatted_forum_path(@forum, :rss))
 
   #forum_preamble
-    = textilize(@forum.description)
+    = clean_textilize(@forum.description)
 
   - if @topics.empty?
     %p No talk here yet.

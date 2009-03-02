@@ -6,7 +6,7 @@ class PostsController < ApplicationController
   before_filter :find_post, :except => [:index, :new, :create, :monitored]
   before_filter :authenticate_reader, :except => [:index, :show]
   radiant_layout { |controller| controller.find_readers_layout }
-  protect_from_forgery :except => :create # because the create form is typically generated from radius tags, which are defined in a model with no access to the controller
+  # protect_from_forgery :except => :create # because the create form is typically generated from radius tags, which are defined in a model with no access to the controller
 
   @@query_options = { :per_page => 25, :select => 'posts.*, topics.name as topic_name, forums.name as forum_name', :joins => 'inner join topics on posts.topic_id = topics.id inner join forums on topics.forum_id = forums.id', :order => 'posts.created_at desc' }
   

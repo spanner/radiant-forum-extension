@@ -28,5 +28,5 @@
       = time_ago_in_words(topic.created_at)
       ago
   %br
-  = truncate_words(topic.preview, 40)
+  = truncate_and_textilize(topic.first_post.body, 40)
     

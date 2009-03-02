@@ -3,22 +3,26 @@ module ForumHelper
   def self.included(base)
     base.module_eval {
       
-      def truncate_words(text, length=64, omission="...")
-        words = text.split
-        omission = '' unless words.size > length
-        words[0..(length-1)].join(" ") + omission
-      end
-
-      def gravatar_for(user, gravatar_options={}, img_options ={})
-        image_tag user.gravatar_url(gravatar_options), img_options
-      end
-      
       def feed_tag(text, url, options={})
         link_to text, url, options.merge(:class => 'floating feedlink')
       end
 
       def feed_link(url)
         link_to image_tag('/images/forum/feed_14.png', :class => 'feedicon', :alt => 'rss feed'), url
+      end
+
+      def clean_textilize(text) # adding smilies to the default reader method
+        if text.blank?
+          ""
+        else
+          textilized = RedCloth.new(text, [ :hard_breaks ])
+          textilized.hard_breaks = true if textilized.respond_to?("hard_breaks=")
+          white_list( textilized.to_html(:textile, :smilies) )
+        end
+      end
+      
+      def truncate_and_textilize(text, length)
+        clean_textilize( truncate_words(text, length) )
       end
 
       # odd. i get that old erbout error if i use form_tag here:

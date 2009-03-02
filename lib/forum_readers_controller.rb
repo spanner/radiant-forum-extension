@@ -7,7 +7,7 @@ module ForumReadersController
   end
 
   def show_with_forum
-    show_without_forum
+    @reader = Reader.find(params[:id])
     @posts = Post.paginate_by_reader_id(@reader.id, :page => params[:page], :include => :topic, :order => 'posts.created_at desc') if @reader
     render :template => 'readers/show_with_posts'
   end

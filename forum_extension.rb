@@ -28,11 +28,11 @@ class ForumExtension < Radiant::Extension
     end
 
     map.with_options :controller => 'topics' do |topics|
-      topics.topics_list '/forums/topics', :action => 'index'
+      topics.topics_list '/topics', :action => 'index'
     end
 
     map.with_options :controller => 'posts' do |posts|
-      posts.posts_list '/forums/posts', :action => 'index'
+      posts.posts_list '/posts', :action => 'index'
     end
 
   end
@@ -45,7 +45,8 @@ class ForumExtension < Radiant::Extension
     Page.send :include, ForumPage
     Page.send :include, ForumTags
     Site.send :include, ForumSite
-    ApplicationHelper.module_eval { include ForumHelper }
+    RedCloth.send :include, ForumRedCloth
+    ApplicationHelper.send :include, ForumHelper
 
     admin.tabs.add "Forum", "/admin/forums", :after => "Readers", :visibility => [:all]
   end
