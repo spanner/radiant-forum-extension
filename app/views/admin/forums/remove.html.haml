@@ -1,12 +1,22 @@
-<div class="crumbs">
-  <%= link_to 'Forums'[:forums_title], home_path %> <span class="arrow">&rarr;</span>
-</div>
+%h1 Remove Discussion Category
 
-<h1><%= 'Edit Forum'[:edit_forum] %></h1>
+%p 
+  Are you sure you want to 
+  %strong.warning permanently remove
+  the 
+  = link_to @forum.name, forum_url(@forum)
+  discussion category?
+  - if @forum.topics_count > 0  
+    It contains 
+    = @forum.topics_count 
+    discussions and
+    = @forum.posts_count 
+    messages, 
+    %strong.warning all of which will also be deleted
+  - else
+    It contains no discussions.
 
-<% form_for :forum,
-     :url  => forum_path(@forum),
-     :html => { :method => :put } do |f| -%>
-<%= render :partial => "form", :object => f %>
-<%= submit_tag 'Save Forum'[:save_forum], :or => link_to('Cancel'[:cancel], forums_path) %>
-<% end -%>
+%p.buttons
+  = button_to("Delete Forum", admin_forum_url(@forum), {:method => 'delete', :confirm => 'Really delete forum?', :class => 'button'})
+  or
+  = link_to 'Cancel', admin_forums_url
