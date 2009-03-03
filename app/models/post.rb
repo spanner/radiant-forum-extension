@@ -45,7 +45,7 @@ class Post < ActiveRecord::Base
   end
   
   def date_html
-    self.created_at.to_s(:human_date)
+    self.created_at.to_s(:html_date)
   end
   
   protected

@@ -42,7 +42,7 @@ describe Topic do
     before do
       @topic = topics(:older)
       60.times do |i|
-        @topic.posts.create!(:body => "test #{i}")
+        @topic.posts.create!(:body => "test #{i}", :created_at => (100-i).minutes.ago)
       end
       @topic.posts.create!(:body => "test by another", :reader => readers(:idle))
       @topic.reload

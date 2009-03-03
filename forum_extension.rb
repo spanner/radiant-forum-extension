@@ -41,11 +41,14 @@ class ForumExtension < Radiant::Extension
     Page.send :include, ForumPage
     Page.send :include, ForumTags
     Site.send :include, ForumSite
-    RedCloth.send :include, ForumRedCloth
+    if defined? RedCloth::DEFAULT_RULES
+      RedCloth.send :include, ForumRedCloth3
+      RedCloth::DEFAULT_RULES.push(:smilies)
+    else
+      RedCloth::TextileDoc.send :include, ForumRedCloth4
+    end
     ApplicationHelper.send :include, ForumHelper
-    ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!(
-      :human_date => %{<span class="date">%e %b %Y</span> at <span class="time">%l:%M</span><span class="meridian">%p</span>}
-    )
+    ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!( :html_date => %{<span class="date">%e %b %Y</span> at <span class="time">%l:%M</span><span class="meridian">%p</span>} )
 
     admin.tabs.add "Forum", "/admin/forums", :after => "Readers", :visibility => [:all]
   end

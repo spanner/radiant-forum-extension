@@ -21,10 +21,6 @@ module ForumHelper
         end
       end
       
-      def truncate_and_textilize(text, length)
-        clean_textilize( truncate_words(text, length) )
-      end
-
       def watch_tag(topic, label='watching', formclass=nil)
         if current_user
           monitoring = current_user.monitoring?(topic)
