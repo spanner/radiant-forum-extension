@@ -1,22 +1,22 @@
 namespace :radiant do
   namespace :extensions do
-    namespace :radiant_forum do
+    namespace :forum do
       
-      desc "Runs the migration of the RadiantForum extension"
+      desc "Runs the migration of the Forum extension"
       task :migrate => :environment do
         require 'radiant/extension_migrator'
         if ENV["VERSION"]
-          RadiantForumExtension.migrator.migrate(ENV["VERSION"].to_i)
+          ForumExtension.migrator.migrate(ENV["VERSION"].to_i)
         else
-          RadiantForumExtension.migrator.migrate
+          ForumExtension.migrator.migrate
         end
       end
       
       desc "Copies public assets of the Forum to the instance public/ directory."
       task :update => :environment do
         is_svn_or_dir = proc {|path| path =~ /\.svn/ || File.directory?(path) }
-        Dir[RadiantForumExtension.root + "/public/**/*"].reject(&is_svn_or_dir).each do |file|
-          path = file.sub(RadiantForumExtension.root, '')
+        Dir[ForumExtension.root + "/public/**/*"].reject(&is_svn_or_dir).each do |file|
+          path = file.sub(ForumExtension.root, '')
           directory = File.dirname(path)
           puts "Copying #{path}..."
           mkdir_p RAILS_ROOT + directory

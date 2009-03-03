@@ -12,8 +12,6 @@
   - unless @posts.next_page
     = render :partial => 'post_reply'
 
-= render :partial => 'readers/controls'
-
 - content_for :breadcrumbs do
   = link_to 'Forum', forums_url
   \&gt;

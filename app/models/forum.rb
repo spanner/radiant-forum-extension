@@ -18,11 +18,17 @@ class Forum < ActiveRecord::Base
     def first 
       @first_recent_topic ||= find(:first) 
     end 
+    def latest
+      @latest_topics ||= find(:all, :limit => 5)
+    end
   end
 
   has_many :posts, :order => 'posts.created_at desc' do
     def last
       @last_post ||= find(:first, :include => :user)
+    end
+    def latest
+      @latest_posts ||= find(:all, :limit => 5)
     end
   end
   

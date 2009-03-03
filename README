@@ -19,10 +19,11 @@ This ought to be all you need:
 
   rake ray:extension:install name="multi-site" hub="spanner"
   rake rake ray:extension:install name="forum"
+  rake radiant:extensions:forum:update
   
 If you don't have Ray, stop reading this and go to http://github.com/johnmuhl/radiant-ray-extension/tree
 
-The update task brings in some basic forum css that you will want to improve upon.
+The update task brings in a basic stylesheets/forum.css that you will want to improve upon, an admin/forum.css that you can probably leave alone, and various useful images.
 
 ###Requirements
 

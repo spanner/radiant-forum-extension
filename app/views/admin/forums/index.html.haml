@@ -1,29 +1,64 @@
-%h1 Forums
-%p Forums are broad discussion areas each containing many discussion topics. You can have as many as you like and pull them into pages either selectively or as a group.
+- include_stylesheet('admin/forum')
+= render_region :top 
+= render :partial => 'admin/shared/site_jumper'
+
+%h1 Discussion Categories
+%p This is where you sort out the discussion filing. To edit or remove messages or whole discussions, just browse the public pages. 
+
 %table#forums.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
   %thead
     %tr
-      %th.forum Forum
-      %th.topics Topics
-      %th.latest Latest Topic
-      %th.action Action
+      - render_region :thead do |thead|
+        - thead.title_header do
+          %th.forum Forum
+        - thead.latest_header do
+          %th.forum_latest Latest activity
+        - thead.modify_header do
+          %th.action Action
   %tbody
     - @forums.each do |forum|
       %tr.node.level-1
-        %td.forum
-          = image('forum', :alt => 'forum-icon')
-          %span= link_to forum.name, forum_edit_url(:id => forum)
-          -if forum.for_comments
-            %small.info (comments forum)
-        %td.topics
-          %span= link_to "#{forum.topics.count || 0} #{pluralize(forum.topics.count || 0, 'topic')}", forum_moderate_url(:id => forum)
-        %td.latest
-          %span= link_to forum.recent_topics.first.title, topic_url(forum, forum.recent_topics.first) unless forum.recent_topics.empty? 
-        %td.remove
-          -if forum.for_comments
-            = image('noremove', :alt => 'Remove Forum')
-          -else
-            = link_to image('remove', :alt => 'Remove Forum'), forum_remove_url(:id => forum) 
+        - render_region :tbody do |tbody|
 
-%p
-  = link_to image('new-forum', :alt => 'New Forum'), forum_new_url
+          - tbody.title_cell do
+            %td.forum
+              %h3
+                = link_to forum.name, edit_admin_forum_url(:id => forum)
+              -if forum.for_comments
+                %p.context
+                  (comments forum)
+              = textilize(forum.description)
+                
+          - tbody.latest_cell do
+            %td.forum_latest
+              - if forum.posts_count > 0
+                %ul.latest
+                  - forum.posts.latest.each do |post|
+                    %li.post
+                      - if post.topic.page
+                        = link_to post.topic.page.title, "#{post.topic.page.url}##{post.dom_id}", {:class => 'topic'}
+                      - else
+                        = link_to post.topic.name, topic_url(post.topic.forum, post.topic, :page => post.topic_page, :anchor => post.dom_id), {:class => 'topic'}
+                      %br
+                      %span.context
+                        - if post.topic.page
+                          commented on by
+                        - elsif post.first?
+                          started by 
+                        - else
+                          replied to by
+                        = link_to post.reader.name, reader_url(post.reader), {:class => 'reader'}
+                        on
+                        = post.created_at.to_s(:html_date)
+                    
+          - tbody.modify_cell do
+            %td.remove
+              -if forum.for_comments
+                = image('noremove', :alt => 'Remove Forum')
+              -else
+                = link_to image('remove', :alt => 'Remove Forum'), remove_admin_forum_url(:id => forum) 
+
+- render_region :bottom do |bottom|
+  - bottom.new_button do
+    %p
+      = link_to image('new-forum', :alt => 'New Forum'), new_admin_forum_url

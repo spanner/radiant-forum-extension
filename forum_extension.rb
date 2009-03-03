@@ -15,7 +15,7 @@ class ForumExtension < Radiant::Extension
       end
     end
     
-    map.namespace :admin do |admin|
+    map.namespace :admin, :member => { :remove => :get } do |admin|
       admin.resources :forums
     end
 
@@ -36,6 +36,8 @@ class ForumExtension < Radiant::Extension
   def activate
     Forum; Topic; Post
     Reader.send :include, ForumReader
+    Radiant::AdminUI.send :include, ForumAdminUI         # UI is an instance and already loaded, and this doesn't get there in time. so:
+    Radiant::AdminUI.instance.forum = Radiant::AdminUI.load_default_forum_regions
     ReaderNotifier.send :include, ForumReaderNotifier
     ReadersController.send :include, ForumReadersController
     Page.send :include, ForumPage
