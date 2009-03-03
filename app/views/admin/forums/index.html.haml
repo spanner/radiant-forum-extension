@@ -3,7 +3,7 @@
 = render :partial => 'admin/shared/site_jumper'
 
 %h1 Discussion Categories
-%p This is where you sort out the discussion filing. To edit or remove messages or whole discussions, just browse the public pages. 
+%p This is where you sort out the discussion filing. To edit or remove messages or whole discussions, use the links on forum pages. 
 
 %table#forums.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
   %thead
@@ -47,10 +47,12 @@
                           started by 
                         - else
                           replied to by
-                        = link_to post.reader.name, reader_url(post.reader), {:class => 'reader'}
+                        = link_to post.reader.name, edit_admin_reader_url(post.reader), {:class => 'reader'}
                         on
                         = post.created_at.to_s(:html_date)
-                    
+              -else
+                %p
+                  No posts yet.
           - tbody.modify_cell do
             %td.remove
               -if forum.for_comments

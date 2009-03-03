@@ -1,0 +1,27 @@
+- form_for [:admin, @forum] do |f|
+  = hidden_field 'forum', 'lock_version'
+  = render_region :form_top
+  .form-area
+    - render_region :form do |form|
+      - form.edit_name do
+        %p.title
+          %label{:for=>"forum_name"} Name
+          = text_field "forum", "name", :class => 'textbox', :maxlength => 100
+      - form.edit_description do
+        %p.content
+          %label{:for=>"forum_description"} Description
+          ~ text_area "forum", "description", :class => "textarea", :style => "width: 100%"
+      - form.edit_timestamp do
+        = updated_stamp @forum
+
+  = javascript_tag "$('forum_name').activate()"
+  
+  - render_region :form_bottom do |form_bottom|
+    - form_bottom.edit_timestamp do
+      = updated_stamp @forum  
+    - form_bottom.edit_buttons do
+      %p.buttons
+        = save_model_button(@forum)
+        = save_model_and_continue_editing_button(@forum)
+        or
+        = link_to 'Cancel', admin_forums_url
