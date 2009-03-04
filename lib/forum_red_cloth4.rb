@@ -3,13 +3,12 @@ module ForumRedCloth4
   def self.included(base)
     # base.extend ClassMethods
     base.class_eval do
-      alias_method_chain :to_html, :smilies
+      def to_html_with_smilies(*rules)
+        rules.push(:smilies) unless rules.include?(:smilies)
+        to_html_without_smilies(*rules)
+      end
+      alias_method_chain :to_html, :smilies unless self.instance_methods.include?("to_html_without_smilies")
     end
-  end
-  
-  def to_html_with_smilies(*rules)
-    rules.push(:smilies) unless rules.include?(:smilies)
-    to_html_without_smilies(*rules)
   end
   
   def smilies(text)

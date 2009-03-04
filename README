@@ -15,21 +15,17 @@ The forum was derived long ago from Beast and the bones will still be visible he
 
 ###Installation
 
-Reader requires the spanner fork of multi_site, but apart from that it declares its dependencies. At the moment Ray doesn't know about this extension so you probably want to do something like this:
+At the moment Ray doesn't know about these extensions, so you will need to jump through some hoops to install reader (qv), but after that the forum is very simple:
 
-  rake ray:extension:install name="multi-site" hub="spanner"
   git submodule add git://github.com/spanner/radiant-forum-extension.git vendor/extensions/forum
   rake radiant:extensions:forum:migrate
+  rake radiant:extensions:forum:update
 
-But in future this ought to be all you need:
+In future this ought to be all you need:
 
   rake ray:extension:install name="multi-site" hub="spanner"
   rake rake ray:extension:install name="forum"
 
-And then in both cases run
-
-  rake radiant:extensions:forum:update
-  
 If you don't have Ray, stop reading this and go to http://github.com/johnmuhl/radiant-ray-extension/tree
 
 The update task brings in a basic stylesheets/forum.css that you will want to improve upon, an admin/forum.css that you can probably leave alone, and various useful images.
