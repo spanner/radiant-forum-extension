@@ -10,7 +10,7 @@ describe "AdminUI extensions for forum" do
     Radiant::AdminUI.included_modules.should include(ForumAdminUI)
   end
 
-  it "should define a collection of Region Sets for readers" do
+  it "should define a collection of Region Sets for forum" do
     @admin.should respond_to('forum')
     @admin.should respond_to('forums')
     @admin.send('forum').should_not be_nil
