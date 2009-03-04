@@ -15,10 +15,19 @@ The forum was derived long ago from Beast and the bones will still be visible he
 
 ###Installation
 
-This ought to be all you need:
+Reader requires the spanner fork of multi_site, but apart from that it declares its dependencies. At the moment Ray doesn't know about this extension so you probably want to do something like this:
+
+  rake ray:extension:install name="multi-site" hub="spanner"
+  git submodule add git://github.com/spanner/radiant-forum-extension.git vendor/extensions/forum
+  rake radiant:extensions:forum:migrate
+
+But in future this ought to be all you need:
 
   rake ray:extension:install name="multi-site" hub="spanner"
   rake rake ray:extension:install name="forum"
+
+And then in both cases run
+
   rake radiant:extensions:forum:update
   
 If you don't have Ray, stop reading this and go to http://github.com/johnmuhl/radiant-ray-extension/tree
@@ -35,6 +44,8 @@ For best results, you probably want this in your environment.rb
 
   config.extensions = [ :share_layouts, :multi_site, :reader, :all ] 
 
+with :help before all of them if you're using it.
+
 ###Administration
 
 The forum is very simple to use and almost entirely separate from your page hierarchy. Forums - which are described as 'discussion categories' most of the time and pushed into the background - are created and edited in the admin interface, and there readers can also be promoted to moderate selected forums. Everything else happens through the reader interface.
@@ -45,7 +56,7 @@ To enable page comments, all you have to do is put <r:comments /> somewhere in t
 
 ###Security & Spam
 
-The reader extension includes email confirmation and a simple honeytrap that should block almost all bots from registering. The post forms include proper XSS protection via the old white_list plugin and the usual CSRF protection is enabled. 
+The reader extension includes email confirmation and a simple honeytrap that should prevent most bots from registering. The post forms include proper XSS protection via the old white_list plugin and the usual CSRF protection is enabled. I probably need to go through making sure every is h'd that should be.
 
 ###Ajax
 
@@ -58,6 +69,6 @@ The people love smilies. How they love them. I've included a basic set here and 
 ###Author & Copyright
 
 William Ross, for spanner. will at spanner.org
-Originally based on dear old Beast
+Originally based on dear old Beast, currently not visible at http://beast.caboo.se
 Copyright 2007-9 spanner ltd
 released under the same terms as Rails and/or Radiant

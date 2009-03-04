@@ -1,6 +1,5 @@
 - include_stylesheet('admin/forum')
 = render_region :top 
-= render :partial => 'admin/shared/site_jumper'
 
 %h1 Discussion Categories
 %p This is where you sort out the discussion filing. To edit or remove messages or whole discussions, use the links on forum pages. 
@@ -28,6 +27,8 @@
                 %p.context
                   (comments forum)
               = textilize(forum.description)
+              %p
+                = link_to "&rarr; browse discussions", 'http://' + forum.site.base_domain + forum_path(forum)
                 
           - tbody.latest_cell do
             %td.forum_latest
