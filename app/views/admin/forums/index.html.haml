@@ -59,9 +59,13 @@
               -if forum.for_comments
                 = image('noremove', :alt => 'Remove Forum')
               -else
-                = link_to image('remove', :alt => 'Remove Forum'), remove_admin_forum_url(:id => forum) 
+                - if admin?
+                  = link_to image('remove', :alt => 'Remove Forum'), remove_admin_forum_url(:id => forum) 
+                - else
+                  = image('no-remove', :alt 'only admin can edit readers')
 
 - render_region :bottom do |bottom|
   - bottom.new_button do
-    %p
-      = link_to image('new-forum', :alt => 'New Forum'), new_admin_forum_url
+    - if admin?
+      %p
+        = link_to image('new-forum', :alt => 'New Forum'), new_admin_forum_url
