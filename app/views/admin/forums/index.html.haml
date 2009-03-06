@@ -62,7 +62,7 @@
                 - if admin?
                   = link_to image('remove', :alt => 'Remove Forum'), remove_admin_forum_url(:id => forum) 
                 - else
-                  = image('no-remove', :alt 'only admin can edit readers')
+                  = image('no-remove', :alt => 'only admin can edit readers')
 
 - render_region :bottom do |bottom|
   - bottom.new_button do
