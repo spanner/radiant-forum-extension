@@ -1,10 +1,11 @@
 require File.dirname(__FILE__) + '/../spec_helper'
+@sited = defined? Site
 
 describe Forum do
   dataset :topics
   
   before do
-    @site = Page.current_site = sites(:test)
+    @site = Page.current_site = sites(:test) if @sited
     @forum = forums(:public)
     @reader = Reader.current_reader = readers(:normal)
   end

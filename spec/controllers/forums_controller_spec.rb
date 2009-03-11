@@ -1,15 +1,15 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 Radiant::Config['reader.layout'] = 'Main'
+@sited = defined? Site
 
 describe ForumsController do
-  dataset :forum_sites
   dataset :forum_readers
   dataset :forums
   dataset :layouts
 
   before do
     controller.stub!(:request).and_return(request)
-    controller.set_current_site
+    controller.set_current_site if @sited
   end
     
   describe "on get to index" do

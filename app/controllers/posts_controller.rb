@@ -32,7 +32,7 @@ class PostsController < ApplicationController
     @forum = Forum.find(params[:forum_id]) unless params[:forum_id].blank?
     @readers = Reader.find(:all, :select => 'distinct *', :conditions => ['id in (?)', @posts.collect(&:reader_id).uniq]).index_by(&:id)
 
-    @title = current_site.name
+    @title = ((defined? Site) ? current_site.name : Radiant::Config['site.title']) || ''
     @title << ": posts"
     @title << " matching '#{params[:q]}'" if params[:q]
     @title << " from #{@reader.name}" if @reader

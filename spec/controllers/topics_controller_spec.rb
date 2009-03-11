@@ -1,15 +1,15 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 Radiant::Config['reader.layout'] = 'Main'
+@sited = defined? Site
 
 describe TopicsController do
-  dataset :forum_sites
   dataset :forum_readers
   dataset :layouts
   dataset :topics
 
   before do
     controller.stub!(:request).and_return(request)
-    controller.set_current_site
+    controller.set_current_site if @sited
   end
 
   describe "on get to index" do
@@ -33,12 +33,14 @@ describe TopicsController do
       response.should be_success
       response.should render_template("show")
     end
-        
-    it "should  show a topic from this site" do
+
+    if @sited
+      it "should show a topic from this site" do
       
-    end
-    it "should not show a topic from another site" do
+      end
+      it "should not show a topic from another site" do
       
+      end
     end
   end
   
@@ -137,9 +139,11 @@ describe TopicsController do
       end
     end
     
-    describe "on another site" do
-      it "should throw a FileNotFound error" do
+    if @sited
+      describe "on another site" do
+        it "should throw a FileNotFound error" do
       
+        end
       end
     end
   end

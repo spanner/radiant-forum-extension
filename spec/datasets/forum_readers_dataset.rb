@@ -1,12 +1,12 @@
 class ForumReadersDataset < Dataset::Base
-  uses :forum_sites
+  uses :forum_sites if defined? Site
     
   def load
     create_reader "Normal"
     create_reader "Idle"
     create_reader "Activated"
     create_reader "Inactive", :activated_at => nil
-    create_reader "Elsewhere", :site => sites(:elsewhere)
+    create_reader "Elsewhere", :site => sites(:elsewhere) if defined? Site
   end
   
   helpers do
@@ -23,9 +23,9 @@ class ForumReadersDataset < Dataset::Base
         :email => "#{symbol}@spanner.org", 
         :password => "password", 
         :password_confirmation => "password",
-        :site => sites(:test),
         :activated_at => Time.now.utc
       }.merge(attributes)
+      attributes[:site] ||= sites[:test] if defined? Site
       attributes
     end
     

@@ -42,7 +42,7 @@ class ForumExtension < Radiant::Extension
     ReadersController.send :include, ForumReadersController
     Page.send :include, ForumPage
     Page.send :include, ForumTags
-    Site.send :include, ForumSite
+    Site.send :include, ForumSite if defined? Site
     if defined? RedCloth::DEFAULT_RULES
       RedCloth.send :include, ForumRedCloth3
       RedCloth::DEFAULT_RULES.push(:smilies)

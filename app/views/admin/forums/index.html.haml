@@ -28,8 +28,11 @@
                   (comments forum)
               = textilize(forum.description)
               %p
-                = link_to "&rarr; browse discussions", 'http://' + forum.site.base_domain + forum_path(forum)
-                
+                - if forum.respond_to?(:site)
+                  = link_to "&rarr; browse discussions", 'http://' + forum.site.base_domain + forum_path(forum)
+                - else
+                  = link_to "&rarr; browse discussions", forum_path(forum)
+
           - tbody.latest_cell do
             %td.forum_latest
               - if forum.posts_count > 0
@@ -62,7 +65,7 @@
                 - if admin?
                   = link_to image('remove', :alt => 'Remove Forum'), remove_admin_forum_url(:id => forum) 
                 - else
-                  = image('no-remove', :alt => 'only admin can edit readers')
+                  = image('noremove', :alt => 'only admin can remove forums')
 
 - render_region :bottom do |bottom|
   - bottom.new_button do

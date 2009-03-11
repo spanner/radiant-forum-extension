@@ -13,7 +13,7 @@ describe Admin::ForumsController do
   end
 
   { 
-    :get => [:index, :new, :edit],
+    :get => [:new, :edit],
     :post => [:create],
     :put => [:update],
     :delete => [:destroy]
@@ -36,6 +36,18 @@ describe Admin::ForumsController do
           send(method, action, :id => forum_id(:public)) 
         }.should restrict_access(:deny => [users(:developer), users(:existing)],
                                  :url => '/admin/page')
+      end
+    end
+  end
+  
+  { 
+    :get => [:index],
+  }.each do |method, actions|
+    actions.each do |action|
+      it "should allow you to access to #{action} action even if you are not an admin" do
+        lambda { 
+          send(method, action, :id => forum_id(:public)) 
+        }.should restrict_access(:allow => [users(:developer), users(:admin), users(:existing)], :url => '/admin/pages')
       end
     end
   end

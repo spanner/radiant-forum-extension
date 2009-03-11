@@ -1,5 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 Radiant::Config['reader.layout'] = 'Main'
+@sited = defined? Site
 
 describe PostsController do
   dataset :layouts
@@ -7,7 +8,7 @@ describe PostsController do
   
   before do
     controller.stub!(:request).and_return(request)
-    controller.set_current_site
+    controller.set_current_site if @sited
     @forum = forums(:public)
     @topic = topics(:older)
     @post = posts(:first)
@@ -48,10 +49,12 @@ describe PostsController do
         response.should redirect_to(topic_url(@topic.forum, @topic, {:page => @post.topic_page, :anchor => "post_#{@post.id}"}))
       end
     end
-            
-    describe "for a post on another site" do
-      it "should raise a file not found error" do
-        lambda { get :show, :id => post_id(:elsewhere), :topic_id => topic_id(:elsewhere), :forum_id => forum_id(:elsewhere) }.should raise_error(ActiveRecord::RecordNotFound)
+
+    if @sited
+      describe "for a post on another site" do
+        it "should raise a file not found error" do
+          lambda { get :show, :id => post_id(:elsewhere), :topic_id => topic_id(:elsewhere), :forum_id => forum_id(:elsewhere) }.should raise_error(ActiveRecord::RecordNotFound)
+        end
       end
     end
   end
