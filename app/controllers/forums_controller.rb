@@ -1,7 +1,7 @@
 class ForumsController < ApplicationController
   no_login_required
-  radiant_layout { |controller| controller.find_readers_layout }
- 
+  radiant_layout { |controller| controller.layout_for :forum }
+
   def index
     @forums = Forum.paginate(:all, :order => "position", :page => params[:page] || 1)
   end

@@ -1,0 +1,7 @@
+- layouts = @site.respond_to?(:layouts) ? @site.layouts : Layout.find(:all)
+%p.subtitle
+  %label{:for=>"site_forum_layout_id", :class => "admin_only"}
+    Layout for forum pages (defaults to reader layout)
+  = select :site, :forum_layout_id, layouts.map { |l| [l.name, l.id] }
+  %br
+  %span.formnote currently you have to be logged into a site to see its layouts here. will fix.

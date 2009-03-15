@@ -1,7 +1,7 @@
 class MonitorshipsController < ApplicationController
 
   before_filter :authenticate_reader, :except => [:index, :show]
-  radiant_layout { |controller| controller.find_readers_layout }
+  radiant_layout { |controller| controller.layout_for :forum }
 
   def index
     @monitorships = current_reader.monitorships

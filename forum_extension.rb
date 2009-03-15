@@ -34,7 +34,6 @@ class ForumExtension < Radiant::Extension
   end
   
   def activate
-    Forum; Topic; Post
     Reader.send :include, ForumReader
     Radiant::AdminUI.send :include, ForumAdminUI         # UI is an instance and already loaded, and this doesn't get there in time. so:
     Radiant::AdminUI.instance.forum = Radiant::AdminUI.load_default_forum_regions
@@ -42,7 +41,10 @@ class ForumExtension < Radiant::Extension
     ReadersController.send :include, ForumReadersController
     Page.send :include, ForumPage
     Page.send :include, ForumTags
-    Site.send :include, ForumSite if defined? Site
+    if defined? Site && admin.sites       # currently we know it's the spanner multi_site if admin.sites is defined
+      Site.send :include, ForumSite
+      admin.sites.edit.add :form, "admin/sites/choose_forum_layout", :after => "edit_homepage"
+    end
     if defined? RedCloth::DEFAULT_RULES
       RedCloth.send :include, ForumRedCloth3
       RedCloth::DEFAULT_RULES.push(:smilies)
@@ -52,6 +54,8 @@ class ForumExtension < Radiant::Extension
     ApplicationHelper.send :include, ForumHelper
     ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!( :html_date => %{<span class="date">%e %b %Y</span> at <span class="time">%l:%M</span><span class="meridian">%p</span>} )
 
+
+    admin.forums.index.add :top, "admin/shared/site_jumper" if Forum.is_site_scoped?
     admin.tabs.add "Forum", "/admin/forums", :after => "Readers", :visibility => [:all]
   end
   

@@ -2,7 +2,7 @@ class TopicsController < ApplicationController
   no_login_required
   before_filter :find_forum_and_topic, :except => :index
   before_filter :authenticate_reader, :except => [:index, :show]
-  radiant_layout { |controller| controller.find_readers_layout }
+  radiant_layout { |controller| controller.layout_for :forum }
 
   def index
     @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :include => [:forum, :reader])
