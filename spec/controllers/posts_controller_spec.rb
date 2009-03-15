@@ -6,7 +6,7 @@ describe PostsController do
   dataset :posts
   
   before do
-    Page.current_site = sites(:test)
+    Page.current_site = sites(:test) if defined? Site
     controller.stub!(:request).and_return(request)
     @forum = forums(:public)
     @topic = topics(:older)

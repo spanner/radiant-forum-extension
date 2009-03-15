@@ -7,7 +7,7 @@ describe TopicsController do
   dataset :topics
 
   before do
-    Page.current_site = sites(:test)
+    Page.current_site = sites(:test) if defined? Site
     controller.stub!(:request).and_return(request)
   end
 
