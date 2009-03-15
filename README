@@ -13,6 +13,16 @@ but I've tried to keep it clean and simple on the inside. You should find it ver
 
 The forum was derived long ago from Beast and the bones will still be visible here and there. It has been in use on various sites in various versions for the last two years, but in consolidating it here and making it ready for publication I've pretty much refactored the whole thing. Some of it is quite new, then, and may have exciting new bugs in it. If I were you I'd give it a few days to settle down. It's properly specced and tests clean, though.
 
+The forum is compatible with multi_site but you have to use our fork (https://github.com/spanner/radiant-multi-site-extension) if you want forums and readers site-scoped.
+
+== Still to do
+
+* Message-editing in the main readers' view and topic moderation in admin.
+* Message attachments
+* Sample javascript front end (in mootools)
+* Moderators
+* Bad message flags
+
 == Installation
 
 At the moment Ray doesn't know about these extensions, so you will need to jump through some hoops to install reader (qv), but after that the forum is very simple:
@@ -23,7 +33,6 @@ At the moment Ray doesn't know about these extensions, so you will need to jump 
 
 In future this ought to be all you need:
 
-  rake ray:extension:install name="multi-site" hub="spanner"
   rake rake ray:extension:install name="forum"
 
 If you don't have Ray, stop reading this and go to http://github.com/johnmuhl/radiant-ray-extension/tree
