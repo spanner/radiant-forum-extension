@@ -7,8 +7,8 @@ describe TopicsController do
   dataset :topics
 
   before do
+    Page.current_site = sites(:test)
     controller.stub!(:request).and_return(request)
-    controller.set_current_site if defined? Site
   end
 
   describe "on get to index" do
@@ -31,15 +31,6 @@ describe TopicsController do
     it "should render the show template" do
       response.should be_success
       response.should render_template("show")
-    end
-
-    if defined? Site
-      it "should show a topic from this site" do
-      
-      end
-      it "should not show a topic from another site" do
-      
-      end
     end
   end
   

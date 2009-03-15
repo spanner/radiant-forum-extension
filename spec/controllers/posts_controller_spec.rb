@@ -6,8 +6,8 @@ describe PostsController do
   dataset :posts
   
   before do
+    Page.current_site = sites(:test)
     controller.stub!(:request).and_return(request)
-    controller.set_current_site if defined? Site
     @forum = forums(:public)
     @topic = topics(:older)
     @post = posts(:first)

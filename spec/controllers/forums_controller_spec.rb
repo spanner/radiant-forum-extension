@@ -4,11 +4,9 @@ Radiant::Config['reader.layout'] = 'Main'
 describe ForumsController do
   dataset :forum_readers
   dataset :forums
-  dataset :layouts
 
   before do
     controller.stub!(:request).and_return(request)
-    controller.set_current_site if defined? Site
   end
     
   describe "on get to index" do
