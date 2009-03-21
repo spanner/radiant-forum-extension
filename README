@@ -17,11 +17,12 @@ The forum is compatible with multi_site but you have to use our fork (https://gi
 
 == Still to do
 
-* Message-editing in the main readers' view and topic moderation in admin.
+* Message-editing in the main readers' view and topic moderation in admin
 * Message attachments
 * Sample javascript front end (in mootools)
 * Moderators
-* Bad message flags
+* Bad message button
+* Admin pages that suck less
 
 == Installation
 

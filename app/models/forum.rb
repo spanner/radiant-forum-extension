@@ -46,5 +46,15 @@ class Forum < ActiveRecord::Base
       :for_comments => true
       )
   end
+  
+  def visible_to?(reader)
+    # I might put some admin or user-only options in here
+    reader && reader.is_a?(Reader)
+  end
+
+  # this is overriden
+  def visible_by_default?
+    true
+  end
 
 end
