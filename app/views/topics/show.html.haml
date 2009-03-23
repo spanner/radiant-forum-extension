@@ -1,16 +1,13 @@
 = render :partial => 'readers/flasher'
 
 #forum
-  %h1
-    = link_to "#{@topic.forum.name} &raquo;", forum_url(@topic.forum), {:class => 'breadhead'}
-    %br
-    = @topic.name
-    = feed_link(formatted_topic_path(@topic.forum, @topic, :rss))
-
   - paginated_section @posts do
     = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false, :first_post => @topic.posts.first }
   - unless @posts.next_page
     = render :partial => 'post_reply'
+
+
+
 
 - content_for :breadcrumbs do
   = link_to 'Forum', forums_url
@@ -19,6 +16,14 @@
   \&gt;
   = @topic.name
 
-- content_for :title do
+- content_for :pagetitle do
   = @topic.name
-  
+
+- content_for :breadhead do
+  = link_to @topic.forum.name, forum_url(@topic.forum), {:class => 'breadhead'}
+
+- content_for :feed do
+  = feed_link(formatted_topic_path(@topic.forum, @topic, :rss))
+
+- content_for :controls do
+  = render :partial => 'readers/controls'

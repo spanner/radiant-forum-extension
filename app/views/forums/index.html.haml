@@ -1,13 +1,14 @@
 = render :partial => 'readers/flasher'
 
 #forum
-  %h1 Discussion Categories
   #forum_preamble
     %p
       These are the broad filing areas we use to organise the forum. 
       You can also see a list of 
       = link_to "all the most recent conversation", topics_list_url
       in any category.
+    %p
+      = link_to "start a conversation", new_topic_somewhere_url, :class => 'inviting'
 
   - if @forums.empty?
     %p No categories defined here yet.
@@ -17,12 +18,20 @@
       %ul.main
         = render :partial => 'forums/forum', :collection => @forums
 
-= render :partial => 'readers/controls'
 
+
+
+
+- content_for :pagetitle do
+  Discussion Categories
+
+- content_for :feed do
+  = feed_link(formatted_forums_path(:rss))
+
+- content_for :controls do
+  = render :partial => 'readers/controls'
+  
 - content_for :breadcrumbs do
   = link_to 'Forum', forums_url
   \&gt;
   Categories
-
-- content_for :title do
-  Discussion Categories

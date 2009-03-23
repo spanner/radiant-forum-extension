@@ -5,7 +5,15 @@ class TopicsController < ApplicationController
   radiant_layout { |controller| controller.layout_for :forum }
 
   def index
-    @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :include => [:forum, :reader])
+    respond_to do |format|
+      format.html do
+        @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :include => [:forum, :reader])
+      end
+      format.rss do
+        @topics = Topic.find(:all, :order => "topics.replied_at desc", :include => [:forum, :reader], :limit => 50)
+        render :layout => false
+      end
+    end
   end
 
   def new
@@ -29,6 +37,9 @@ class TopicsController < ApplicationController
   def create
     # post creation is handled by a before_create in the topic model
     # and then calls back to set initial reply data in the topic
+    @forum = Forum.find(params[:topic][:forum_id]) if params[:topic][:forum_id]
+    logger.warn "!!! creating topic with #{params[:topic].inspect}"
+    
     @topic = @forum.topics.create!(params[:topic])
     respond_to do |format|
       format.html { redirect_to topic_path(@forum, @topic) }

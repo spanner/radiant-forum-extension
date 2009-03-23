@@ -1,11 +1,11 @@
 - with_context ||= false
 
 %li.topic{:id => topic.dom_id}
-  %a{:href => topic_url(topic.forum, topic), :class => 'main'}
-    %span.markers
-    = gravatar_for(topic.reader, {:size => 46}, {:alt => topic.reader.name, :class => 'gravatar'})
-    = topic.name
-  %br
+  %span.markers
+  %span.subject
+    %a{:href => topic_url(topic.forum, topic), :class => 'main'}
+      = gravatar_for(topic.reader, {:size => 46}, {:alt => topic.reader.name, :class => 'gravatar'})
+      = topic.name
   %span.context
     - if with_context
       begun under 
@@ -27,6 +27,6 @@
     - else 
       = time_ago_in_words(topic.created_at)
       ago
-  %br
-  = truncate_and_textilize(topic.first_post.body, 40)
+  %div.preview
+    = truncate_and_textilize(topic.first_post.body, 40)
     

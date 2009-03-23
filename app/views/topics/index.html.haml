@@ -1,12 +1,14 @@
 = render :partial => 'readers/flasher'
 
 #forum
-  %h1 All Discussions
   #forum_preamble
     %p
       This is a list of all the discussions going on here, with the most recently updated first. 
       You can also see a more structured list of 
       = link_to "discussions by category", forums_url
+    
+    %p
+      = link_to "start a conversation", new_topic_somewhere_url, :class => 'inviting'
 
 - if @topics.empty?
   %p No talk here yet.
@@ -16,12 +18,19 @@
     %ul.main
       = render :partial => 'topics/topic', :collection => @topics
 
-= render :partial => 'readers/controls'
+
+
 
 - content_for :breadcrumbs do
   = link_to 'Forum', forums_url
   \&gt;
   All Discussions 
 
-- content_for :title do
+- content_for :pagetitle do
   All Discussions
+
+- content_for :feed do
+  = feed_link(topics_feed_path)
+
+- content_for :controls do
+  = render :partial => 'readers/controls'

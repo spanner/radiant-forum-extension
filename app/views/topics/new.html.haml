@@ -1,30 +1,40 @@
 = render :partial => 'readers/flasher'
 
 #forum
-  %h1
-    = link_to "#{@forum.name} &raquo;", forum_url(@forum), {:class => 'breadhead'}
-    %br
-    Start a new discussion
   %p 
     You are logged in as 
     = link_to "#{current_reader.name}.", reader_url(current_reader)
     If that's not you, please 
     = link_to "log out.", reader_logout_url
   #new_topic
-    = form_for :topic, :url  => topics_path(@forum), :html => {:class => 'friendly'} do |f|
+    - form_for :topic, :url  => @forum ? topics_path(@forum) : create_topic_somewhere_path, :html => {:class => 'friendly'} do |f|
       = render :partial => "form", :object => f
-	    = submit_tag 'Post Topic' 
-	    or 
-	    = link_to('Cancel', forum_path(@forum))
+      = submit_tag 'Post Topic' 
+      or 
+      = link_to('Cancel', forum_path(@forum))
 
-= render :partial => 'readers/controls'
 
+
+
+
+- content_for :pagetitle do
+  Start a new discussion
+
+- content_for :breadhead do
+  - if @forum
+    = link_to "#{@forum.name} &raquo;", forum_url(@forum), {:class => 'breadhead'}
+    %br
+
+- content_for :feed do
+  = feed_link(formatted_topic_path(@topic.forum, @topic, :rss))
+
+- content_for :controls do
+  = render :partial => 'readers/controls'
+  
 - content_for :breadcrumbs do
   = link_to 'Forum', forums_url
   \&gt;
-  = link_to @forum.name, forum_url(@forum) 
-  \&gt;
-  New Discussion
-
-- content_for :title do
+  - if @forum
+    = link_to @forum.name, forum_url(@forum) 
+    \&gt;
   New Discussion

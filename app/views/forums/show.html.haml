@@ -1,14 +1,11 @@
 = render :partial => 'readers/flasher'
 
 #forum
-  %h1.forum_head
-    = link_to "Discussion Categories &raquo;", forums_url, {:class => 'breadhead'}
-    %br
-    = @forum.name
-    = feed_link(formatted_forum_path(@forum, :rss))
-
   #forum_preamble
     = clean_textilize(@forum.description)
+
+  %p
+    = link_to "start a conversation here", new_topic_url(@forum), :class => 'inviting'
 
   - if @topics.empty?
     %p No talk here yet.
@@ -18,12 +15,23 @@
       %ul.main
         = render :partial => 'topics/topic', :collection => @topics, :locals => { :with_context => false }
 
-= render :partial => 'readers/controls'
+
+
+
+
+- content_for :pagetitle do
+  = @forum.name
+
+- content_for :feed do
+  = feed_link(formatted_forum_path(@forum, :rss))
+
+- content_for :breadhead do
+  = link_to "Categories", forums_url, {:class => 'breadhead'}
 
 - content_for :breadcrumbs do
   = link_to 'Forum', forums_url
   \&gt;
   = link_to @forum.name, forum_url(@forum) 
 
-- content_for :title do
-  = @forum.name
+- content_for :controls do
+  = render :partial => 'readers/controls'

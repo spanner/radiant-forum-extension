@@ -25,6 +25,9 @@ class ForumExtension < Radiant::Extension
 
     map.with_options :controller => 'topics' do |topics|
       topics.topics_list '/topics', :action => 'index'
+      topics.topics_feed '/topics/feed', :action => 'index', :format => 'rss'
+      topics.new_topic_somewhere '/topics/new', :action => 'new'
+      topics.create_topic_somewhere '/topics/create', :action => 'create', :method => :post
     end
 
     map.with_options :controller => 'posts' do |posts|

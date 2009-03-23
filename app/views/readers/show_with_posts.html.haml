@@ -10,14 +10,14 @@
     = clean_textilize @reader.description
 
 #forum
-  %h2 
+  %h2{:style => 'clear: left;'}
     Messages from
     = @reader.name
     = feed_link(formatted_reader_posts_path(@reader, :rss))
   - if @posts
     %ul.main
       - paginated_section @posts do
-        = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => true, :without_author => true }
+        = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => true, :without_author => false }
   - else
     %p None yet
 

@@ -6,19 +6,19 @@
     %br
     = @topic.errors.on(:name).to_a.to_sentence
   - if admin?
-    = form.check_box :locked
-     %label{:for => 'topic_sticky', :class => 'admin'} Sticky
-    = form.check_box :locked
-     %label{:for => 'topic_locked', :class => 'admin'} Locked
+    %span.quiet
+      = form.check_box :locked
+      %label{:for => 'topic_sticky', :class => 'admin'} Sticky
+      = form.check_box :locked
+      %label{:for => 'topic_locked', :class => 'admin'} Locked
 
-- form.fields_for :post do |fields|
-  %p{ :class => @post.errors.on(:body) ? 'with_errors' : '' }
-    %label{:for => 'post_body', :class => 'required'} Opening message
+%p{ :class => @topic.errors.on(:body) ? 'with_errors' : '' }
+  %label{:for => 'topic_body', :class => 'required'} Opening message
+  %br
+  = form.text_area :body, :class=> 'standard', :rows => 12
+  - if @topic.errors.on(:body)
     %br
-    = fields.text_area :body, :class=> 'standard', :rows => 12
-    - if @post.errors.on(:body)
-      %br
-      = @post.errors.on(:body).to_a.to_sentence
+    = @topic.errors.on(:body).to_a.to_sentence
     
 - if @topic.new_record? || admin?
   %p 
