@@ -6,11 +6,11 @@
   - post.forum ||= forum
 
   %div.post{:id => 'replyform'}
-    %h2 Post a reply
+    %h2.inviting Post a reply
     - form_for :post, :url  => posts_path(forum, topic), :html => {:id => 'reply_form', :class => 'friendly'} do |f|
       = render :partial => "posts/form", :object => f
       = submit_tag 'Post Reply'
 
 - else
-  %h2 To reply, please log in
+  %h2.inviting To reply, please log in
   = render :partial => 'readers/login_form'

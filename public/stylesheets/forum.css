@@ -1,7 +1,3 @@
-.simplified {
-  display: none;
-}
-
 /*
 
 cool grey 3: #cacac8
@@ -112,7 +108,20 @@ div#forum div.post_body div.post p {
   margin-top: 4px;
 }
 
-/***** input form niceties ********/
+/***** input niceties ********/
+
+a.inviting, h2.inviting {
+  display: block;
+  background: url(/images/forum/post_14.png) no-repeat 0 4px;
+  padding-left: 18px;
+  font-family: HelveticaNeue-Light, helvetica, arial, sans-serif;
+  font-weight: lighter;
+  font-size: 1.6em;
+}
+
+a.inviting:hover {
+  background: url(/images/forum/post_14_over.png) no-repeat 0 4px;
+}
 
 form.friendly span.quiet label {
   font-size: 90%;
