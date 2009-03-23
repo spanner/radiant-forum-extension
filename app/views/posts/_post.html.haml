@@ -6,28 +6,22 @@
 %div.post{:id => post.dom_id}
   %div{:class => post.first? ? 'first_post' : 'reply'}
     %div.post_header
-      - if without_author
-        %h4
-          - if post.first?
-            A new discussion
-          - else
-            A reply to 
+      %h2
+        %a{:href => reader_url(post.reader), :class => 'main'}
+          = gravatar_for(post.reader, {:size => 40}, {:alt => post.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
+          = post.reader.name
+      %p.context
+        - if post.first?
+          started this discussion
+        - else
+          replied
+        - if with_context
+          under
           = link_to post.topic.name, topic_url(post.forum, post.topic)
-          = time_ago_in_words(post.created_at)
-          ago
-      - else 
-        %h2
-          %a{:href => reader_url(post.reader), :class => 'main'}
-            = gravatar_for(post.reader, {:size => 40}, {:alt => post.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
-            = post.reader.name
-        %p.context
-          - if post.first?
-            started this discussion
-          - else
-            replied
-          - if with_context
-            under
-            = link_to post.topic.name, topic_url(post.forum, post.topic)
+        - if Time.now - post.created_at > 1.hour
+          on
+          = post.created_at.to_s(:html_date)
+        - else
           = time_ago_in_words(post.created_at)
           ago
     - if admin? || current_reader == post.reader
@@ -37,3 +31,9 @@
     %div.post_wrapper
       %div.post_body
         = clean_textilize(post.body)
+        - if post.updated_at
+          %p.update
+            %strong
+              message updated 
+            on 
+            = post.updated_at.to_s(:html_date)

@@ -109,6 +109,11 @@ div#forum div.post_body, div#forum div.post_wrapper {
   position: relative;
 }
 
+div#forum div.post_wrapper {
+  padding: 0 0 10px 0;
+  border-bottom: 1px dotted #afafaf;
+}
+
 div#forum div.post_body div.post p {
   margin-top: 4px;
 }
@@ -196,6 +201,12 @@ div#forum div.post_wrapper div.post_form a.cancel {
   font-size: 80%;
   font-family: helvetica, arial, sans-serif;
   color: #4d4e53;
+}
+
+p.update {
+  font-size: 80%;
+  font-family: helvetica, arial, sans-serif;
+  color: #afafaf;
 }
 
 
