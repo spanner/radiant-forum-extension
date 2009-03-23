@@ -2,10 +2,22 @@
 
 - message_type = @topic.page ? 'comment' : 'message'
 
-%div.post{:id => 'replyform'}
-  %h2 
-    Edit 
-    = message_type
-  - form_for :post, :html => {:method => 'put', :id => 'post_form', :class => 'friendly'} do |f|
-    = render :partial => "posts/form", :object => f
-    = submit_tag "Post #{message_type}"
+- form_for :post, :url  => post_path(@topic.forum, @topic, @post), :html => {:method => 'put', :id => "post_form_#{@post.id}", :class => 'friendly'} do |f|
+  = render :partial => "posts/form", :object => f
+  %div.buttons
+    = submit_tag "Update #{message_type}"
+    or
+    = link_to "cancel", topic_url(@topic.forum, @topic), :class => 'cancel'
+
+
+
+
+- content_for :pagetitle do
+  Edit
+  = message_type
+
+- content_for :breadhead do
+  = link_to @post.topic.name, topic_url(@post.topic.forum), {:class => 'breadhead'}
+
+- content_for :controls do
+  = render :partial => 'readers/controls'

@@ -95,6 +95,7 @@ div#forum p.context {
 /***** message display ********/
 
 div#forum div.post {
+  position: relative;
   margin: 10px 0 30px 0;
 }
 
@@ -102,6 +103,10 @@ div#forum div.post_header h2 {
   margin: 0;
   font-weight: lighter;
   line-height: 1.1;
+}
+
+div#forum div.post_body, div#forum div.post_wrapper {
+  position: relative;
 }
 
 div#forum div.post_body div.post p {
@@ -128,7 +133,73 @@ form.friendly span.quiet label {
   color: #afafaf;
 }
 
-/***** the people love smileys ********/
+div.edit_control {
+  float: right;
+  width: 32px;
+  margin: 0 0 5px 5px;
+  text-align: right;
+}
+
+div.edit_control a {
+  display: block;
+  float: right;
+  width: 16px;
+  height: 20px;
+  overflow: hidden;
+  text-indent: 20px;
+  background-position: top center;
+  background-repeat: no-repeat;
+  margin: 0;
+}
+
+div.edit_control a.edit_post { background-image: url('/images/forum/edit_14.png'); }
+div.edit_control a.edit_post:hover { background-image: url('/images/forum/edit_14_over.png'); }
+div.edit_control a.remove_post { background-image: url('/images/forum/remove_14.png'); }
+div.edit_control a.remove_post:hover { background-image: url('/images/forum/remove_14_over.png'); }
+div.edit_control a.waiting, div.edit_control a.waiting:hover { background-image: url('/images/forum/wait_16_grey.gif'); }
+
+
+/***** inline forms ********/
+
+
+div#forum div.post_wrapper div.post_form {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: white url(/images/forum/wait_16_grey.gif) no-repeat center center;
+}
+
+div#forum div.post_wrapper div.post_form form {
+  margin: 0;
+}
+
+div#forum div.post_wrapper div.post_form label {
+  display: none;
+}
+
+div#forum div.post_wrapper div.post_form textarea {
+  left: 0;
+  right: 0;
+  color: #559dc4;
+  font-size: normal;
+}
+
+div#forum div.post_wrapper div.post_form p {
+  margin: 0;
+  padding: 0;
+}
+
+div#forum div.post_wrapper div.post_form a.cancel {
+  font-size: 80%;
+  font-family: helvetica, arial, sans-serif;
+  color: #4d4e53;
+}
+
+
+/***** we all love smileys ********/
 
 img.smiley {
   margin: 3px 3px 0 3px;

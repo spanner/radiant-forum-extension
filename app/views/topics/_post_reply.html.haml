@@ -5,7 +5,7 @@
   - post.topic ||= topic
   - post.forum ||= forum
 
-  %div.post{:id => 'replyform'}
+  %div.reply{:id => 'replyform'}
     %h2.inviting Post a reply
     - form_for :post, :url  => posts_path(forum, topic), :html => {:id => 'reply_form', :class => 'friendly'} do |f|
       = render :partial => "posts/form", :object => f

@@ -30,5 +30,10 @@
             = link_to post.topic.name, topic_url(post.forum, post.topic)
           = time_ago_in_words(post.created_at)
           ago
-    %div.post_body
-      = clean_textilize(post.body)
+    - if admin? || current_reader == post.reader
+      .edit_control
+        = edit_link(post)
+        = remove_link(post)
+    %div.post_wrapper
+      %div.post_body
+        = clean_textilize(post.body)

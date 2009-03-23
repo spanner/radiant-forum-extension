@@ -134,8 +134,8 @@ class PostsController < ApplicationController
   ensure
     respond_to do |format|
       format.html { redirect_to_page_or_topic }
-      format.js { render :layout => false }
-      format.json {}
+      format.js { render :partial => 'post', :layout => false }
+      format.json { render :json => @post.as_json }
     end
   end
 
