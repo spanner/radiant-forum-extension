@@ -25,7 +25,7 @@ class ForumReadersDataset < Dataset::Base
         :password_confirmation => "password",
         :activated_at => Time.now.utc
       }.merge(attributes)
-      attributes[:site_id] ||= site_id(:test) if defined? Site
+      attributes[:site_id] ||= site_id(:test) if Reader.reflect_on_association(:site)
       attributes
     end
     

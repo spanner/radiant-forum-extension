@@ -9,7 +9,7 @@ class ForumLayoutsDataset < Dataset::Base
   
   helpers do
     def create_layout(name, attributes={})
-      attributes[:site] ||= sites(:test) if defined? Site
+      attributes[:site] ||= sites(:test) if Layout.reflect_on_association(:site)
       create_model :layout, name.symbolize, attributes.update(:name => name)
     end
   end
