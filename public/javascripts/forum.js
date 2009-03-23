@@ -76,7 +76,10 @@ var Forum = new Class({
   // initialize the editable-in-place
   
   getPosts: function () {
-    $$('div.post').each(function (div) { this.posts.push(new Post(div)); }, this);
+    $$('div.post').each(function (div) { this.addPost(div); }, this);
+  },
+  addPost: function (div) {
+    this.posts.push(new Post(div));
   },
   
   // turns a link into a form
@@ -152,10 +155,18 @@ var Post = new Class({
     this.input = this.form.getElement('textarea');
     this.input.setStyle('height', this.h - 40);
     this.formHolder().getElement('a.cancel').addEvent('click', this.cancel.bindWithEvent(this));
+		this.form.onsubmit = this.sendForm.bind(this);
     this.showing = true;
   },
-  sendForm: function () {
-    // body...
+  sendForm: function (e) {
+    block(e);
+    var finisher = this.finish.bind(this);
+    
+    var req = new Request.HTML({
+      url: this.form.get('action'),
+      update: this.container,
+      onComplete: finisher
+    }).post(this.form);
   },
   formHolder: function () {
     if (this.form_holder) return this.form_holder;
@@ -173,6 +184,11 @@ var Post = new Class({
     this.editor.removeClass('waiting');
     this.showing = false;
   },
+  finish: function () {
+    this.container.highlight();
+    f.addPost(this.container);
+  },
+  
   remove: function(e){
     block(e);
     console.log('remove!');
