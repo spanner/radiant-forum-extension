@@ -2,17 +2,13 @@
 = render :partial => 'readers/controls'
 
 #forum
-  %h1 
-    Everything by date
-    = feed_link(formatted_posts_path(:rss))
-
 - if @posts.empty?
   %p No talk here yet.
 
 - else
   %ul.biglist
-    - @posts.each do |posts|
-      = render :partial => 'posts/post', :locals => {:with_context => true}
+    - @posts.each do |post|
+      = render :partial => 'posts/post', :object => post, :locals => {:with_context => true}
 
   - if @posts.next_page
     = render :partial => 'shared/pagination', :locals => {:list => @posts}
@@ -20,7 +16,14 @@
 - content_for :breadcrumbs do
   = link_to 'Forum', forums_url
   \&gt;
-  Everything
+  = @title
 
 - content_for :title do
-  Everything
+  %h1 
+    = @title
+
+- content_for :feed do
+  = feed_link(posts_feed_path)
+
+- content_for :controls do
+  = render :partial => 'readers/controls'

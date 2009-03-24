@@ -31,6 +31,10 @@ class TopicsController < ApplicationController
         @posts = @topic.posts.find(:all, :order => 'created_at desc', :limit => 25)
         render :layout => false
       end
+      format.js do
+        @posts = Post.paginate_by_topic_id(@topic.id, :page => params[:page], :include => :reader, :order => 'posts.created_at asc')
+        render :layout => false
+      end
     end
   end
   

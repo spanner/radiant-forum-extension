@@ -184,6 +184,7 @@ class PostsController < ApplicationController
       respond_to do |format|
         format.html { render :action => template_name }
         format.rss  { render :action => template_name, :layout => false }
+        format.js  { render :action => template_name, :layout => false }
       end
     end
     

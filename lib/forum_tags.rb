@@ -57,6 +57,21 @@ module ForumTags
   end
 
   desc %{
+    If you would like comments to have the same appearance and inline editing controls as a normal forum page,
+    you'll be serving reader-specific content that isn't cacheable. The best way to do that is to include a remote 
+    call after the cached page has been served, but only if the page has comments.
+    
+    There are a hundred ways to do that - all it takes is a JS or JSON request to /pages/:id/topic -
+    but if you're using the sample mootools-based javascript, you can just do this:
+  
+    *Usage:*
+    <pre><code><r:page:comments:remote /></code></pre>
+  }
+  tag 'page:comments:remote' do |tag|
+    %{<h3>Comments</h3><a href="/forums/#{tag.locals.page.topic.forum.id}/topics/#{tag.locals.page.topic.id}" class="get_comments">page comments</a>} if tag.locals.page.topic 
+  end
+  
+  desc %{
     If you want more control over the display of page comments, you can spell them out:
   
     *Usage:*
@@ -76,6 +91,8 @@ module ForumTags
     end
     results
   end
+  
+  
 
   tag 'comment' do |tag|
     raise TagError, "comment is not defined" unless tag.locals.comment
