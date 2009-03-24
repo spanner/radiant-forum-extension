@@ -1,10 +1,12 @@
 /*
 
+cool grey 1: #e2e1dc
 cool grey 3: #cacac8
 cool grey 6: #afafaf
 cool grey 11: #4d4e53
 rubine red: #d1005d
 agreeable green: #5da454
+
 
 */
 
@@ -96,7 +98,12 @@ div#forum p.context {
 
 div#forum div.post {
   position: relative;
+  clear: left;
   margin: 10px 0 30px 0;
+}
+
+div#forum div.first_post {
+  margin-top: 30px;
 }
 
 div#forum div.post_header h2 {
@@ -110,12 +117,16 @@ div#forum div.post_body, div#forum div.post_wrapper {
 }
 
 div#forum div.post_wrapper {
-  padding: 0 0 10px 0;
+/*  padding: 0 0 10px 0;*/
   border-bottom: 1px dotted #afafaf;
 }
 
 div#forum div.post_body div.post p {
   margin-top: 4px;
+}
+
+div#forum div.over {
+  background-color: #e2e1dc;
 }
 
 /***** input niceties ********/
@@ -138,9 +149,15 @@ form.friendly span.quiet label {
   color: #afafaf;
 }
 
+div.post_info {
+  font-size: 80%;
+  font-family: helvetica, arial, sans-serif;
+  color: #afafaf;
+}
+
 div.edit_control {
   float: right;
-  width: 32px;
+  width: 34px;
   margin: 0 0 5px 5px;
   text-align: right;
 }
@@ -163,9 +180,7 @@ div.edit_control a.remove_post { background-image: url('/images/forum/remove_14.
 div.edit_control a.remove_post:hover { background-image: url('/images/forum/remove_14_over.png'); }
 div.edit_control a.waiting, div.edit_control a.waiting:hover { background-image: url('/images/forum/wait_16_grey.gif'); }
 
-
 /***** inline forms ********/
-
 
 div#forum div.post_wrapper div.post_form {
   position: absolute;
@@ -201,12 +216,6 @@ div#forum div.post_wrapper div.post_form a.cancel {
   font-size: 80%;
   font-family: helvetica, arial, sans-serif;
   color: #4d4e53;
-}
-
-p.update {
-  font-size: 80%;
-  font-family: helvetica, arial, sans-serif;
-  color: #afafaf;
 }
 
 
