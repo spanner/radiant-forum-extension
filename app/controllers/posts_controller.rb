@@ -2,10 +2,11 @@ class PostsController < ApplicationController
   require 'cgi'
 
   no_login_required
+  before_filter :authenticate_reader, :except => [:index, :show]
+  before_filter :require_authority, :only => [:edit, :update, :destroy]
   before_filter :find_topic_or_page, :except => [:index]
   before_filter :find_post, :except => [:index, :new, :preview, :create, :monitored]
   before_filter :build_post, :only => [:new, :preview, :create]
-  before_filter :authenticate_reader, :except => [:index, :show]
   radiant_layout { |controller| controller.layout_for :forum }
 
   # protect_from_forgery :except => :create # because the post form is typically generated from radius tags, which are defined in a model with no access to the controller
@@ -139,19 +140,18 @@ class PostsController < ApplicationController
     end
   end
 
-  def destroy
+  def remove
     @post.destroy
-    flash[:notice] = "Post deleted."
-    # check for posts_count == 1 because it's cached and counting the currently deleted post
-    @post.topic.destroy and redirect_to forum_path(params[:forum_id]) if @post.topic && @post.topic.posts_count == 1
+    flash[:notice] = "Post removed"
     respond_to do |format|
       format.html { redirect_to_page_or_topic }
+      format.js { render :partial => 'post', :layout => false }
     end
   end
 
   protected
-    def authorized?
-      action_name == 'create' || @post.editable_by?(current_user)
+    def require_authority
+      current_user.admin? || @post.editable_by?(current_reader)      # includes an editable-interval check
     end
             
     def find_topic_or_page

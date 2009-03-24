@@ -5,7 +5,7 @@
 
 %div.post{:id => post.dom_id}
   %div{:class => post.first? ? 'first_post' : 'reply'}
-    %div.post_header
+    .post_header
       %h2
         %a{:href => reader_url(post.reader), :class => 'main'}
           = gravatar_for(post.reader, {:size => 40}, {:alt => post.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
@@ -18,22 +18,32 @@
         - if with_context
           under
           = link_to post.topic.name, topic_url(post.forum, post.topic)
-        - if Time.now - post.created_at > 1.hour
-          on
-          = post.created_at.to_s(:html_date)
-        - else
+        - if post.created_at.to_date == ::Date.current
           = time_ago_in_words(post.created_at)
           ago
-    - if admin? || current_reader == post.reader
-      .edit_control
-        = edit_link(post)
-        = remove_link(post)
-    %div.post_wrapper
-      %div.post_body
+        - if post.created_at.to_date == ::Date.current - 1
+          yesterday at
+          = post.created_at.to_s(:short_time)
+        - else
+          on
+          = post.created_at.to_s(:html_date)
+          
+    .post_wrapper
+      .post_body
         = clean_textilize(post.body)
+
+      .post_info
+        - if admin? || post.editable_by?(current_reader)
+          .edit_control
+            = remove_link(post) unless post.first? && post.has_replies?
+            = edit_link(post)
+        - if post.still_editable_for
+          %strong
+            editable 
+          for 
+          = distance_of_time_in_words(post.still_editable_for)
         - if post.updated_at > post.created_at
-          %p.update
-            %strong
-              message updated 
-            on 
-            = post.updated_at.to_s(:html_date)
+          %strong
+            updated 
+          on 
+          = post.updated_at.to_s(:html_date)

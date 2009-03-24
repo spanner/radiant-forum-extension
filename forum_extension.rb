@@ -58,7 +58,11 @@ class ForumExtension < Radiant::Extension
       RedCloth::TextileDoc.send :include, ForumRedCloth4
     end
     ApplicationHelper.send :include, ForumHelper
-    ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!( :html_date => %{<span class="date">%e %b %Y</span> at <span class="time">%l:%M</span><span class="meridian">%p</span>} )
+
+    ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!( 
+      :html_date => %{<span class="date">%e %b %Y</span> at <span class="time">%l:%M</span><span class="meridian">%p</span>},
+      :short_time => %{%l:%M<span class="meridian">%p</span>}
+    )
 
     admin.forums.index.add :top, "admin/shared/site_jumper" if Forum.is_site_scoped?
     admin.tabs.add "Forum", "/admin/forums", :after => "Readers", :visibility => [:all]

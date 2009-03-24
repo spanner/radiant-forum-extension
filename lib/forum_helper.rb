@@ -36,11 +36,11 @@ module ForumHelper
       end
 
       def edit_link(post)
-        link_to 'edit', edit_post_url(post.forum, post.topic, post), :class => 'edit_post', :id => "edit_post_#{post.id}"
+        link_to 'edit', edit_post_url(post.forum, post.topic, post), :class => 'edit_post', :id => "edit_post_#{post.id}", :title => "edit post"
       end
 
       def remove_link(post)
-        link_to 'remove', remove_post_url(post.forum, post.topic, post), :class => 'remove_post'
+        link_to 'remove', remove_post_url(post.forum, post.topic, post), :class => 'remove_post', :title => "remove post"
       end
 
     }

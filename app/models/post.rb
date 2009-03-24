@@ -15,11 +15,7 @@ class Post < ActiveRecord::Base
   after_destroy :revert_topic_reply_data
   
   validates_presence_of :reader, :body, :topic
-  
-  def editable_by?(reader)
-    reader && (reader.id == reader_id)
-  end
-  
+    
   def topic_page
     self.topic.page_for(self)
   end
@@ -38,7 +34,27 @@ class Post < ActiveRecord::Base
     self.topic.first_post == self
   end
   
-  # this is a special case for page comments that need to be rendered from a radius tag
+  def has_replies?
+    self.topic.last_post != self
+  end
+  
+  def editable_interval
+    Radiant::Config['forum.editable_period'].to_i.minutes if Radiant::Config['forum.editable_period']
+  end
+  
+  def still_editable_for
+    self.created_at + editable_interval - Time.now if editable_interval && still_editable?
+  end
+  
+  def still_editable?
+    !editable_interval || Time.now - self.created_at < editable_interval
+  end
+  
+  def editable_by?(reader)
+    still_editable? && reader && (reader.id == reader_id)
+  end
+
+  # special cases for page comments that need to be rendered from a radius tag
   
   def body_html
     white_list(RedCloth.new(self.body, [ :hard_breaks, :filter_html ]).to_html(:textile, :smilies)) if self.body

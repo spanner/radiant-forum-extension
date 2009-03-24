@@ -62,11 +62,15 @@ class Topic < ActiveRecord::Base
   end
   
   def refresh_reply_data(post=nil)
-    post ||= self.posts.last
-    self.last_post = post
-    self.replied_by = post.reader
-    self.replied_at = post.created_at
-    self.save!
+    if self.posts.empty?
+      self.destroy
+    else
+      post ||= self.posts.last
+      self.last_post = post
+      self.replied_by = post.reader
+      self.replied_at = post.created_at
+      self.save!
+    end
   end
   
   def dom_id
