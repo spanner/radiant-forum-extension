@@ -140,12 +140,21 @@ class PostsController < ApplicationController
     end
   end
 
-  def remove
-    @post.destroy
-    flash[:notice] = "Post removed"
-    respond_to do |format|
-      format.html { redirect_to_page_or_topic }
-      format.js { render :partial => 'post', :layout => false }
+  def destroy
+    if @post.first?
+      @post.topic.destroy
+      flash[:notice] = "Topic removed"
+      respond_to do |format|
+        format.html { redirect_to_forum }
+        format.js { render :partial => 'post', :layout => false }
+      end
+    else
+      @post.destroy
+      flash[:notice] = "Post removed"
+      respond_to do |format|
+        format.html { redirect_to_page_or_topic }
+        format.js { render :partial => 'post', :layout => false }
+      end
     end
   end
 
@@ -186,6 +195,10 @@ class PostsController < ApplicationController
       else
         redirect_to topic_url(@topic.forum, @topic, {:page => @post.topic_page, :anchor => "post_#{@post.id}"})
       end
+    end
+
+    def redirect_to_forum
+      redirect_to forum_url(@topic.forum)
     end
     
     def topic_locked

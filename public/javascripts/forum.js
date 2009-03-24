@@ -134,8 +134,6 @@ var Post = new Class({
       this.editor.addEvent('click', this.edit.bindWithEvent(this));
       this.body_holder.addEvent('dblclick', this.edit.bindWithEvent(this));
     }
-    this.remover = div.getElement('a.remove_post');
-    if (this.remover) this.remover.addEvent('click', this.remove.bindWithEvent(this));
     this.showing = false;
     this.form_holder = null;
     this.form = null;
@@ -197,23 +195,6 @@ var Post = new Class({
   finishEdit: function () {
     this.container.highlight();
     new Post(this.container);
-  },
-  
-  remove: function(e){
-    block(e);
-    var finish_remove = this.finishRemove.bind(this);
-    if (confirm("Are you sure you want to remove this post?")) {
-      var req = new Request.HTML({
-        url: this.remover.get('href'),
-        update: this.container,
-        onComplete: finisher
-      }).post(this.form);
-    }
-  },
-  
-  finishRemove: function () {
-    this.container.highlight();
-  }
-  
+  }  
 });
 

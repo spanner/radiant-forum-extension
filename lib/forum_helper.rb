@@ -40,7 +40,7 @@ module ForumHelper
       end
 
       def remove_link(post)
-        link_to 'remove', remove_post_url(post.forum, post.topic, post), :class => 'remove_post', :title => "remove post"
+        link_to 'remove', post_url(post.forum, post.topic, post), :method => 'delete', :class => 'remove_post', :title => "remove post", :confirm => "Are you sure you want to delete this message?"
       end
 
     }

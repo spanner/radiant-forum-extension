@@ -10,7 +10,7 @@ class ForumExtension < Radiant::Extension
   define_routes do |map|
     map.resources :forums do |forum|
       forum.resources :topics, :name_prefix => nil do |topic|
-        topic.resources :posts, :name_prefix => nil, :collection => 'preview', :member => {:remove => :get}
+        topic.resources :posts, :name_prefix => nil
         topic.resource :monitorship, :controller => :monitorships, :name_prefix => nil
       end
     end

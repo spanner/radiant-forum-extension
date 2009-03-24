@@ -30,7 +30,10 @@
           
     .post_wrapper
       .post_body
-        = clean_textilize(post.body)
+        - if post.frozen?
+          %p Post removed
+        - else
+          = clean_textilize(post.body)
 
       .post_info
         - if admin? || post.editable_by?(current_reader)
