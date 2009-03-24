@@ -1,9 +1,9 @@
-/ this template is generally only where you don't want a reply form on the page by default,
-/ and instead bring it in with a remote call. most often this is for page comments, where
-/ it has the advantage that the page can still be cached. that's why a login form might be returned.
+// this template is generally only where you don't want a reply form on the page by default,
+// and instead bring it in with a remote call. most often this is for page comments, where
+// it has the advantage that the page can still be cached. that's why a login form might be returned.
 
 - message_type = @page ? 'comment' : 'message'
-- formurl = @page ? preview_page_posts_url(@page) : preview_posts_url(@forum, @topic)
+- formurl = @page ? page_posts_url(@page) : posts_url(@forum, @topic)
 
 - if current_reader
   %div.post{:id => 'replyform'}
@@ -15,7 +15,7 @@
         = link_to @page.title, @page.url
     - form_for :post, :url => formurl, :html => {:id => 'reply_form', :class => 'friendly'} do |f|
       = render :partial => "posts/form", :object => f
-      = submit_tag "Preview #{message_type}"
+      = submit_tag "Post #{message_type}"
 
 - else
   %h2 

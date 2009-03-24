@@ -17,7 +17,7 @@ class Topic < ActiveRecord::Base
 
   before_validation :set_reader
   before_create :set_default_replied_at_and_sticky
-  before_save :check_for_changing_forums
+  before_update :check_for_changing_forums
   before_validation_on_create :post_valid?
   after_create :save_post
   before_update :update_post
@@ -62,9 +62,9 @@ class Topic < ActiveRecord::Base
   end
   
   def refresh_reply_data(post=nil)
-    if self.posts.empty?
+    if !post && self.posts.empty?     # ie. the post has just been deleted and there are no others
       self.destroy
-    else
+    elsif self.posts.count > 1
       post ||= self.posts.last
       self.last_post = post
       self.replied_by = post.reader
@@ -89,7 +89,6 @@ class Topic < ActiveRecord::Base
     end
 
     def check_for_changing_forums
-      return if new_record?
       old = Topic.find(id)
       if old.forum_id != forum_id
         set_posts_forum_id
@@ -114,7 +113,6 @@ class Topic < ActiveRecord::Base
 
     def save_post
       self.first_post = self.posts.create!(:body => self.body, :created_at => self.created_at)
-      self.save
     end
 
     def update_post

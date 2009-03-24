@@ -72,34 +72,31 @@ class PostsController < ApplicationController
       format.js { render :template => 'posts/new', :layout => false }
     end
   end
-  
-  def preview
-    return topic_locked if @topic && @topic.locked?
-    @post.created_at = Time.now()
-    respond_to do |format|
-      format.html { render :template => 'posts/preview' }
-      format.js { render :template => 'posts/preview', :layout => false }
-    end
-  end
-  
+    
   # javascript form sender sets params[:dispatch]
   # params[:commit] is set by clicking one of the submit buttons
   
   def create
-    if (params[:dispatch] == 'revise' || params[:commit] =~ /revise/i)
-      return new
-    elsif (params[:dispatch] == 'preview' || params[:commit] =~ /preview/i)
-      return preview
-    else
-      @topic = @page.find_or_build_topic if @page && !@topic
+    if @page && !@topic
+      @topic = @page.find_or_build_topic 
       @forum = @topic.forum
-      return topic_locked if @topic.locked?
-      @post  = @topic.posts.create!(params[:post])
-      @cache.expire_response(@page.url) if @page
-      respond_to do |format|
-        format.html { redirect_to_page_or_topic }
-        format.js { render :action => 'show', :layout => false }
-      end
+    end
+    return topic_locked if @topic.locked?
+    if @topic.new_record?
+      @topic.body = params[:post][:body]
+      @topic.save!
+      @post = @topic.first_post
+      
+      logger.warn "!!! page comment created"
+      logger.warn "topic.frozen? is #{@topic.frozen?}"
+      
+    else
+      @post = @topic.posts.create!(params[:post])
+    end
+    cache.expire_response(@page.url) if @page
+    respond_to do |format|
+      format.html { redirect_to_page_or_topic }
+      format.js { render :action => 'show', :layout => false }
     end
   rescue ActiveRecord::RecordInvalid
     flash[:error] = 'Please post something!'
@@ -130,6 +127,7 @@ class PostsController < ApplicationController
   def update
     @post.attributes = params[:post]
     @post.save!
+    cache.expire_response(@post.topic.page.url) if @post.topic.page
   rescue ActiveRecord::RecordInvalid
     flash[:bad_reply] = 'Zut Alors!'
   ensure
