@@ -1,0 +1,44 @@
+a, a:hover {
+  text-decoration: none;
+  color: #4d4e53;
+}
+
+a:hover {
+  color: #d1005d;
+}
+
+img {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+div#container {
+  width: 920px;
+  margin: 10px auto 60px auto;
+  padding: 0;
+  font-family: Georgia,"Times New Roman", Times, serif;
+  line-height: 1.6;
+  font-size: 105%;
+}
+
+div#reader_links {
+  padding-top: 30px;
+  font-size: 80%;
+  display: block;
+  margin-top: -3px;
+  font-family: helvetica, arial, sans-serif;
+}
+
+a.inviting, h2.inviting {
+  display: block;
+  background: url(/images/forum/post_14.png) no-repeat 0 4px;
+  padding-left: 18px;
+  font-family: HelveticaNeue-Light, helvetica, arial, sans-serif;
+  font-weight: lighter;
+  font-size: 1.6em;
+}
+
+a.inviting:hover {
+  background: url(/images/forum/post_14_over.png) no-repeat 0 4px;
+}
