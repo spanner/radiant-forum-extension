@@ -123,6 +123,9 @@ class PostsController < ApplicationController
   def update
     @post.attributes = params[:post]
     @post.save!
+    params[:files].each do |file|
+      attachment = @post.attachments.create( :reader => current_reader, :file => file )
+    end
     cache.expire_response(@post.topic.page.url) if @post.topic.page
   rescue ActiveRecord::RecordInvalid
     flash[:bad_reply] = 'Zut Alors!'

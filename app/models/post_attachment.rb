@@ -50,6 +50,7 @@ class PostAttachment < ActiveRecord::Base
                     :url => "/:class/:id/:basename:no_original_style.:extension",
                     :path => ":rails_root/public/:class/:id/:basename:no_original_style.:extension"
 
+  attr_protected :file_file_name, :file_content_type, :file_file_size
   validates_attachment_presence :file, :message => "You must choose a file to upload!"
   validates_attachment_content_type :file, :content_type => Radiant::Config["forum.attachment_content_types"].split(', ') if Radiant::Config.table_exists? && Radiant::Config["forum.attachment_content_types"]
   validates_attachment_size :file, :less_than => Radiant::Config["forum.max_attachment_size"].to_i.megabytes if Radiant::Config.table_exists? && Radiant::Config["forum.max_attachment_size"]
@@ -68,6 +69,25 @@ class PostAttachment < ActiveRecord::Base
 
   [:movie, :audio, :image, :other, :pdf].each do |content|
     define_method("#{content}?") { self.class.send("#{content}?", file_content_type) }
+  end
+  
+  def type
+    [:movie, :audio, :image, :other, :pdf].detect {|content| send("#{content}?")}
+  end
+  
+  def icon
+    iconpath = Radiant::Config.table_exists? && Radiant::Config['forum.icon_path'] ? Radiant::Config['forum.icon_path'] : '/images/icons/24'
+    if image?
+      return file.url(:icon)
+    elsif pdf?
+      return "#{iconpath}/pdf.png"
+    elsif audio?
+      return "#{iconpath}/audio.png"
+    elsif movie?
+      return "#{iconpath}/movie.png"
+    else
+      return "#{iconpath}/other.png"
+    end
   end
 
 end

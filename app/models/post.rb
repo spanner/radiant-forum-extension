@@ -16,7 +16,7 @@ class Post < ActiveRecord::Base
   after_destroy :revert_topic_reply_data
   
   validates_presence_of :reader, :body, :topic
-    
+
   def topic_page
     self.topic.page_for(self)
   end

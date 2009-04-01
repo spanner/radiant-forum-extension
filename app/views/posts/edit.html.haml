@@ -2,7 +2,7 @@
 
 - message_type = @topic.page ? 'comment' : 'message'
 
-- form_for :post, :url  => post_path(@topic.forum, @topic, @post), :html => {:method => 'put', :id => "post_form_#{@post.id}", :class => 'friendly'} do |f|
+- form_for :post, :url  => post_path(@topic.forum, @topic, @post), :html => {:method => 'put', :multipart => true, :id => "post_form_#{@post.id}", :class => 'friendly'} do |f|
   = render :partial => "posts/form", :object => f
   %div.buttons
     = submit_tag "Update #{message_type}"

@@ -37,9 +37,7 @@
       - unless post.attachments.empty?
         .post_attachments
           %ul.attachments 
-            - post.attachments.each do |att|
-              %li.attachment
-                = link_to att.filename, att.file.url
+            = render :partial => 'posts/attachment', :collection => post.attachments, :locals => {:removable => false}
 
       .post_info
         - if admin? || post.editable_by?(current_reader)
