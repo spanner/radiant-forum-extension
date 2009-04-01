@@ -1,6 +1,7 @@
 window.addEvent('domready', function(){
-  getPosts();
-  getRemoteCheckboxes();
+  // getPosts();
+  // getRemoteCheckboxes();
+  getUploadHandler();
   flashErrors();
   fadeNotices();
 });
@@ -32,9 +33,10 @@ flashAnchor = function () {
 // turns a link into a form
 // so that eg a reply link becomes a reply form or a login form as required
 // this allows us to return a cached page but display suitable interaction
+// which does slightly defeat the object, but keeps the server side clean
 
 getForms = function () {
-  document.getElements('a.retrieve_form').each(function (a) { this.replaceWithDestination(a); }, this);
+  document.getElements('a.retrieve_form').each(function (a) { replaceWithDestination(a); });
 };
 
 // these are usually topic-monitoring forms
@@ -65,6 +67,10 @@ replaceWithDestination = function (element) {
   element.addClass('waiting');
   var formholder = element.getParent();
   formholder.load(element.get('href'));
+};
+
+getUploadHandler = function () {
+  document.getElements('div.upload_handler').each(function (div) { new UploadHandler(div); });
 };
 
 // thoroughly interfere with javascript events
@@ -160,4 +166,59 @@ var Post = new Class({
     new Post(this.container);
   }  
 });
+
+var UploadHandler = new Class({
+  initialize: function (div) {
+    this.container = div;
+    this.list = div.getElement('ul.attachments');
+    this.pender = div.getElement('div.uploads');
+    this.selector = div.getElement('div.selector');
+
+    this.file_field_template = this.selector.getElement('input').clone();
+    this.file_pending_template = new Element('li');
+
+    this.attachments = [];
+    this.list.getElements('li.attachment').each(function (li) {
+      this.attachments.push( new Attachment(li));
+    }, this);
+
+    this.uploads = [];
+    this.uploader = this.selector.getElement('input');
+    this.uploader.addEvent('change', this.addUpload.bindWithEvent(this));
+  },
+  addUpload: function (e) {
+    block(e);
+    var ul = this.uploader.clone().set('id', 'test').inject(this.pender);
+    var li = new Element('li', {'class': 'attachment'}).set('text', ' ' + ul.value + ' ');
+    var icon = new Element('img').set('src', '/images/icons/24/image.png').inject(li, 'top');
+    var remover = new Element('a', {'class': 'remove'}).set('text', 'remove').inject(li, 'bottom');
+    li.inject(this.list, 'bottom');
+    this.uploader.set('value', null);
+  }
+});
+
+var Attachment = new Class({
+  initialize: function (li) {
+    this.container = li;
+    this.checkbox = li.getElement('input');
+    this.remover = li.getElement('a.remove');
+    this.remover.addEvent('click', this.remove.bindWithEvent(this));
+  },
+  remove: function (e) {
+    block(e);
+    this.checkbox.set('checked', false);
+    this.container.morph({opacity: 0, height: 0});
+  },
+  hide: function () {
+    this.container.hide();
+  }
+});
+
+
+
+
+
+
+
+
 

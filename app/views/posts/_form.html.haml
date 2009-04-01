@@ -3,7 +3,7 @@
     Your message
   = form.text_area :body, :rows => 10, :class => 'post_body'
 .upload_handler
-  %h3
+  %h3.label
     Attach files
   %ul.attachments
     = hidden_field_tag "post[attachment_ids][]", ""
@@ -13,6 +13,6 @@
         = link_to image_tag(attachment.icon, :class => 'icon', :size => '24x24'), attachment.file.url
         = link_to attachment.filename, attachment.file.url
         = link_to 'remove', '#', :class => 'remove', :id => "remove_attachment_#{attachment.id}" 
-  %div.hidden_uploads
-  %div.attachment_selector
+  .uploads
+  .selector
     = file_field_tag "files[]", :id => ""

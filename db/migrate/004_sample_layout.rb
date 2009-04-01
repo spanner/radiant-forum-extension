@@ -10,7 +10,6 @@ class SampleLayout < ActiveRecord::Migration
     <link rel="stylesheet" href="/stylesheets/forum.css" type="text/css" media="all" />
     <link rel="stylesheet" href="/stylesheets/forum_example.css" type="text/css" media="all" />
     <script type="text/javascript" charset="utf-8" src="/javascripts/mootools.js"></script>
-    <script type="text/javascript" charset="utf-8" src="/javascripts/moocheck.js"></script>
     <script type="text/javascript" charset="utf-8" src="/javascripts/forum.js"></script>
   </head>
   <body>
