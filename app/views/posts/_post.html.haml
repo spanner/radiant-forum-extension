@@ -36,7 +36,7 @@
           = clean_textilize(post.body)
       - unless post.attachments.empty?
         .post_attachments
-          %ul.attachments 
+          %ul 
             = render :partial => 'posts/attachment', :collection => post.attachments, :locals => {:removable => false}
 
       .post_info
