@@ -1,6 +1,6 @@
 class SampleLayout < ActiveRecord::Migration
   def self.up
-    Layout.create! :name => 'forum_example', :content => <<-EO
+    Layout.create :name => 'forum_example', :content => <<-EO
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
@@ -40,6 +40,5 @@ class SampleLayout < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :sites, :forum_layout_id
   end
 end

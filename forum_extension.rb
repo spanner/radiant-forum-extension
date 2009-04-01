@@ -17,6 +17,7 @@ class ForumExtension < Radiant::Extension
     
     map.namespace :admin, :member => { :remove => :get } do |admin|
       admin.resources :forums
+      # admin.resources :topics   for moderation
     end
 
     %w(reader forum page).each do |attr|
@@ -34,17 +35,17 @@ class ForumExtension < Radiant::Extension
       posts.posts_list '/posts', :action => 'index'
       posts.posts_feed '/posts/feed', :action => 'index', :format => 'rss'
     end
-
   end
   
   def activate
     Reader.send :include, ForumReader
-    Radiant::AdminUI.send :include, ForumAdminUI         # UI is an instance and already loaded, and this doesn't get there in time. so:
-    Radiant::AdminUI.instance.forum = Radiant::AdminUI.load_default_forum_regions
     ReaderNotifier.send :include, ForumReaderNotifier
     ReadersController.send :include, ForumReadersController
     Page.send :include, ForumPage
+ 
     Page.send :include, ForumTags
+    Radiant::AdminUI.send :include, ForumAdminUI         # UI is an instance and already loaded, and this doesn't get there in time. so:
+    Radiant::AdminUI.instance.forum = Radiant::AdminUI.load_default_forum_regions
 
     if defined? Site && admin.sites       # currently we know it's the spanner multi_site if admin.sites is defined
       Site.send :include, ForumSite
@@ -57,6 +58,7 @@ class ForumExtension < Radiant::Extension
     else
       RedCloth::TextileDoc.send :include, ForumRedCloth4
     end
+    
     ApplicationHelper.send :include, ForumHelper
 
     ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!( 

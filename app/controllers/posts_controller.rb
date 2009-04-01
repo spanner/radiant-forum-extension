@@ -6,7 +6,7 @@ class PostsController < ApplicationController
   before_filter :require_authority, :only => [:edit, :update, :destroy]
   before_filter :find_topic_or_page, :except => [:index]
   before_filter :find_post, :except => [:index, :new, :preview, :create, :monitored]
-  before_filter :build_post, :only => [:new, :preview, :create]
+  before_filter :build_post, :only => [:new]
   radiant_layout { |controller| controller.layout_for :forum }
 
   # protect_from_forgery :except => :create # because the post form is typically generated from radius tags, which are defined in a model with no access to the controller
@@ -73,33 +73,29 @@ class PostsController < ApplicationController
     end
   end
     
-  # javascript form sender sets params[:dispatch]
-  # params[:commit] is set by clicking one of the submit buttons
-  
   def create
-    if @page && !@topic
-      @topic = @page.find_or_build_topic 
-      @forum = @topic.forum
-    end
     return topic_locked if @topic.locked?
     if @topic.new_record?
+      # only happens if it's a page comment and the topic has just been built
+      # in that case we let the topic-creation routines do the post work
       @topic.body = params[:post][:body]
       @topic.save!
       @post = @topic.first_post
-      
-      logger.warn "!!! page comment created"
-      logger.warn "topic.frozen? is #{@topic.frozen?}"
-      
     else
       @post = @topic.posts.create!(params[:post])
     end
+    
+    params[:files].each do |file|
+      attachment = @post.attachments.create( :reader => current_reader, :file => file )
+    end
+    
     cache.expire_response(@page.url) if @page
     respond_to do |format|
       format.html { redirect_to_page_or_topic }
       format.js { render :action => 'show', :layout => false }
     end
   rescue ActiveRecord::RecordInvalid
-    flash[:error] = 'Please post something!'
+    flash[:error] = 'Problem!'
     respond_to do |format|
       format.html { render :action => 'new' }
       format.js { render :action => 'new', :layout => false }
@@ -164,8 +160,11 @@ class PostsController < ApplicationController
     def find_topic_or_page
       if params[:page_id]
         @page = Page.find(params[:page_id])
+        @topic = @page.find_or_build_topic
+        @forum = @topic.forum
       elsif params[:topic_id]
         @topic = Topic.find(params[:topic_id], :include => :forum)
+        @forum = @topic.forum
       end
     end
 
@@ -175,7 +174,6 @@ class PostsController < ApplicationController
     
     def build_post
       @post = Post.new(params[:post])
-      @post.body.gsub!(/ +/, ' ') if @post.body
       @post.topic = @topic if @topic
       @post.reader = current_reader
     end

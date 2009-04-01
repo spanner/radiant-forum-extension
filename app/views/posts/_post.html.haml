@@ -34,6 +34,12 @@
           %p Post removed
         - else
           = clean_textilize(post.body)
+      - unless post.attachments.empty?
+        .post_attachments
+          %ul.attachments 
+            - post.attachments.each do |att|
+              %li.attachment
+                = link_to att.filename, att.file.url
 
       .post_info
         - if admin? || post.editable_by?(current_reader)

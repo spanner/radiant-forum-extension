@@ -1,13 +1,9 @@
 - if current_reader
-  - topic ||= @topic
-  - forum ||= topic.forum
-  - post ||= @post || Post.new 
-  - post.topic ||= topic
-  - post.forum ||= forum
+  - @post ||= @topic.posts.build
 
   %div.reply{:id => 'replyform'}
     %h2.inviting Post a reply
-    - form_for :post, :url  => posts_path(forum, topic), :html => {:id => 'reply_form', :class => 'friendly'} do |f|
+    - form_for :post, :url  => posts_path(@forum, @topic), :html => {:id => 'reply_form', :multipart => true, :class => 'friendly'} do |f|
       = render :partial => "posts/form", :object => f
       = submit_tag 'Post Reply'
 

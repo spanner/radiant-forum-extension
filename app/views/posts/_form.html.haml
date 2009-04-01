@@ -2,3 +2,13 @@
   %label{:for => 'post_body'}
     Your message
   = form.text_area :body, :rows => 10, :class => 'post_body'
+%div.upload-handler
+  %label
+    Attach files
+    %br
+  %div.existing_attachments
+    = render :partial => 'posts/attachment', :collection => @post.attachments
+  %div.pending_attachments
+  %div.hidden_uploads
+  %div.attachment_selector
+    = file_field_tag "files[]", :id => ""

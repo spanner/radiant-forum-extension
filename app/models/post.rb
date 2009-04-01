@@ -6,7 +6,8 @@ class Post < ActiveRecord::Base
   belongs_to :forum, :counter_cache => true
   belongs_to :reader,  :counter_cache => true
   belongs_to :topic, :counter_cache => true
-
+  has_many :attachments, :class_name => 'PostAttachment', :order => :position, :dependent => :destroy
+  
   attr_writer :name
 
   before_validation :set_reader
@@ -81,5 +82,6 @@ class Post < ActiveRecord::Base
     def revert_topic_reply_data
       self.topic.refresh_reply_data
     end
+    
   
 end
