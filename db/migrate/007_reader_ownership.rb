@@ -10,6 +10,7 @@ class ReaderOwnership < ActiveRecord::Migration
         post.created_by = User.find(post.user_id) rescue nil
       end
       post.reader ||= Reader.find_or_create_for_user(post.created_by)
+      post.replied_by = Reader.find_or_create_for_user(post.replied_by_id)
       post.save
     end
   end
