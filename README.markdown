@@ -5,9 +5,9 @@ This is a simple but clean forum implementation that plugs into radiant. It's fa
 * rss feeds at several levels
 * email monitoring of topics
 * textile-formatted messages with html whitelisting
-* message attachments (if permitted)
+* message attachments
 
-but I've tried to keep it clean and simple on the inside. This is helped by the fact that all the user-management is in the reader extension, so you should find it very easy to adapt and extend. 
+but I've tried to keep it clean and simple both inside and out. This is helped by the fact that all the user-management is in the reader extension, so you should find this one very easy to adapt and extend. 
 
 The forum was derived long ago from Beast and the bones will still be visible here and there. It has been in use on various sites in various versions for the last two years, but in consolidating it here and making it ready for publication I've pretty much refactored the whole thing. Some of it is quite new, then, and may have exciting new bugs in it. 
 
@@ -54,19 +54,11 @@ For best results, you will want this in your environment.rb
 
 	config.extensions # [ :share_layouts, :multi_site, :reader, :all ] 
 	
-If you add [reader_groups](http://github.com/spanner/radiant-reader_groups-extension) then that should be specified after :reader.
+If you add [reader_groups](http://github.com/spanner/radiant-reader_groups-extension) then that should be specified after :reader, and incidentally you would probably also want to install the [group_forums](http://github.com/spanner/radiant-group_forums-extension) glue that lets you make a forum private to a group.
 
 ## Administration
 
-The forum is easy to use and almost entirely separate from your page hierarchy. Forums - which are described as 'discussion categories' most of the time and pushed into the background - are created and edited in the admin interface, and there readers can also be promoted to moderate selected forums (soon). Everything else happens through the reader interface including the editing and deletion of posts.
-
-## Configuration
-
-There are a few permissions you can set:
-
-* Radiant::Config['forum.enable_uploads?']
-* Radiant::Config['forum.enable_smilies?']
-* Radiant::Config['forum.enable_comments?']
+The forum is easy to use and almost entirely separate from your page hierarchy. Forums - which are described as 'discussion categories' most of the time and pushed into the background - are created and edited in the admin interface, and there readers can also (soon) be promoted to moderate selected forums. Everything else happens through the reader interface including the editing and deletion of posts.
 
 ## Page Comments
 
@@ -86,7 +78,7 @@ I've published this in the simplest form possible, on the assumption that everyo
 
 ## Smilies
 
-I've included a basic set here and a redcloth extension that catches :smile: notation alongside the textile markup. There's a javascript front end for that too - click on the smiley, you know - which will soon appear here, along with the rest.
+I've included a basic set here and a redcloth extension that catches :smile: notation alongside the textile markup. There's a javascript front end for that too - click on the smiley, you know - which will soon appear here.
 
 ## Author & Copyright
 

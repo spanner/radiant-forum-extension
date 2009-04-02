@@ -9,7 +9,7 @@
     = hidden_field_tag "post[attachment_ids][]", ""
     - @post.attachments.each do |attachment|
       %li.attachment
-        = check_box_tag "post[attachment_ids][]", attachment.id, true, {:id => "post_attachment_#{attachment.id}"}
+        = check_box_tag "post[attachment_ids][]", attachment.id, true, {:id => "post_attachment_#{attachment.id}", :class => 'choose_attachment'}
         = link_to image_tag(attachment.icon, :class => 'icon', :size => '24x24'), attachment.file.url
         = link_to attachment.filename, attachment.file.url
         = link_to 'remove', '#', :class => 'remove', :id => "remove_attachment_#{attachment.id}" 

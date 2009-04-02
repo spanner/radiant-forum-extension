@@ -5,6 +5,12 @@ window.addEvent('domready', function(){
   flashErrors();
   fadeNotices();
 });
+
+Element.implement({
+  dwindle: function () {
+    this.morph({opacity: 0, height: 0});
+  }
+});
   
 // get rid of radiant notifications (after a pause)
 
@@ -188,26 +194,46 @@ var UploadHandler = new Class({
   },
   addUpload: function (e) {
     block(e);
-    var ul = this.uploader.clone().set('id', 'test').inject(this.pender);
-    var li = new Element('li', {'class': 'attachment'}).set('text', ' ' + ul.value + ' ');
-    var icon = new Element('img').set('src', '/images/icons/24/image.png').inject(li, 'top');
-    var remover = new Element('a', {'class': 'remove'}).set('text', 'remove').inject(li, 'bottom');
-    li.inject(this.list, 'bottom');
+    this.uploads.push(new Upload(this.uploader, this.pender, this.list));
     this.uploader.set('value', null);
+  }
+});
+
+var Upload = new Class({
+  initialize: function (file_input, ul_holder, list_div) {
+    this.uploader = file_input.clone().set('id', 'test').inject(ul_holder);
+    this.container = new Element('li', {'class': 'attachment'}).set('text', ' ' + this.uploader.value + ' ');
+    this.icon = new Element('img').set('src', this.icon_for(this.uploader.value)).inject(this.container, 'top');
+    this.remover = new Element('a', {'class': 'remove', 'href': '#'}).set('text', 'remove').inject(this.container, 'bottom');
+    this.remover.addEvent('click', this.remove.bindWithEvent(this));
+    this.container.inject(list_div, 'bottom');
+  },
+  icon_for: function (filename) {
+    switch(filename.split('.').pop()) {
+      case 'pdf': return '/images/icons/24/pdf.png';
+      case 'mpg': return '/images/icons/24/video.png';
+      case 'mp3': return '/images/icons/24/audio.png';
+      default: return '/images/icons/24/image.png';
+    }
+  },
+  remove: function (e) {
+    block(e);
+    this.uploader.destroy();
+    this.container.dwindle();
   }
 });
 
 var Attachment = new Class({
   initialize: function (li) {
     this.container = li;
-    this.checkbox = li.getElement('input');
+    this.checkbox = li.getElement('input.choose_attachment');
     this.remover = li.getElement('a.remove');
     this.remover.addEvent('click', this.remove.bindWithEvent(this));
   },
   remove: function (e) {
     block(e);
-    this.checkbox.set('checked', false);
-    this.container.morph({opacity: 0, height: 0});
+    if (this.checkbox) this.checkbox.set('checked', false);
+    this.container.dwindle();
   },
   hide: function () {
     this.container.hide();
