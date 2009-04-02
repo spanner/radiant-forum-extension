@@ -64,7 +64,7 @@ The forum is easy to use and almost entirely separate from your page hierarchy. 
 
 To enable page comments, all you have to do is put `<r:comments:all />` somewhere in the layout (or in a snippet or even on an individual page). Behind the scenes this will create a dedicated forum for page comments and a topic for each page as it is commented upon. The rest of the mechanism is the same, and the comments themselves are just posts. 
 
-The page cache means we can't put anything personal on the page itself - no edit controls or logout buttons - but you can get around this with a remote call. Put `<r:comments:remote />` on the page instead and a suitable stub will be included ready for your scripts to grab. A simple example is included in forum.js.
+The page cache means we can't put anything personal on the page itself - no edit controls or logout buttons - but you can get around this with a remote call. Put `<r:comments:remote />` on the page instead and a stub will be included suitable for your scripts to grab. A simple example is included in forum.js.
 
 You can also use `<r:comments:each>...</r:comments:each>` and the various r:comment tags to compose page comments however you like. See the tags-available documentation for details.
 
@@ -74,7 +74,7 @@ The reader extension includes email confirmation and a simple honeytrap that sho
 
 ## Ajax
 
-I've published this in the simplest form possible, on the assumption that everyone will want to use it in a different way. A sample javascript front end is included to make things a little bit more friendly: it includes edit-in-place for posts, a bit of code to handle bringing page comments into the page, and some generally-useful routines like notice faders. That's about it, but I hope it will provide a starting point. The 'forum_example' layout that is created on installation should bring in that javascript and enough css for you to see it all working.
+I've published this in the simplest form possible, on the assumption that everyone will want to use it in a different way. A sample javascript front end (based on mootools but kept very simple) is included to make things a little bit more friendly: it includes edit-in-place for posts, a bit of code to handle bringing page comments into the page, and some generally-useful routines like notice faders. That's about it, but I hope it will provide a starting point. The 'forum_example' layout that is created on installation should bring in that javascript and enough css for you to see it all working.
 
 ## Smilies
 

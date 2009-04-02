@@ -84,12 +84,10 @@ class PostsController < ApplicationController
     else
       @post = @topic.posts.create!(params[:post])
     end
-    
-    params[:files].each do |file|
-      attachment = @post.attachments.create( :reader => current_reader, :file => file )
-    end
-    
+
+    @post.save_attachments(params[:files])
     cache.expire_response(@page.url) if @page
+
     respond_to do |format|
       format.html { redirect_to_page_or_topic }
       format.js { render :action => 'show', :layout => false }
@@ -123,9 +121,7 @@ class PostsController < ApplicationController
   def update
     @post.attributes = params[:post]
     @post.save!
-    params[:files].each do |file|
-      attachment = @post.attachments.create( :reader => current_reader, :file => file )
-    end
+    @post.save_attachments(params[:files])
     cache.expire_response(@post.topic.page.url) if @post.topic.page
   rescue ActiveRecord::RecordInvalid
     flash[:bad_reply] = 'Zut Alors!'

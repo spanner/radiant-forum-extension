@@ -15,7 +15,7 @@ class Post < ActiveRecord::Base
   after_create :set_topic_reply_data
   after_destroy :revert_topic_reply_data
   
-  validates_presence_of :reader, :body, :topic
+  validates_presence_of :reader, :topic
 
   def topic_page
     self.topic.page_for(self)
@@ -64,6 +64,11 @@ class Post < ActiveRecord::Base
   def date_html
     self.created_at.to_s(:html_date)
   end
+  
+  def save_attachments(files=[])
+    attachments = files.collect {|file| self.attachments.create(:file => file) }
+  end
+  
   
   protected
   
