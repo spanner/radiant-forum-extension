@@ -11,14 +11,13 @@ describe Post do
   
   describe "on creation" do
   
-    [:body, :topic].each do |field|
-      it "should require a #{field}" do
-        post = Post.new(:body => 'hullabaloo')
-        post.topic = topics(:older)
-        post.send("#{field}=".intern, nil)
-        post.should_not be_valid
-        post.errors.on(field).should_not be_empty
-      end
+    it "should require a topic" do
+      post = Post.new(:body => 'hullabaloo')
+      post.should_not be_valid
+    end
+    
+    it "should require either a body or an attachment" do
+      pending "post validation"
     end
 
     it "should get a reader automatically" do

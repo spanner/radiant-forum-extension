@@ -4,6 +4,8 @@ class Topic < ActiveRecord::Base
   belongs_to :forum, :counter_cache => true
   belongs_to :page
   belongs_to :reader
+  belongs_to :created_by, :class_name => 'User'
+  belongs_to :updated_by, :class_name => 'User'
 
   belongs_to :first_post, :class_name => 'Post', :include => :reader                                                # aka topic.body. should not change
   belongs_to :last_post, :class_name => 'Post', :include => :reader                                                 # this is just for display efficiency.
@@ -16,7 +18,7 @@ class Topic < ActiveRecord::Base
   validates_presence_of :forum, :reader, :name
 
   before_validation :set_reader
-  before_create :set_default_replied_at_and_sticky
+  before_create :set_defaults
   before_update :check_for_changing_forums
   before_validation_on_create :post_valid?
   after_create :save_post
@@ -83,9 +85,9 @@ class Topic < ActiveRecord::Base
       self.reader ||= Reader.current_reader
     end
   
-    def set_default_replied_at_and_sticky
-      self.replied_at ||= Time.now.utc
+    def set_defaults
       self.sticky ||= 0
+      self.locked ||= 0
     end
 
     def check_for_changing_forums
@@ -113,6 +115,7 @@ class Topic < ActiveRecord::Base
 
     def save_post
       self.first_post = self.posts.create!(:body => self.body, :created_at => self.created_at)
+      self.save(false)
     end
 
     def update_post

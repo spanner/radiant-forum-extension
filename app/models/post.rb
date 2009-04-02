@@ -6,13 +6,15 @@ class Post < ActiveRecord::Base
   belongs_to :forum, :counter_cache => true
   belongs_to :reader,  :counter_cache => true
   belongs_to :topic, :counter_cache => true
+  belongs_to :created_by, :class_name => 'User'
+  belongs_to :updated_by, :class_name => 'User'
   has_many :attachments, :class_name => 'PostAttachment', :order => :position, :dependent => :destroy
   
   attr_writer :name
 
   before_validation :set_reader
   before_create :set_forum
-  after_create :set_topic_reply_data
+  after_create :update_topic_reply_data
   after_destroy :revert_topic_reply_data
   
   validates_presence_of :reader, :topic
@@ -65,8 +67,8 @@ class Post < ActiveRecord::Base
     self.created_at.to_s(:html_date)
   end
   
-  def save_attachments(files=[])
-    attachments = files.collect {|file| self.attachments.create(:file => file) }
+  def save_attachments(files=nil)
+    attachments = files.collect {|file| self.attachments.create(:file => file) } if files
   end
   
   
@@ -80,7 +82,7 @@ class Post < ActiveRecord::Base
       self.forum ||= self.topic.forum
     end
     
-    def set_topic_reply_data
+    def update_topic_reply_data
       self.topic.refresh_reply_data(self)
     end
 

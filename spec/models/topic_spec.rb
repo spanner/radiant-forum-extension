@@ -15,7 +15,9 @@ describe Topic do
     
     it "should set default values" do
       @topic.sticky.should be_false
-      @topic.replied_at.should be_close(Time.now, 5.seconds)
+      @topic.locked.should be_false
+      @topic.replied_by.should be_nil
+      @topic.replied_at.should be_nil
     end
 
     [:name, :forum].each do |field|
@@ -34,6 +36,7 @@ describe Topic do
       @topic.first_post.should_not be_nil
       @topic.first_post.body.should == 'this is the first post body but validation requires it'
     end
+
   end
   
   describe "with posts" do

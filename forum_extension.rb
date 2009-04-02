@@ -42,6 +42,9 @@ class ForumExtension < Radiant::Extension
     ReaderNotifier.send :include, ForumReaderNotifier
     ReadersController.send :include, ForumReadersController
     Page.send :include, ForumPage
+    UserActionObserver.instance.send :add_observer!, Forum
+    UserActionObserver.instance.send :add_observer!, Topic
+    UserActionObserver.instance.send :add_observer!, Post
  
     Page.send :include, ForumTags
     Radiant::AdminUI.send :include, ForumAdminUI         # UI is an instance and already loaded, and this doesn't get there in time. so:
