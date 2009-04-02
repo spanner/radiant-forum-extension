@@ -9,9 +9,23 @@ class ReaderOwnership < ActiveRecord::Migration
       if Post.column_names.include?("user_id")
         post.created_by = User.find(post.user_id) rescue nil
       end
-      post.reader ||= Reader.find_or_create_for_user(post.created_by)
-      post.replied_by = Reader.find_or_create_for_user(post.replied_by_id)
+      unless post.reader
+        post.reader = Reader.find_or_create_for_user(post.created_by)
+      end
       post.save
+    end
+    Topic.find(:all).each do |topic|
+      if Topic.column_names.include?("user_id")
+        topic.created_by = User.find(topic.user_id) rescue nil
+      end
+      unless topic.reader
+        reader = Reader.find_or_create_for_user(topic.created_by)
+        topic.reader = reader
+      end
+      unless topic.replied_by
+        topic.replied_by = Reader.find_or_create_for_user(User.find(topic.replied_by_id)) rescue nil
+      end
+      topic.save
     end
   end
 
