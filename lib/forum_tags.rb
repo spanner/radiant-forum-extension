@@ -53,6 +53,66 @@ module ForumTags
     results
   end
 
+  tag 'comment' do |tag|
+    raise TagError, "can't have r:comment without a post" unless post = tag.locals.comment
+    result = []
+    if tag.double?
+      tag.locals.reader = post.reader
+      result << tag.expand
+    else
+      result << %{
+<div class="post" id="#{post.dom_id}>"
+  <div class = "post_header">
+    <h2>
+      <a href="#{reader_url(post.reader)}" class="main">
+        <img src="#{post.reader.gravatar_url(:size => 40)}" width="40" height ="40" class="gravatar" />
+        #{post.reader.name}
+      </a>
+    </h2>
+    <p class="context">#{post.date_html}</p>
+  </div>
+  <div class = "post_body">#{post.body_html}</div>
+</div>
+      }
+    end
+    result
+  end
+
+  desc %{
+    If you would like comments to have the same appearance and inline editing controls as a normal forum page,
+    you'll be serving reader-specific content that isn't cacheable. The best way to do that is to include a remote 
+    call after the cached page has been served, but only if the page has comments. It does make the cache a bit 
+    redundant, yes, but the plan is to add per-reader fragment caching as well.
+
+    There are a hundred ways to get the comments - all it takes is a JS or JSON request to /pages/:id/topic -
+    but if you're using the sample mootools-based forum.js, you can just do this:
+
+    *Usage:*
+    <pre><code>
+    <r:comments:remote />
+    </code></pre>
+  }
+  tag 'comments:remote' do |tag|
+    %{<h2 class="comment_header">Comments</h2><div class="comments"><a href="/forums/#{tag.locals.page.topic.forum.id}/topics/#{tag.locals.page.topic.id}" class="remote_content">Comments</a></div>}
+  end
+
+  desc %{
+    Returns a string in the form "x comments" or "no comments yet".
+  
+    *Usage:*
+    <pre><code><r:comments:summary /></code></pre>
+  }
+  
+  tag 'comments:summary' do |tag|
+    if tag.locals.comments.empty?
+      "no comments yet"
+    elsif tag.locals.comments.size == 1
+      "one comment"
+    else
+      "#{tag.locals.comments.size} comments"
+    end
+  end
+
   desc %{
     Anything between if_comments tags is displayed only - dramatic pause - if there are comments.
   
@@ -73,44 +133,6 @@ module ForumTags
   tag 'unless_comments' do |tag|
     raise TagError, "can't have unless_comments without a page" unless page = tag.locals.page
     tag.expand if page.posts.any?
-  end
-
-  tag 'comment' do |tag|
-    raise TagError, "can't have comment without a post" unless post = tag.locals.comment
-    results = []
-    results << %{
-<div class="post" id="#{post.dom_id}>"
-  <div class = "post_header">
-    <h2>
-      <a href="#{reader_url(post.reader)}" class="main">
-        <img src="#{post.reader.gravatar_url(:size => 40)}" width="40" height ="40" class="gravatar" />
-        #{post.reader.name}
-      </a>
-    </h2>
-    <p class="context">#{post.date_html}</p>
-  </div>
-  <div class = "post_body">#{post.body_html}</div>
-</div>
-    }
-  end
-
-  desc %{
-    If you would like comments to have the same appearance and inline editing controls as a normal forum page,
-    you'll be serving reader-specific content that isn't cacheable. The best way to do that is to include a remote 
-    call after the cached page has been served, but only if the page has comments.
-    
-    There are a hundred ways to do that - all it takes is a JS or JSON request to /pages/:id/topic -
-    but if you're using the sample mootools-based javascript, you can just do this:
-  
-    *Usage:*
-    <pre><code>
-    <r:if_comments>
-      <r:comments:remote />
-    </r:if_comments>
-    </code></pre>
-  }
-  tag 'comments:remote' do |tag|
-    %{<h3>Comments</h3><a href="/forums/#{tag.locals.page.topic.forum.id}/topics/#{tag.locals.page.topic.id}" class="get_comments">page comments</a>} if tag.locals.page.topic 
   end
   
   desc %{
@@ -134,13 +156,6 @@ module ForumTags
     results
   end
   
-  
-
-  tag 'comment' do |tag|
-    raise TagError, "comment is not defined" unless tag.locals.comment
-    tag.locals.reader = tag.locals.comment.reader
-    tag.expand
-  end
   tag 'comment:reader' do |tag|
     raise TagError, "can't have comment:reader without a comment" unless reader = tag.locals.reader
     tag.expand
