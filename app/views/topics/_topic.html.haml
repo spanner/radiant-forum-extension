@@ -14,7 +14,7 @@
     - else
       from
     = link_to topic.reader.name, reader_url(topic.reader)
-    - if topic.replied_at
+    - if topic.replied_at && topic.replied_by
       \.
       = topic.posts.count
       = pluralize(topic.posts.count, 'comment')
