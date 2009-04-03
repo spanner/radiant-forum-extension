@@ -21,7 +21,7 @@
         - if post.created_at.to_date == ::Date.current
           = time_ago_in_words(post.created_at)
           ago
-        - if post.created_at.to_date == ::Date.current - 1
+        - elsif post.created_at.to_date == ::Date.current - 1
           yesterday at
           = post.created_at.to_s(:short_time)
         - else
