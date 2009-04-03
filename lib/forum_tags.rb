@@ -23,17 +23,15 @@ module ForumTags
     Returns a string in the form "x comments" or "no comments yet".
   
     *Usage:*
-    <pre><code><r:comments:count /></code></pre>
-    
-    In order that pages can still be cached, we show a reply link rather than a form. The sample
-    javascript library included with the forum extension will turn this into a login or comment
-    form as appropriate.
+    <pre><code><r:comments:summary /></code></pre>
   }
-  tag 'comments:count' do |tag|
+  tag 'comments:summary' do |tag|
     if tag.locals.comments.empty?
       "no comments yet"
+    elsif tag.locals.comments.size == 1
+      "one comment"
     else
-      "#{tag.locals.comments.size} #{ActionView::Helpers::TextHelper.pluralize(tag.locals.comments.size, "comment")}"
+      "#{tag.locals.comments.size} comments"
     end
   end
   
