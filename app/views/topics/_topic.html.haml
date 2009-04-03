@@ -4,7 +4,7 @@
   %span.markers
   %span.subject
     %a{:href => topic_url(topic.forum, topic), :class => 'main'}
-      = gravatar_for(topic.reader, {:size => 46}, {:alt => topic.reader.name, :class => 'gravatar'})
+      = gravatar_for(topic.reader, {:size => 36}, {:alt => topic.reader.name, :class => 'gravatar'})
       = topic.name
   %span.context
     - if with_context
