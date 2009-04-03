@@ -7,19 +7,37 @@ module ForumTags
     To enable page commenting, all you have to do is put this in your layout:
   
     *Usage:*
-    <pre><code><r:page:comments:all /></code></pre>
+    <pre><code><r:comments:all /></code></pre>
     
     In order that pages can still be cached, we show a reply link rather than a form. The sample
     javascript library included with the forum extension will turn this into a login or comment
     form as appropriate.
   }
-  tag 'page:comments' do |tag|
-    raise TagError, "can't have page:comments without a page" unless page = tag.locals.page
+  tag 'comments' do |tag|
+    raise TagError, "can't have comments without a page" unless page = tag.locals.page
     tag.locals.comments = page.posts
     tag.expand
   end
   
-  tag 'page:comments:all' do |tag|
+  desc %{
+    Returns a string in the form "x comments" or "no comments yet".
+  
+    *Usage:*
+    <pre><code><r:comments:count /></code></pre>
+    
+    In order that pages can still be cached, we show a reply link rather than a form. The sample
+    javascript library included with the forum extension will turn this into a login or comment
+    form as appropriate.
+  }
+  tag 'comments:count' do |tag|
+    if tag.locals.comments.empty?
+      "no comments yet"
+    else
+      "#{tag.locals.comments.size} #{ActionView::Helpers::TextHelper.pluralize(tag.locals.comments.size, "comment")}"
+    end
+  end
+  
+  tag 'comments:all' do |tag|
     posts = tag.locals.comments
     results = []
     results << "<h2>Comments</h2>"
@@ -37,8 +55,30 @@ module ForumTags
     results
   end
 
-  tag 'page:comment' do |tag|
-    raise TagError, "can't have page:comment without a post" unless post = tag.locals.comment
+  desc %{
+    Anything between if_comments tags is displayed only - dramatic pause - if there are comments.
+  
+    *Usage:*
+    <pre><code><r:if_comments>...</r:if_comments></code></pre>
+  }
+  tag 'if_comments' do |tag|
+    raise TagError, "can't have if_comments without a page" unless page = tag.locals.page
+    tag.expand if page.posts.any?
+  end
+
+  desc %{
+    Anything between unless_comments tags is displayed only if there are no comments.
+  
+    *Usage:*
+    <pre><code><r:unless_comments>...</r:unless_comments></code></pre>
+  }
+  tag 'unless_comments' do |tag|
+    raise TagError, "can't have unless_comments without a page" unless page = tag.locals.page
+    tag.expand if page.posts.any?
+  end
+
+  tag 'comment' do |tag|
+    raise TagError, "can't have comment without a post" unless post = tag.locals.comment
     results = []
     results << %{
 <div class="post" id="#{post.dom_id}>"
@@ -65,9 +105,13 @@ module ForumTags
     but if you're using the sample mootools-based javascript, you can just do this:
   
     *Usage:*
-    <pre><code><r:page:comments:remote /></code></pre>
+    <pre><code>
+    <r:if_comments>
+      <r:comments:remote />
+    </r:if_comments>
+    </code></pre>
   }
-  tag 'page:comments:remote' do |tag|
+  tag 'comments:remote' do |tag|
     %{<h3>Comments</h3><a href="/forums/#{tag.locals.page.topic.forum.id}/topics/#{tag.locals.page.topic.id}" class="get_comments">page comments</a>} if tag.locals.page.topic 
   end
   
@@ -75,15 +119,15 @@ module ForumTags
     If you want more control over the display of page comments, you can spell them out:
   
     *Usage:*
-    <pre><code><r:page:comments:each>
+    <pre><code><r:comments:each>
       <h2><r:comment:reader:name /></h2>
       <p class="date"><r:comment:date /></p>
       <r:comment:body_html />
-    </r:page:comments:each>
-    <r:page:comment_link />
+    </r:comments:each>
+    <r:comment_link />
     </code></pre>
   }
-  tag 'page:comments:each' do |tag|
+  tag 'comments:each' do |tag|
     results = []
     tag.locals.comments.each do |post|
       tag.locals.comment = post
@@ -155,28 +199,28 @@ module ForumTags
 
     *Usage:*
     <pre><code>
-      <r:page:if_comments>
-        <r:page:comment_link />
-      </r:page:if_comments>
-      <r:page:unless_comments>
-        <r:page:comment_link class="how_exciting">Be the first to add a comment!</r:page:comment_link>
-      </r:page:unless_comments>
+      <r:if_comments>
+        <r:comment_link />
+      </r:if_comments>
+      <r:unless_comments>
+        <r:comment_link class="how_exciting">Be the first to add a comment!</r:comment_link>
+      </r:unless_comments>
     </code></pre>
   }
-  tag 'page:comment_link' do |tag|
-    raise TagError, "can't have `page:comment_link' without a page." unless tag.locals.page
+  tag 'comment_link' do |tag|
+    raise TagError, "can't have `comment_link' without a page." unless tag.locals.page
     options = tag.attr.dup
     attributes = options.inject('') { |s, (k, v)| s << %{#{k.downcase}="#{v}" } }.strip
     attributes = " #{attributes}" unless attributes.empty?
     text = tag.double? ? tag.expand : "Add a comment"
-    %{<a href="#{tag.render('page:comment_url')}"#{attributes}>#{text}</a>}
+    %{<a href="#{tag.render('comment_url')}"#{attributes}>#{text}</a>}
   end
 
   desc %{
     The address for add-a-comment links
   }
-  tag 'page:comment_url' do |tag|
-    raise TagError, "can't have `page:comment_url' without a page." unless tag.locals.page
+  tag 'comment_url' do |tag|
+    raise TagError, "can't have `comment_url' without a page." unless tag.locals.page
     new_page_post_url(tag.locals.page)
   end
 
