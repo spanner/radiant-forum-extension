@@ -25,7 +25,9 @@ class CreateForumTables < ActiveRecord::Migration
       add_index "forums", ["site_id"], :name => "index_forums_on_site_id"
     end
 
-    unless Monitorship.table_exists
+    if Monitorship.table_exists
+      rename_column :monitorships, :user_id, :reader_id
+    else
       create_table "monitorships", :force => true do |t|
         t.column "topic_id",         :integer
         t.column "reader_id",        :integer

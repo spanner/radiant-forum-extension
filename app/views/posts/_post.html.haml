@@ -12,11 +12,12 @@
           = post.reader.name
       %p.context
         - if post.first?
-          started this discussion
+          started the discussion
         - else
           replied
         - if with_context
-          under
+          - unless post.first?
+            to
           = link_to post.topic.name, topic_url(post.forum, post.topic)
         - if post.created_at.to_date == ::Date.current
           = time_ago_in_words(post.created_at)

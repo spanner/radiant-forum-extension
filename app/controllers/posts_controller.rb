@@ -35,7 +35,7 @@ class PostsController < ApplicationController
     @readers = Reader.find(:all, :select => 'distinct *', :conditions => ['id in (?)', @posts.collect(&:reader_id).uniq]).index_by(&:id)
 
     @title = ((defined? Site) ? current_site.name : Radiant::Config['site.title']) || ''
-    @title << ": posts"
+    @title << ": everything"
     @title << " matching '#{params[:q]}'" if params[:q]
     @title << " from #{@reader.name}" if @reader
     if @topic

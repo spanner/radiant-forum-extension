@@ -1,26 +1,21 @@
 = render :partial => 'readers/flasher'
-= render :partial => 'readers/controls'
 
 #forum
-- if @posts.empty?
-  %p No talk here yet.
-
-- else
-  %ul.biglist
-    - @posts.each do |post|
-      = render :partial => 'posts/post', :object => post, :locals => {:with_context => true}
-
-  - if @posts.next_page
-    = render :partial => 'shared/pagination', :locals => {:list => @posts}
+  - if @posts.empty?
+    %p No talk here yet.
+  - else
+    - paginated_section @topics do
+      %ul.main
+        - @posts.each do |post|
+          = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true}
 
 - content_for :breadcrumbs do
   = link_to 'Forum', forums_url
   \&gt;
   = @title
 
-- content_for :title do
-  %h1 
-    = @title
+- content_for :pagetitle do
+  = @title
 
 - content_for :feed do
   = feed_link(posts_feed_path)
