@@ -1,7 +1,7 @@
 class CreateForumTables < ActiveRecord::Migration
   def self.up
 
-    if Forum.table_exists
+    if Forum.table_exists?
       add_column :forums, :reader_id, :integer
       add_column :forums, :site_id, :integer
       add_column :forums, :replied_by_id, :integer
@@ -25,7 +25,7 @@ class CreateForumTables < ActiveRecord::Migration
       add_index "forums", ["site_id"], :name => "index_forums_on_site_id"
     end
 
-    if Monitorship.table_exists
+    if Monitorship.table_exists?
       rename_column :monitorships, :user_id, :reader_id
     else
       create_table "monitorships", :force => true do |t|
@@ -35,7 +35,7 @@ class CreateForumTables < ActiveRecord::Migration
       end
     end
 
-    if Post.table_exists
+    if Post.table_exists?
       add_column :posts, :reader_id, :integer
       add_column :posts, :site_id, :integer
     else
@@ -53,7 +53,7 @@ class CreateForumTables < ActiveRecord::Migration
       add_index "posts", ["reader_id", "created_at"], :name => "index_posts_on_reader_id"
     end
     
-    if Topic.table_exists
+    if Topic.table_exists?
       add_column :topics, :reader_id, :integer
       add_column :topics, :site_id, :integer
       rename_column :topics, :replied_by, :replied_by_id

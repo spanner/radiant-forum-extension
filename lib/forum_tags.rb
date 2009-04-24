@@ -93,7 +93,13 @@ module ForumTags
     </code></pre>
   }
   tag 'comments:remote' do |tag|
-    %{<h2 class="comment_header">Comments</h2><div class="comments"><a href="/forums/#{tag.locals.page.topic.forum.id}/topics/#{tag.locals.page.topic.id}" class="remote_content">Comments</a></div>}
+    topic = tag.locals.page.get_topic
+    %{
+      <h2 class="comment_header">Comments</h2>
+      <div class="comments">
+        <a href="/forums/#{topic.forum.id}/topics/#{topic.id}" class="remote_content">Comments</a>
+      </div>
+      }
   end
 
   desc %{

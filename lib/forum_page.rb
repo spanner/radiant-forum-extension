@@ -9,8 +9,8 @@ module ForumPage
 
   module InstanceMethods     
   
-    def find_or_build_topic
-      if (self.topic)
+    def get_topic
+      if self.topic
         self.topic
       else 
         topic = self.build_topic(:name => self.title)
