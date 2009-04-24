@@ -9,7 +9,7 @@ module ForumPage
 
   module InstanceMethods     
   
-    def get_topic
+    def find_or_build_topic
       if self.topic
         self.topic
       else 
