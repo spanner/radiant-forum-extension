@@ -93,7 +93,8 @@ module ForumTags
     </code></pre>
   }
   tag 'comments:remote' do |tag|
-    if topic = tag.locals.page.topic
+    topic = tag.locals.page.topic
+    if topic && !topic.new_record?
       %{
         <h2 class="comment_header">Comments</h2>
         <div class="comments">
