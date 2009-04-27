@@ -77,6 +77,7 @@ class TopicsController < ApplicationController
     def find_forum_and_topic
       @forum = Forum.find(params[:forum_id]) if params[:forum_id]
       @topic = @forum.topics.find(params[:id]) if params[:id]
+      @page = @topic.page if @topic
     end
     
 end

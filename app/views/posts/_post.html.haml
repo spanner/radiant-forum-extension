@@ -11,6 +11,8 @@
           = gravatar_for(post.reader, {:size => 40}, {:alt => post.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
           = post.reader.name
       %p.context
+        - if post.is_comment?
+          commented
         - if post.first?
           started the discussion
         - else

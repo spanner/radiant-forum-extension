@@ -41,6 +41,10 @@ class Post < ActiveRecord::Base
     self.topic.last_post != self
   end
   
+  def is_comment?
+    !self.topic.page.nil?
+  end
+  
   def editable_interval
     Radiant::Config['forum.editable_period'].to_i.minutes if Radiant::Config['forum.editable_period']
   end
