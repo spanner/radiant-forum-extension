@@ -24,7 +24,7 @@ module ForumPage
     end
   
     def has_posts?
-      self.topic && self.topic.posts_count > 1
+      self.topic && self.topic.has_posts?
     end
   
     # def cache?

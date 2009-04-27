@@ -60,7 +60,7 @@ class Topic < ActiveRecord::Base
   end
   
   def has_posts?
-    self.posts_count > 1
+    self.posts_count > (self.page ? 0 : 1)
   end
   
   def refresh_reply_data(post=nil)

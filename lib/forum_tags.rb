@@ -96,14 +96,12 @@ module ForumTags
     if tag.locals.page.has_posts?
       topic = tag.locals.page.topic
       %{
-        <h2 class="comment_header">Comments</h2>
         <div class="comments">
           <a href="/forums/#{topic.forum.id}/topics/#{topic.id}" class="remote_content">Comments</a>
         </div>
       }
     else
       %{
-        <h2 class="comment_header">Comments</h2>
         <div class="comments">
           <a href="/pages/#{tag.locals.page.id}/posts/new" class="remote_content">Post a comment</a>
         </div>
