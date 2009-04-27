@@ -13,7 +13,7 @@
       %p.context
         - if post.is_comment?
           commented
-        - if post.first?
+        - elsif post.first?
           started the discussion
         - else
           replied
