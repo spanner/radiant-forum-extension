@@ -7,7 +7,7 @@
 - @post ||= @topic.posts.build
 
 - if current_reader
-  %div.post{:id => 'replyform'}
+  %div.reply#replyform
     %h2.inviting
       Post a 
       = message_type
