@@ -11,8 +11,6 @@
         %p.content
           %label{:for=>"forum_description"} Description
           ~ text_area "forum", "description", :class => "textarea", :style => "width: 100%"
-      - form.edit_timestamp do
-        = updated_stamp @forum
 
   = javascript_tag "$('forum_name').activate()"
   

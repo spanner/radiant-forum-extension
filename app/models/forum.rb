@@ -1,6 +1,5 @@
 class Forum < ActiveRecord::Base
   is_site_scoped
-  acts_as_list
   order_by 'name'
   belongs_to :created_by, :class_name => 'User'
   belongs_to :updated_by, :class_name => 'User'

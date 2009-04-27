@@ -1,0 +1,23 @@
+// this template is generally only where you don't want a reply form on the page by default,
+// and instead bring it in with a remote call. most often this is for page comments, where
+// it has the advantage that the page can still be cached. that's why a login form might be returned.
+
+- message_type = @page ? 'comment' : 'message'
+- formurl = @page ? page_posts_url(@page) : posts_url(@forum, @topic)
+- @post ||= @topic.posts.build
+
+- if current_reader
+  %div.post{:id => 'replyform'}
+    %h2.inviting
+      Post a 
+      = message_type
+    - form_for :post, :url => formurl, :html => {:id => 'reply_form', :multipart => true, :class => 'friendly'} do |f|
+      = render :partial => "posts/form", :object => f
+      = submit_tag "Post #{message_type}"
+
+- else
+  %h2.inviting 
+    To post a
+    = message_type
+    please log in
+  = render :partial => 'readers/login_form'

@@ -4,7 +4,7 @@
   - paginated_section @posts do
     = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false, :first_post => @topic.posts.first }
   - unless @posts.next_page
-    = render :partial => 'post_reply'
+    = render :partial => 'posts/reply'
 
 
 
