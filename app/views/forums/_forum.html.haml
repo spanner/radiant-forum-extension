@@ -11,7 +11,7 @@
       messages,
       most recently in
       = link_to topic.name, topic_url(forum, topic)
-      = time_ago_in_words(topic.replied_at)
+      = time_ago_in_words(topic.replied_at || topic.created_at)
       ago
   - else 
     %span.context
