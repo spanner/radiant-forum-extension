@@ -81,7 +81,7 @@ describe PostsController do
       
       describe "by xmlhttprequest" do
         before do
-          xhr :get, :new, :topic_id => topic_id(:older), :forum_id => forum_id(:public)
+          xhr :get, :new, {:topic_id => topic_id(:older), :forum_id => forum_id(:public)}
         end
 
         it "should render a bare login form for inclusion in the page" do
@@ -250,7 +250,13 @@ describe PostsController do
           end
           
           it "should re-render the post form with layout" do
-            pending "post needs body-or-file validation"
+            response.should be_success
+            response.should render_template('new')
+            response.layout.should_not be_nil
+          end
+          
+          it "should grumble" do
+            flash[:error].should_not be_nil
           end
         end
         
@@ -260,8 +266,11 @@ describe PostsController do
           end
 
           it "should re-render the bare post form" do
-            pending "post needs body-or-file validation"
+            response.should be_success
+            response.should render_template('new')
+            response.layout.should be_nil
           end
+          
         end
       end
     end

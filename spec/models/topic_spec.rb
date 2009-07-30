@@ -5,7 +5,7 @@ describe Topic do
 
   before do
     @site = Page.current_site = sites(:test) if defined? Site
-    @reader = Reader.current_reader = readers(:normal)
+    @reader = Reader.current = readers(:normal)
   end
   
   describe "on creation" do

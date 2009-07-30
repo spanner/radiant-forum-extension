@@ -3,7 +3,6 @@ class PostsDataset < Dataset::Base
   
   def load
     Page.current_site = sites(:test) if defined? Site
-    Reader.current_reader = readers(:normal)
 
     create_post "First", :topic => topics(:older), :created_at => 2.days.ago, :body => 'first reply: to public topic'
     create_post "Second", :topic => topics(:older), :created_at => 1.day.ago, :body => 'second reply: to public topic'
@@ -18,8 +17,19 @@ class PostsDataset < Dataset::Base
   
   helpers do
     def create_post(name, attributes={})
-      create_model Post, name.symbolize, attributes
+        attributes = post_attributes(attributes.update(:name => name))
+        create_model :post, name.symbolize, attributes
+      end
     end
-  end
+
+    def post_attributes(attributes={})
+      name = attributes[:name] || "A topic"
+      att = {
+        :name => name,
+        :reader => readers(:normal),
+        :created_at => Time.now
+      }.merge(attributes)
+      att
+    end
  
 end

@@ -1,5 +1,4 @@
 class ForumLayoutsDataset < Dataset::Base
-  uses :forum_sites if defined? Site
   
   def load
     create_layout "Main"
@@ -9,7 +8,6 @@ class ForumLayoutsDataset < Dataset::Base
   
   helpers do
     def create_layout(name, attributes={})
-      attributes[:site] ||= sites(:test) if Layout.reflect_on_association(:site)
       create_model :layout, name.symbolize, attributes.update(:name => name)
     end
   end

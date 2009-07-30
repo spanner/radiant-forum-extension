@@ -93,9 +93,8 @@ describe TopicsController do
           post :create, :forum_id => forum_id(:public), :topic => {:name => 'topic name', :body => ''}
         end
         it "should rerender the topic form" do
-          pending "post needs body-or-file validation"
-          # response.should be_success
-          # response.should render_template("new")
+          response.should be_success
+          response.should render_template("new")
         end
       end
 

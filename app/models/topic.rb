@@ -1,5 +1,5 @@
 class Topic < ActiveRecord::Base
-  is_site_scoped
+  is_site_scoped if defined? ActiveRecord::SiteNotFound
 
   belongs_to :forum, :counter_cache => true
   belongs_to :page
@@ -82,7 +82,7 @@ class Topic < ActiveRecord::Base
   protected
 
     def set_reader
-      self.reader ||= Reader.current_reader
+      self.reader ||= Reader.current
     end
   
     def set_defaults
@@ -104,7 +104,7 @@ class Topic < ActiveRecord::Base
     end
 
     def post_valid?
-      post = Post.new(:body => self.body, :topic => self)
+      post = Post.new(:body => self.body, :reader => self.reader, :topic => self)
       unless post.valid?
         self.errors.add(:body, post.errors.on(:body))
         self.errors.add(:reader, post.errors.on(:reader))
@@ -114,7 +114,7 @@ class Topic < ActiveRecord::Base
     end
 
     def save_post
-      self.first_post = self.posts.create!(:body => self.body, :created_at => self.created_at)
+      self.first_post = self.posts.create!(:body => self.body, :created_at => self.created_at, :reader => self.reader)
       self.save(false)
     end
 

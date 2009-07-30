@@ -6,7 +6,7 @@ describe Post do
   
   before do
     @site = Page.current_site = sites(:test) if defined? Site
-    @reader = Reader.current_reader = readers(:normal)
+    @reader = Reader.current = readers(:normal)
   end
   
   describe "on creation" do
@@ -16,8 +16,9 @@ describe Post do
       post.should_not be_valid
     end
     
-    it "should require either a body or an attachment" do
-      pending "post validation"
+    it "should require body text" do
+      post = topics(:older).posts.build(:body => nil)
+      post.should_not be_valid
     end
 
     it "should get a reader automatically" do

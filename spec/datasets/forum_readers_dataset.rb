@@ -1,12 +1,11 @@
+require "authlogic/test_case"
 class ForumReadersDataset < Dataset::Base
-  uses :forum_sites if defined? Site
     
   def load
     create_reader "Normal"
     create_reader "Idle"
     create_reader "Activated"
     create_reader "Inactive", :activated_at => nil
-    create_reader "Elsewhere", :site => sites(:elsewhere) if defined? Site
   end
   
   helpers do
@@ -35,13 +34,16 @@ class ForumReadersDataset < Dataset::Base
     end
     
     def login_as_reader(reader)
+      activate_authlogic
       login_reader = reader.is_a?(Reader) ? reader : readers(reader)
-      request.session['reader_id'] = login_reader.id
+      ReaderSession.create(login_reader)
       login_reader
     end
     
     def logout_reader
-      request.session['reader_id'] = nil
+      if session = ReaderSession.find
+        session.destroy
+      end
     end
   end
  

@@ -2,7 +2,7 @@ class PostsController < ApplicationController
   require 'cgi'
 
   no_login_required
-  before_filter :authenticate_reader, :except => [:index, :show]
+  before_filter :require_reader, :except => [:index, :show]
   before_filter :require_authority, :only => [:edit, :update, :destroy]
   before_filter :find_topic_or_page, :except => [:index]
   before_filter :find_post, :except => [:index, :new, :preview, :create, :monitored]
@@ -63,7 +63,7 @@ class PostsController < ApplicationController
   end
 
   # this is typically called by ajax to bring a comment form into a page or a reply form into a topic
-  # if the reader is not logged in, authenticate_reader should intervene and return a login form instead
+  # if the reader is not logged in, reader_required should intervene and cause the return of a login form instead
 
   def new
     return topic_locked if @topic && @topic.locked?

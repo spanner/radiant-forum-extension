@@ -1,6 +1,5 @@
-require_dependency 'application'
-gem 'mislav-will_paginate', '~> 2.2'
-require 'will_paginate'
+require_dependency 'application_controller'
+# require 'will_paginate'
 
 class ForumExtension < Radiant::Extension
   version "0.2"
@@ -69,7 +68,9 @@ class ForumExtension < Radiant::Extension
       :short_time => %{%l:%M<span class="meridian">%p</span>}
     )
 
-    admin.forums.index.add :top, "admin/shared/site_jumper" if Forum.is_site_scoped?
+    if defined? ActiveRecord::SiteNotFound
+      admin.forums.index.add :top, "admin/shared/site_jumper"
+    end
     admin.tabs.add "Forum", "/admin/forums", :after => "Readers", :visibility => [:all]
   end
   

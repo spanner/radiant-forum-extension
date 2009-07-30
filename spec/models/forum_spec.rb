@@ -6,7 +6,7 @@ describe Forum do
   before do
     @site = Page.current_site = sites(:test) if defined? Site
     @forum = forums(:public)
-    @reader = Reader.current_reader = readers(:normal)
+    @reader = Reader.current = readers(:normal)
   end
   
   it "should require a name" do
@@ -26,7 +26,13 @@ describe Forum do
 
   describe ".find_or_create_comments_forum" do
     
+    it "should return the existing comments forum when there is one" do
+      @forum = Forum.find_or_create_comments_forum
+      @forum.should == forums(:comments)
+    end
+
     it "should create a comments forum if there is none" do
+      forums(:comments).delete
       Forum.should_receive(:find_by_for_comments)
       @forum = Forum.find_or_create_comments_forum
       @forum.for_comments.should be_true
@@ -34,12 +40,5 @@ describe Forum do
       @forum.created_at.should be_close(Time.now, 5.seconds)
     end
     
-    it "should return the existing comments forum if there is one" do
-      comments_forum = forums(:misc)
-      comments_forum.for_comments = true
-      comments_forum.save!
-      @forum = Forum.find_or_create_comments_forum
-      @forum.should == comments_forum
-    end
   end
 end

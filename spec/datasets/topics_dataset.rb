@@ -1,10 +1,7 @@
 class TopicsDataset < Dataset::Base
   uses :forum_readers, :forum_pages, :forums
   
-  def load
-    Page.current_site = sites(:test) if defined? Site
-    Reader.current_reader = readers(:normal)
-    
+  def load  
     create_topic "older", :reader => readers(:normal), :forum => forums(:public), :body => 'this goes in the first post really', :created_at => 4.days.ago, :replied_at => 2.days.ago
     create_topic "newer", :reader => readers(:normal), :forum => forums(:public), :body => 'this goes in the first post really', :created_at => 2.days.ago, :replied_at => 1.day.ago
     create_topic "sticky", :reader => readers(:normal), :forum => forums(:private), :body => 'this goes in the first post really', :created_at => 2.days.ago, :replied_at => 3.days.ago, :sticky => true
@@ -12,16 +9,28 @@ class TopicsDataset < Dataset::Base
     create_topic "minimal", :reader => readers(:normal), :forum => forums(:misc), :body => 'this goes in the first post really'
     create_topic "locked", :reader => readers(:normal), :forum => forums(:public), :body => 'this goes in the first post really', :locked => true, :replied_at => 1.year.ago
     create_topic "comments", :reader => readers(:normal), :forum => forums(:comments), :body => 'this goes in the first post really', :locked => true, :page => pages(:commentable)
-    if defined? Site
-      Page.current_site = sites(:elsewhere)
-      create_topic "elsewhere", :reader => readers(:elsewhere), :forum => forums(:elsewhere), :body => 'this goes in the first post really', :locked => true, :replied_at => 1.year.ago
-    end
   end
   
   helpers do
     def create_topic(name, attributes={})
-      create_model :topic, name.symbolize, attributes.update(:name => name)
+      attributes = topic_attributes(attributes.update(:name => name))
+      create_model :topic, name.symbolize, attributes
     end
   end
+ 
+  def topic_attributes(attributes={})
+    name = attributes[:name] || "A topic"
+    att = {
+      :name => name,
+      :reader => readers(:normal),
+      :created_at => Time.now
+    }.merge(attributes)
+    att
+  end
+ 
+ 
+ 
+ 
+ 
  
 end

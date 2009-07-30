@@ -1,7 +1,7 @@
 class Post < ActiveRecord::Base
   include WhiteListHelper
   
-  is_site_scoped
+  is_site_scoped if defined? ActiveRecord::SiteNotFound
   
   belongs_to :forum, :counter_cache => true
   belongs_to :reader,  :counter_cache => true
@@ -17,7 +17,7 @@ class Post < ActiveRecord::Base
   after_create :update_topic_reply_data
   after_destroy :revert_topic_reply_data
   
-  validates_presence_of :reader, :topic
+  validates_presence_of :reader, :topic, :body
 
   def topic_page
     self.topic.page_for(self)
@@ -72,27 +72,25 @@ class Post < ActiveRecord::Base
   end
   
   def save_attachments(files=nil)
-    attachments = files.collect {|file| self.attachments.create(:file => file) } if files
+    files.collect {|file| self.attachments.create(:file => file) } if files
   end
   
-  
-  protected
-  
-    def set_reader
-      self.reader ||= Reader.current_reader
-    end
-  
-    def set_forum
-      self.forum ||= self.topic.forum
-    end
-    
-    def update_topic_reply_data
-      self.topic.refresh_reply_data(self)
-    end
+protected
 
-    def revert_topic_reply_data
-      self.topic.refresh_reply_data
-    end
-    
+  def set_reader
+    self.reader ||= Reader.current
+  end
+
+  def set_forum
+    self.forum ||= self.topic.forum
+  end
+  
+  def update_topic_reply_data
+    self.topic.refresh_reply_data(self)
+  end
+
+  def revert_topic_reply_data
+    self.topic.refresh_reply_data
+  end
   
 end
