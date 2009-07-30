@@ -34,6 +34,31 @@ describe Post do
       topic.replied_by.should == @reader
       topic.replied_at.should be_close(Time.now, 5.seconds)
     end
+    
+    it "should remain editable only for a configurable period" do
+      Radiant::Config['forum.editable_period'] = 15
+      post = topics(:older).posts.create!(:body => 'foo')
+      post.still_editable?.should be_true
+      post.created_at = Time.now - 14.minutes
+      post.still_editable?.should be_true
+      post.created_at = Time.now - 16.minutes
+      post.still_editable?.should be_false
+    end
+
+    it "should be editable only by its author" do 
+      Radiant::Config['forum.editable_period'] = 15
+      post = topics(:older).posts.create!(:body => 'bar')
+      post.editable_by?(post.reader).should be_true
+      post.editable_by?(readers(:idle)).should be_false
+    end
+
+    it "should remain editable by an administrator" do 
+      Radiant::Config['forum.editable_period'] = 15
+      post = topics(:older).posts.create!(:body => 'baz')
+      post.editable_by?(readers(:admin)).should be_true
+      post.created_at = Time.now - 16.minutes
+      post.editable_by?(readers(:admin)).should be_true
+    end
   end
 
   describe "on removal" do

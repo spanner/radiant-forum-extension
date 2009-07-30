@@ -124,14 +124,6 @@ describe TopicsController do
         end
       end
     end
-    
-    if defined? Site
-      describe "on another site" do
-        it "should throw a FileNotFound error" do
-      
-        end
-      end
-    end
   end
 
 
