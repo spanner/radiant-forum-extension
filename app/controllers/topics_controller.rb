@@ -1,5 +1,6 @@
 class TopicsController < ApplicationController
   no_login_required
+  
   before_filter :find_forum_and_topic, :except => :index
   before_filter :require_reader, :except => [:index, :show]
   radiant_layout { |controller| controller.layout_for :forum }
