@@ -34,30 +34,40 @@ describe Post do
       topic.replied_by.should == @reader
       topic.replied_at.should be_close(Time.now, 5.seconds)
     end
+  end
+
+  describe "during the editable period" do
+    before do
+      Radiant::Config['forum.editable_period'] = 15
+      @post = topics(:older).posts.create!(:body => 'foo')
+    end
+
+    it "should be editable by its author" do 
+      @post.editable_by?(@post.reader).should be_true
+    end
+
+    it "should be editable by an administrator" do 
+      @post.editable_by?(readers(:admin)).should be_true
+    end
+  
+    it "should not be editable by anyone else" do 
+      @post.editable_by?(readers(:idle)).should be_false
+    end
+  end
+  
+  describe "after the editable period" do
+    before do
+      Radiant::Config['forum.editable_period'] = 15
+      @post = topics(:older).posts.create!(:body => 'foo')
+      @post.created_at = Time.now - 16.minutes
+    end
     
-    it "should remain editable only for a configurable period" do
-      Radiant::Config['forum.editable_period'] = 15
-      post = topics(:older).posts.create!(:body => 'foo')
-      post.still_editable?.should be_true
-      post.created_at = Time.now - 14.minutes
-      post.still_editable?.should be_true
-      post.created_at = Time.now - 16.minutes
-      post.still_editable?.should be_false
+    it "should no longer be editable by its author" do 
+      @post.editable_by?(@post.reader).should be_false
     end
-
-    it "should be editable only by its author" do 
-      Radiant::Config['forum.editable_period'] = 15
-      post = topics(:older).posts.create!(:body => 'bar')
-      post.editable_by?(post.reader).should be_true
-      post.editable_by?(readers(:idle)).should be_false
-    end
-
+  
     it "should remain editable by an administrator" do 
-      Radiant::Config['forum.editable_period'] = 15
-      post = topics(:older).posts.create!(:body => 'baz')
-      post.editable_by?(readers(:admin)).should be_true
-      post.created_at = Time.now - 16.minutes
-      post.editable_by?(readers(:admin)).should be_true
+      @post.editable_by?(readers(:admin)).should be_true
     end
   end
 
@@ -76,7 +86,14 @@ describe Post do
   end
   
   it "should report on which page of its topic it can be found" do
-    
+    Radiant::Config['forum.posts_per_page'] = 25
+    firstpost = topics(:older).posts.create!(:body => 'foo')
+    55.times do |i| 
+      topics(:older).posts.create!(:body => 'rhubarb') 
+    end
+    lastpost = topics(:older).posts.create!(:body => 'bar')
+    firstpost.topic_page.should == 1
+    lastpost.topic_page.should == 3
   end
 
 end

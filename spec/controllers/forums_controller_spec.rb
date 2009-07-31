@@ -26,7 +26,7 @@ describe ForumsController do
       get :show, :id => forum_id(:public)
     end
     
-    it "should render the show template" do
+    it "should render the forum template" do
       response.should be_success
       response.should render_template("show")
     end

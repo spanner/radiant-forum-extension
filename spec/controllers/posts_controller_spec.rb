@@ -110,8 +110,8 @@ describe PostsController do
         end
         
         it "should flash an appropriate message" do 
-          flash[:notice].should_not be_nil
-          flash[:notice].should =~ /locked/
+          flash[:error].should_not be_nil
+          flash[:error].should =~ /locked/
         end
       end
 
@@ -140,57 +140,6 @@ describe PostsController do
       end
     end
   end
-
-
-  # describe "on post to preview" do
-  #   describe "with a logged-in reader" do
-  #     before do
-  #       login_as_reader(:normal)
-  #     end
-  # 
-  #     describe "but to a locked topic" do
-  #       before do
-  #         @topic.locked = true
-  #         @topic.save!
-  #         post :preview, :post => {:body => 'how do I look?'}, :topic_id => @topic.id, :forum_id => forum_id(:public)
-  #       end
-  #     
-  #       it "should redirect to the topic page" do 
-  #         response.should be_redirect
-  #         response.should redirect_to(topic_url(@topic.forum, @topic))
-  #       end
-  #     
-  #       it "should flash an error" do 
-  #         flash[:notice].should_not be_nil
-  #         flash[:notice].should =~ /locked/
-  #       end
-  #     end
-  # 
-  #     describe "over normal http" do
-  #       before do
-  #         post :preview, :post => {:body => 'how do I look?'}, :topic_id => @topic.id, :forum_id => forum_id(:public)
-  #       end
-  # 
-  #       it "should render the preview form in the normal way" do
-  #         response.should be_success
-  #         response.should render_template("preview")
-  #         response.layout.should == 'layouts/radiant'
-  #       end
-  #     end
-  # 
-  #     describe "by xmlhttprequest" do
-  #       before do
-  #         xhr :post, :preview, :post => {:body => 'how do I look?'}, :topic_id => @topic.id, :forum_id => forum_id(:public)
-  #       end
-  # 
-  #       it "should return a bare preview for inclusion in the page" do
-  #         response.should be_success
-  #         response.should render_template('preview')
-  #         response.layout.should be_nil
-  #       end
-  #     end
-  #   end
-  # end
   
   describe "on post to create" do
     describe "without a logged-in reader" do
@@ -226,8 +175,8 @@ describe PostsController do
           end
           
           it "should flash an appropriate error" do 
-            flash[:notice].should_not be_nil
-            flash[:notice].should =~ /locked/
+            flash[:error].should_not be_nil
+            flash[:error].should =~ /locked/
           end
         end
         describe "by xmlhttprequest" do
@@ -313,10 +262,46 @@ describe PostsController do
       end
 
       describe "to attach a comment to a page" do
-        it "should uncache the page" do
+        before do
+          login_as_reader(:normal)
+          post :create, :post => {:body => "I ain't getting in no plane."}, :page_id => page_id(:commentable)
+          @topic = pages(:commentable).topic
+          @post = Post.find_by_body("I ain't getting in no plane.")
+        end
+        
+        it "should create a page topic" do
+          @topic.should_not be_nil
+        end
+        
+        it "should reuse the page topic if it already exists" do
+          post :create, :post => {:body => 'barbecue'}, :page_id => page_id(:commentable)
+          Post.find_by_body('barbecue').topic.should == @topic
+        end
 
+        it "should attach the post to the page" do
+          @post.page.should == pages(:commentable)
+        end
+        
+        it "should clear the cache" do
+          Radiant::Cache.should_receive(:clear)
+          post :create, :post => {:body => 'marmalade'}, :page_id => page_id(:commentable)
+          Post.find_by_body('marmalade').should_not be_nil
         end
       end
+
+      describe "to attach a comment to an uncommentable page" do
+        before do
+          login_as_reader(:normal)
+          post :create, :post => {:body => "foo"}, :page_id => page_id(:uncommentable)
+        end
+
+        it "should grumble" do
+          response.should be_redirect
+          response.should redirect_to(pages(:uncommentable).url)
+          flash[:error].should_not be_nil
+        end
+      end
+      
     end
   end
 end

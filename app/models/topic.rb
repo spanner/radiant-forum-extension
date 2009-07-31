@@ -43,16 +43,21 @@ class Topic < ActiveRecord::Base
 
   def views() hits end
 
-  def paged?() posts_count > 25 end
+  def paged?() posts_count > posts_per_page end
+  
+  def posts_per_page
+    ppp = Radiant::Config['forum.posts_per_page'] || 25
+    ppp.to_i.to_f
+  end
   
   def last_page
-    (posts_count.to_f / 25.0).ceil.to_i
+    (posts_count.to_f/posts_per_page).ceil.to_i
   end
   
   def page_for(post)
     return nil unless post.topic == self
     return 1 unless paged?
-    (posts.index(post)/25).ceil.to_i
+    (posts.index(post)/posts_per_page).ceil.to_i
   end
 
   def editable_by?(user)

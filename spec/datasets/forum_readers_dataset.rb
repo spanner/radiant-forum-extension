@@ -1,10 +1,13 @@
 require "authlogic/test_case"
 class ForumReadersDataset < Dataset::Base
-    
+  uses :users
+
   def load
     create_reader "Normal"
     create_reader "Idle"
     create_reader "Activated"
+    create_reader "User", :user_id => user_id(:existing)
+    create_reader "Admin", :user_id => user_id(:admin)
     create_reader "Inactive", :activated_at => nil
   end
   

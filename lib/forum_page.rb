@@ -12,10 +12,8 @@ module ForumPage
     def find_or_build_topic
       if self.topic
         self.topic
-      else 
-        topic = self.build_topic(:name => self.title)
-        topic.forum = Forum.find_or_create_comments_forum
-        topic
+      elsif self.still_commentable?
+        self.build_topic(:name => self.title, :forum => Forum.find_or_create_comments_forum)         # posts_controller will do the right thing with a new topic
       end
     end
   
@@ -27,9 +25,17 @@ module ForumPage
       self.topic && self.topic.has_posts?
     end
   
-    # def cache?
-    #   false unless self.topic.nil?
-    # end
+    def still_commentable?
+      commentable? && !comments_closed? && (!commentable_period || Time.now - self.created_at < commentable_period)
+    end
+    
+    def commentable_period
+      Radiant::Config['forum.commentable_period'].to_i.days if Radiant::Config['forum.commentable_period']
+    end
+    
+    def locked?
+      !still_commentable?
+    end
   
   end
 end

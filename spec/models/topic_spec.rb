@@ -57,8 +57,16 @@ describe Topic do
     end
 
     it "should know on which page to find a given post" do
-      post = Post.find_by_body("test 55")
-      @topic.page_for(post).should == 2
+      @topic.page_for(Post.find_by_body("test 15")).should == 1
+      @topic.page_for(Post.find_by_body("test 35")).should == 2
+      @topic.page_for(Post.find_by_body("test 55")).should == 3
+    end
+
+    it "should read config to find the number of posts per page" do
+      Radiant::Config['forum.posts_per_page'] = 15
+      @topic.page_for(Post.find_by_body("test 15")).should == 2
+      @topic.page_for(Post.find_by_body("test 35")).should == 3
+      @topic.page_for(Post.find_by_body("test 55")).should == 4
     end
 
     it "should know who last replied to it" do

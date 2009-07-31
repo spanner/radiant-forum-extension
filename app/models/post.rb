@@ -45,6 +45,10 @@ class Post < ActiveRecord::Base
     !self.topic.page.nil?
   end
   
+  def page
+    return self.topic.page if is_comment?
+  end
+  
   def editable_interval
     Radiant::Config['forum.editable_period'].to_i.minutes if Radiant::Config['forum.editable_period']
   end
@@ -58,10 +62,10 @@ class Post < ActiveRecord::Base
   end
   
   def editable_by?(reader)
-    still_editable? && reader && (reader.id == reader_id)
+    reader.is_admin? || still_editable? && reader && (reader.id == reader_id)
   end
 
-  # special cases for page comments that need to be rendered from a radius tag
+  # we shouldn't have formatting in here, but page comments need to be rendered from a radius tag
   
   def body_html
     white_list(RedCloth.new(self.body, [ :hard_breaks, :filter_html ]).to_html(:textile, :smilies)) if self.body

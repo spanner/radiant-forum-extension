@@ -8,7 +8,7 @@ class TopicsDataset < Dataset::Base
     create_topic "private", :reader => readers(:normal), :forum => forums(:private), :body => 'this goes in the first post really', :created_at => 2.days.ago, :replied_at => 1.day.ago
     create_topic "minimal", :reader => readers(:normal), :forum => forums(:misc), :body => 'this goes in the first post really'
     create_topic "locked", :reader => readers(:normal), :forum => forums(:public), :body => 'this goes in the first post really', :locked => true, :replied_at => 1.year.ago
-    create_topic "comments", :reader => readers(:normal), :forum => forums(:comments), :body => 'this goes in the first post really', :locked => true, :page => pages(:commentable)
+    create_topic "comments", :reader => readers(:normal), :forum => forums(:comments), :body => 'this goes in the first post really', :locked => false, :page => pages(:commentable)
   end
   
   helpers do

@@ -5,6 +5,7 @@ class PostsController < ApplicationController
   before_filter :require_reader, :except => [:index, :show]
   before_filter :require_authority, :only => [:edit, :update, :destroy]
   before_filter :find_topic_or_page, :except => [:index]
+  before_filter :require_unlocked_topic_and_page, :only => [:new, :create]
   before_filter :find_post, :except => [:index, :new, :preview, :create, :monitored]
   before_filter :build_post, :only => [:new]
   radiant_layout { |controller| controller.layout_for :forum }
@@ -66,7 +67,6 @@ class PostsController < ApplicationController
   # if the reader is not logged in, reader_required should intervene and cause the return of a login form instead
 
   def new
-    return topic_locked if @topic && @topic.locked?
     respond_to do |format|
       format.html { render :template => 'posts/new' } # we specify because sometimes we're reverting from a post to create 
       format.js { render :template => 'posts/new', :layout => false }
@@ -74,10 +74,9 @@ class PostsController < ApplicationController
   end
     
   def create
-    return topic_locked if @topic.locked?
     if @topic.new_record?
       # only happens if it's a page comment and the topic has just been built
-      # in that case we let the topic-creation routines do the post work
+      # in that case we can let the topic-creation routines do the post work
       @topic.body = params[:post][:body]
       @topic.save!
       @post = @topic.first_post
@@ -86,7 +85,8 @@ class PostsController < ApplicationController
     end
 
     @post.save_attachments(params[:files])
-    cache.expire_response(@page.url) if @page
+    # cache.expire_response(@page.url) if @page
+    Radiant::Cache.clear if @page
 
     respond_to do |format|
       format.html { redirect_to_page_or_topic }
@@ -122,9 +122,10 @@ class PostsController < ApplicationController
     @post.attributes = params[:post]
     @post.save!
     @post.save_attachments(params[:files])
-    cache.expire_response(@post.topic.page.url) if @post.topic.page
+    # cache.expire_response(@post.topic.page.url) if @post.topic.page
+    Radiant::Cache.clear if @post.topic.page
   rescue ActiveRecord::RecordInvalid
-    flash[:bad_reply] = 'Zut Alors!'
+    flash[:error] = "Sorry: message can't be empty"
   ensure
     respond_to do |format|
       format.html { redirect_to_page_or_topic }
@@ -160,11 +161,17 @@ class PostsController < ApplicationController
       if params[:page_id]
         @page = Page.find(params[:page_id])
         @topic = @page.find_or_build_topic
-        @forum = @topic.forum
+        @forum = @topic.forum if @topic
       elsif params[:topic_id]
         @topic = Topic.find(params[:topic_id], :include => :forum)
-        @forum = @topic.forum
+        @forum = @topic.forum if @topic
       end
+    end
+    
+    def require_unlocked_topic_and_page
+      return page_locked if @page && @page.locked?
+      return topic_locked if @topic.locked?
+      true
     end
 
     def find_post
@@ -185,11 +192,13 @@ class PostsController < ApplicationController
       end
     end
     
-    def redirect_to_page_or_topic
-      if (@post.topic.page)
-        redirect_to @post.topic.page.url + "#comment_#{@post.id}"
+    def redirect_to_page_or_topic   
+      if (@topic.page)
+        post_location = @post ? "#comment_#{@post.id}" : ""
+        redirect_to @topic.page.url + post_location
       else
-        redirect_to topic_url(@topic.forum, @topic, {:page => @post.topic_page, :anchor => "post_#{@post.id}"})
+        post_location = @post ? {:page => @post.topic_page, :anchor => "post_#{@post.id}"} : {}
+        redirect_to topic_url(@topic.forum, @topic, post_location)
       end
     end
 
@@ -197,16 +206,30 @@ class PostsController < ApplicationController
       redirect_to forum_url(@topic.forum)
     end
     
-    def topic_locked
+    def page_locked
       respond_to do |format|
         format.html {
-          flash[:notice] = 'This topic is locked.'
-          redirect_to topic_url(@topic.forum, @topic)
+          flash[:error] = 'This page is not commentable.'
+          redirect_to @page.url
         }
         format.js {
           render :template => 'locked', :layout => false
         }
       end
+      false
+    end
+    
+    def topic_locked
+      respond_to do |format|
+        format.html {
+          flash[:error] = 'This topic is locked.'
+          redirect_to_page_or_topic
+        }
+        format.js {
+          render :template => 'locked', :layout => false
+        }
+      end
+      false
     end
     
 end
