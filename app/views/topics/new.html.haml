@@ -11,7 +11,10 @@
       = render :partial => "form", :object => f
       = submit_tag 'Post Topic' 
       or 
-      = link_to('Cancel', forum_path(@forum))
+      - if @forum
+        = link_to('Cancel', forum_path(@forum))
+      - else
+        = link_to('Cancel', :back)
 
 
 
@@ -32,6 +35,6 @@
   = link_to 'Forum', forums_url
   \&gt;
   - if @forum
-    = link_to @forum.name, forum_url(@forum) 
+    = link_to @forum.name, forum_url(@forum)
     \&gt;
   New Discussion
