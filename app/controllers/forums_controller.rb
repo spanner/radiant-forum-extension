@@ -14,7 +14,7 @@ class ForumsController < ApplicationController
       }
       format.rss  {
         @topics = Topic.paginate_by_forum_id(params[:id], :page => params[:page] || 1, :include => :replied_by, :order => 'replied_at desc')
-        render :layout => false 
+        render :layout => 'feed'
       }
     end
   end

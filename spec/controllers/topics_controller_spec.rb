@@ -12,14 +12,29 @@ describe TopicsController do
   end
 
   describe "on get to index" do
-    before do
-      get :index
+    describe "with html format"
+      before do
+        get :index
+      end
+    
+      it "should render the topic list" do
+        response.should be_success
+        response.should render_template("index")
+      end
     end
-
-    it "should render the topic list" do
-      response.should be_success
-      response.should render_template("index")
-    end  
+    
+    describe "with rss format" do
+      before do
+        get :index, :format => :rss
+      end
+    
+      it "should render the topic feed" do
+        response.should be_success
+        response.layout.should be_nil
+        response.should render_template("index")
+      end
+    end
+    
   end
     
   describe "on get to show" do

@@ -1,6 +1,6 @@
 # Forum
 
-This is a simple but clean forum implementation that plugs into radiant. It's fairly well-featured, including 
+This is a simple but comprehensive forum implementation that plugs into radiant. It's fairly well-featured, including 
 
 * page comments
 * rss feeds at several levels
@@ -8,15 +8,15 @@ This is a simple but clean forum implementation that plugs into radiant. It's fa
 * textile-formatted messages with html whitelisting
 * multiple message attachments and nice image-handling
 
-but I've tried to keep it clean and simple both inside and out. This is helped by the fact that all the user-management is in the reader extension, so you should find this one very easy to adapt and extend. 
+I've tried to keep it simple and tidy both inside and out. This is helped by the fact that all the user-management is in the reader extension, so you should find this one very easy to adapt and extend. 
 
-The forum was derived long ago from Beast and the fossilised bones will still be visible here and there. It has been in use on various sites in various versions for the last three years, but in consolidating it here and making it ready for publication I've pretty much refactored the whole thing. Some of it is quite new, then, and may have exciting new bugs in it. 
+The forum was derived long ago from Beast and the fossilised bones will still be visible here and there. It has been in use on various sites in various versions for the last three years, but in consolidating it here and making it ready for publication I've pretty much refactored the whole thing. Some of it is quite new, then, and I've probably optimised new bugs into it. 
 
-The forum is compatible with multi_site but you have to use our fork (https://github.com/spanner/radiant-multi-site-extension) if you want forums and readers site-scoped.
+The forum is compatible with multi_site but you have to use [our fork](https://github.com/spanner/radiant-multi-site-extension) if you want forums and readers site-scoped.
 
 ## Status
 
-The version tagged 0.7 is fairly solid and almost complete. The current latest version is a candidate at best: it tests clean under 0.8 - and the tests are very comprehensive - but there are still issues with RSS feeds and file uploads, and no doubt other things I don't know about.
+The release tagged 0.7 is fairly solid and almost complete. The current latest version is a candidate at best: it tests clean under 0.8 - and the tests are very comprehensive - but there are still issues with RSS feeds and file uploads, and no doubt other things I don't know about.
 
 ## Still to do
 
@@ -32,7 +32,7 @@ Radiant 0.8 with the [reader](http://github.com/spanner/radiant-reader-extension
 
 ## Installation
 
-I don't think Ray knows about these extensions, but the forum is very simple:
+I don't think Ray knows about these extensions, but the forum is very standard:
 
 	git submodule add git://github.com/spanner/radiant-forum-extension.git vendor/extensions/forum
 

@@ -12,7 +12,7 @@ class TopicsController < ApplicationController
       end
       format.rss do
         @topics = Topic.find(:all, :order => "topics.replied_at desc", :include => [:forum, :reader], :limit => 50)
-        render :layout => false
+        render :layout => 'feed'
       end
     end
   end
@@ -24,13 +24,12 @@ class TopicsController < ApplicationController
   def show
     respond_to do |format|
       format.html do
-        # authors of topics don't get counted towards total hits
         @topic.hit! unless current_reader and @topic.reader == current_reader
         @posts = Post.paginate_by_topic_id(@topic.id, :page => params[:page], :include => :reader, :order => 'posts.created_at asc')
       end
       format.rss do
         @posts = @topic.posts.find(:all, :order => 'created_at desc', :limit => 25)
-        render :layout => false
+        render :layout => 'feed'
       end
       format.js do
         @posts = Post.paginate_by_topic_id(@topic.id, :page => params[:page], :include => :reader, :order => 'posts.created_at asc')
@@ -43,8 +42,6 @@ class TopicsController < ApplicationController
     # post creation is handled by a before_create in the topic model
     # and then calls back to set initial reply data in the topic
     @forum = Forum.find(params[:topic][:forum_id]) if params[:topic][:forum_id]
-    logger.warn "!!! creating topic with #{params[:topic].inspect}"
-    
     @topic = @forum.topics.create!(params[:topic])
     respond_to do |format|
       format.html { redirect_to topic_path(@forum, @topic) }

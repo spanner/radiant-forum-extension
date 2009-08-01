@@ -53,6 +53,7 @@ class PostsController < ApplicationController
     options[:joins] += ' inner join monitorships on monitorships.topic_id = topics.id'
     options[:page] = params[:page] || 1
     @posts = Post.paginate(:all, options)
+    @title = "Topics you're watching"
     render_page_or_feed
   end
 
@@ -187,7 +188,7 @@ class PostsController < ApplicationController
     def render_page_or_feed(template_name = action_name)
       respond_to do |format|
         format.html { render :action => template_name }
-        format.rss  { render :action => template_name, :layout => false }
+        format.rss  { render :action => template_name, :layout => 'feed' }
         format.js  { render :action => template_name, :layout => false }
       end
     end

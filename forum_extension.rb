@@ -31,8 +31,9 @@ class ForumExtension < Radiant::Extension
     end
 
     map.with_options :controller => 'posts' do |posts|
-      posts.posts_list '/posts', :action => 'index'
+      posts.posts_monitored '/posts/monitored', :action => 'monitored'
       posts.posts_feed '/posts/feed', :action => 'index', :format => 'rss'
+      posts.posts_list '/posts', :action => 'index'
     end
   end
   
@@ -64,6 +65,7 @@ class ForumExtension < Radiant::Extension
     ApplicationHelper.send :include, ForumHelper
 
     ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!( 
+      :informal => %{%B %d %Y at %H:%M},
       :html_date => %{<span class="date">%e %b %Y</span> at <span class="time">%l:%M</span><span class="meridian">%p</span>},
       :short_time => %{%l:%M<span class="meridian">%p</span>}
     )
