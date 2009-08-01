@@ -25,9 +25,6 @@
     = link_to "#{@forum.name} &raquo;", forum_url(@forum), {:class => 'breadhead'}
     %br
 
-- content_for :feed do
-  = feed_link(formatted_topic_path(@topic.forum, @topic, :rss))
-
 - content_for :controls do
   = render :partial => 'readers/controls'
   

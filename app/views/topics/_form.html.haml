@@ -6,6 +6,7 @@
     %br
     = @topic.errors.on(:name).to_a.to_sentence
   - if admin?
+    %br
     %span.quiet
       = form.check_box :locked
       %label{:for => 'topic_sticky', :class => 'admin'} Sticky

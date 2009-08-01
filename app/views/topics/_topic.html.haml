@@ -13,13 +13,12 @@
       by
     - else
       from
-    = link_to topic.reader.name, reader_url(topic.reader)
+    = link_to topic.reader.name + '.', reader_url(topic.reader)
     - if topic.replied_at && topic.replied_by
-      \.
       = topic.posts.count
-      = pluralize(topic.posts.count, 'comment')
+      = pluralize(topic.posts.count, 'comment') + ','
       - if topic.posts.count > 1
-        , most recently
+        most recently
       from
       = link_to topic.replied_by.name, reader_url(topic.replied_by)
       = time_ago_in_words(topic.replied_at)
@@ -28,5 +27,5 @@
       = time_ago_in_words(topic.created_at)
       ago
   %div.preview
-    = truncate_and_textilize(topic.first_post.body, 40)
+    = truncate_and_textilize(topic.first_post.body, 100)
     
