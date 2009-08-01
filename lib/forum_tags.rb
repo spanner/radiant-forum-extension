@@ -9,7 +9,7 @@ module ForumTags
     *Usage:*
     <pre><code><r:comments:all /></code></pre>
     
-    In order that pages can still be cached, we show a reply link rather than a form. The sample
+    In order that pages can still be cached, we show a comment link rather than a comment form. The sample
     javascript library included with the forum extension will turn this into a login or comment
     form as appropriate.
   }
@@ -55,6 +55,7 @@ module ForumTags
 
   tag 'comment' do |tag|
     raise TagError, "can't have r:comment without a post" unless post = tag.locals.comment
+    
     result = []
     if tag.double?
       tag.locals.reader = post.reader
@@ -64,10 +65,8 @@ module ForumTags
 <div class="post" id="#{post.dom_id}>"
   <div class = "post_header">
     <h2>
-      <a href="#{reader_url(post.reader)}" class="main">
-        <img src="#{post.reader.gravatar_url(:size => 40)}" width="40" height ="40" class="gravatar" />
-        #{post.reader.name}
-      </a>
+      <img src="#{post.reader.gravatar_url(:size => 40)}" width="40" height ="40" class="gravatar" />
+      #{post.reader.name}
     </h2>
     <p class="context">#{post.date_html}</p>
   </div>

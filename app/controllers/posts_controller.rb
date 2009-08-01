@@ -85,7 +85,7 @@ class PostsController < ApplicationController
       @post = @topic.posts.create!(params[:post])
     end
 
-    @post.save_attachments(params[:files])
+    @post.save_attachments(params[:files]) unless @page && !Radiant::Config['forum.comments_have_attachments']
     # cache.expire_response(@page.url) if @page
     Radiant::Cache.clear if @page
 

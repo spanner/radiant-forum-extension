@@ -47,12 +47,15 @@ class ForumExtension < Radiant::Extension
     UserActionObserver.instance.send :add_observer!, Post
  
     Page.send :include, ForumTags
-    Radiant::AdminUI.send :include, ForumAdminUI         # UI is an instance and already loaded, and this doesn't get there in time. so:
-    Radiant::AdminUI.instance.forum = Radiant::AdminUI.load_default_forum_regions
-
-    if defined? Site && admin.sites       # currently we know it's the spanner multi_site if admin.sites is defined
-      Site.send :include, ForumSite
-      admin.sites.edit.add :form, "admin/sites/choose_forum_layout", :after => "edit_homepage"
+    
+    unless defined? admin.forum # UI is a singleton and already loaded
+      Radiant::AdminUI.send :include, ForumAdminUI
+      admin.forum = Radiant::AdminUI.load_default_forum_regions
+      admin.pages.edit.add :parts_bottom, "edit_commentability", :after => "edit_layout_and_type"
+      if defined? Site && admin.sites       # currently we know it's the spanner multi_site if admin.sites is defined
+        Site.send :include, ForumSite
+        admin.sites.edit.add :form, "admin/sites/choose_forum_layout", :after => "edit_homepage"
+      end
     end
     
     if defined? RedCloth::DEFAULT_RULES

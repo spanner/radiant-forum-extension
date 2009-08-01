@@ -1,6 +1,6 @@
 # Forum
 
-This is a simple but comprehensive forum implementation that plugs into radiant. It's fairly well-featured, including 
+This is a simple but comprehensive forum implementation that plugs into radiant. It's fairly well-featured, including:
 
 * page comments
 * rss feeds at several levels
@@ -16,7 +16,7 @@ The forum is compatible with multi_site but you have to use [our fork](https://g
 
 ## Status
 
-The release tagged 0.7 is fairly solid and almost complete. The current latest version is a candidate at best: it tests clean under 0.8 - and the tests are very comprehensive - but there are still issues with topic-monitoring, file uploads and no doubt other things I don't know about yet.
+The release tagged 0.7 is fairly solid and almost complete. The current latest version is a candidate at best: it tests clean under 0.8 - and the tests are very comprehensive - but right now it fails to clear the page cache and there are no doubt other things I don't know about yet.
 
 ## Still to do
 
