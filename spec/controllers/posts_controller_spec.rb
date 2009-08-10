@@ -48,14 +48,6 @@ describe PostsController do
         response.should redirect_to(topic_url(@topic.forum, @topic, {:page => @post.topic_page, :anchor => "post_#{@post.id}"}))
       end
     end
-
-    if defined? Site
-      describe "for a post on another site" do
-        it "should raise a file not found error" do
-          lambda { get :show, :id => post_id(:elsewhere), :topic_id => topic_id(:elsewhere), :forum_id => forum_id(:elsewhere) }.should raise_error(ActiveRecord::RecordNotFound)
-        end
-      end
-    end
   end
   
   describe "on get to new" do

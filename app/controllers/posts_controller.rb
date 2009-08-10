@@ -1,26 +1,15 @@
-class PostsController < ApplicationController
-  require 'cgi'
+class PostsController < ReaderActionController
 
-  no_login_required
-  before_filter :require_reader, :except => [:index, :show]
   before_filter :require_authority, :only => [:edit, :update, :destroy]
   before_filter :find_topic_or_page, :except => [:index]
   before_filter :require_unlocked_topic_and_page, :only => [:new, :create]
   before_filter :find_post, :except => [:index, :new, :preview, :create, :monitored]
   before_filter :build_post, :only => [:new]
-  radiant_layout { |controller| controller.layout_for :forum }
 
   # protect_from_forgery :except => :create # because the post form is typically generated from radius tags, which are defined in a model with no access to the controller
 
   @@query_options = { :per_page => 25, :select => 'posts.*, topics.name as topic_name, forums.name as forum_name', :joins => 'inner join topics on posts.topic_id = topics.id inner join forums on topics.forum_id = forums.id', :order => 'posts.created_at desc' }
   
-  # *** clear the cache
-
-  # def initialize
-  #   super
-  #   @cache = ResponseCache.instance
-  # end
-
   def index
     conditions = []
     params.delete :commit
@@ -64,8 +53,8 @@ class PostsController < ApplicationController
     end
   end
 
-  # this is typically called by ajax to bring a comment form into a page or a reply form into a topic
-  # if the reader is not logged in, reader_required should intervene and cause the return of a login form instead
+  # this is typically called by xht to bring a comment form into a page or a reply form into a topic
+  # if the reader is not logged in, reader_required should have intervened and caused the return of a login form instead
 
   def new
     respond_to do |format|
@@ -86,7 +75,6 @@ class PostsController < ApplicationController
     end
 
     @post.save_attachments(params[:files]) unless @page && !Radiant::Config['forum.comments_have_attachments']
-    # cache.expire_response(@page.url) if @page
     Radiant::Cache.clear if @page
 
     respond_to do |format|

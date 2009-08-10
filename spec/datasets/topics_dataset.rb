@@ -25,6 +25,7 @@ class TopicsDataset < Dataset::Base
       :reader => readers(:normal),
       :created_at => Time.now
     }.merge(attributes)
+    attributes[:site_id] ||= site_id(:test) if Reader.reflect_on_association(:site)
     att
   end
  

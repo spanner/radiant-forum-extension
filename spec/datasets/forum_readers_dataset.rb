@@ -1,6 +1,6 @@
 require "authlogic/test_case"
 class ForumReadersDataset < Dataset::Base
-  uses :users
+  uses :users, (:forum_sites if Reader.reflect_on_association(:site))
 
   def load
     create_reader "Normal"

@@ -1,5 +1,5 @@
 require_dependency 'application_controller'
-# require 'will_paginate'
+require 'will_paginate'
 
 class ForumExtension < Radiant::Extension
   version "0.2"

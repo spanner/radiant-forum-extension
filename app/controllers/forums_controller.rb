@@ -1,6 +1,6 @@
-class ForumsController < ApplicationController
-  no_login_required
-  radiant_layout { |controller| controller.layout_for :forum }
+class ForumsController < ReaderActionController
+  skip_before_filter :require_reader
+  before_filter :no_changes_here, :except => [:index, :show]
 
   def index
     @forums = Forum.paginate(:all, :order => "position", :page => params[:page] || 1)
@@ -22,12 +22,5 @@ class ForumsController < ApplicationController
   def no_changes_here
     redirect_to admin_forums_url
   end
-  
-  alias_method :new, :no_changes_here
-  alias_method :create, :no_changes_here
-  alias_method :edit, :no_changes_here
-  alias_method :update, :no_changes_here
-  alias_method :remove, :no_changes_here
-  alias_method :destroy, :no_changes_here
 
 end
