@@ -14,7 +14,7 @@ class ForumExtension < Radiant::Extension
       end
     end
     
-    map.namespace :admin, :member => { :remove => :get } do |admin|
+    map.namespace :admin, :member => { :remove => :get }, :path_prefix => 'admin/readers' do |admin|
       admin.resources :forums
       # admin.resources :topics   for moderation
     end
@@ -76,7 +76,7 @@ class ForumExtension < Radiant::Extension
     if defined? ActiveRecord::SiteNotFound
       admin.forums.index.add :top, "admin/shared/site_jumper"
     end
-    admin.tabs.add "Forum", "/admin/forums", :after => "Readers", :visibility => [:all]
+    admin.tabs['Readers'].add_link('forum admin', '/admin/readers/forums')
   end
   
   def deactivate
