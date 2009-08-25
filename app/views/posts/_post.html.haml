@@ -5,31 +5,22 @@
 
 %div.post{:id => post.dom_id}
   %div{:class => post.first? ? 'first_post' : 'reply'}
-    .post_header
-      %h2
-        %a{:href => reader_url(post.reader), :class => 'main'}
-          = gravatar_for(post.reader, {:size => 40}, {:alt => post.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
-          = post.reader.name
-      %p.context
-        - if post.is_comment?
-          commented
-        - elsif post.first?
-          started the discussion
-        - else
-          replied
-        - if with_context
-          - unless post.first?
-            to
-          = link_to post.topic.name, topic_url(post.forum, post.topic)
-        - if post.created_at.to_date == ::Date.current
-          = time_ago_in_words(post.created_at)
-          ago
-        - elsif post.created_at.to_date == ::Date.current - 1
-          yesterday at
-          = post.created_at.to_s(:short_time)
-        - else
-          on
-          = post.created_at.to_s(:html_date)
+    - unless post == first_post
+      .post_header
+        %h2
+          %a{:href => reader_url(post.reader), :class => 'main'}
+            = gravatar_for(post.reader, {:size => 40}, {:alt => post.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
+            = post.reader.name
+        %p.context
+          - if post.created_at.to_date == ::Date.current
+            = time_ago_in_words(post.created_at)
+            ago
+          - elsif post.created_at.to_date == ::Date.current - 1
+            yesterday at
+            = post.created_at.to_s(:short_time)
+          - else
+            on
+            = post.created_at.to_s(:html_date)
           
     .post_wrapper
       .post_body

@@ -1,25 +1,23 @@
 - with_context ||= false
+- cssclass = ['topic']
+- cssclass << 'sticky' if topic.sticky
+- cssclass << 'locked' if topic.locked
 
-%li.topic{:id => topic.dom_id}
-  %span.markers
-  %span.subject
-    %a{:href => topic_url(topic.forum, topic), :class => 'main'}
-      = gravatar_for(topic.reader, {:size => 36}, {:alt => topic.reader.name, :class => 'gravatar'})
-      = topic.name
+%li{:id => topic.dom_id, :class => cssclass.join(' ')}
   %span.context
     - if with_context
-      begun under 
-      = link_to topic.forum.name, forum_url(topic.forum)
-      by
-    - else
-      from
+      = link_to(topic.forum.name, forum_url(topic.forum)) + ':'
+  %span.subject
+    %a{:href => topic_url(topic.forum, topic), :class => 'main'}
+      = gravatar_for(topic.reader, {:size => 40}, {:alt => topic.reader.name, :class => 'gravatar'})
+      = topic.name
+  %span.context
+    from
     = link_to topic.reader.name + '.', reader_url(topic.reader)
-    - if topic.replied_at && topic.replied_by
+    - if topic.posts.count > 1
       = topic.posts.count
       = pluralize(topic.posts.count, 'comment') + ','
-      - if topic.posts.count > 1
-        most recently
-      from
+      most recently from
       = link_to topic.replied_by.name, reader_url(topic.replied_by)
       = time_ago_in_words(topic.replied_at)
       ago
