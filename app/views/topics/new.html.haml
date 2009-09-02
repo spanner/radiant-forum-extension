@@ -1,20 +1,15 @@
 = render :partial => 'readers/flasher'
 
 #forum
-  %p 
-    You are logged in as 
-    = link_to "#{current_reader.name}.", reader_url(current_reader)
-    If that's not you, please 
-    = link_to "log out.", reader_logout_url
   #new_topic
     - form_for :topic, :url  => @forum ? topics_path(@forum) : create_topic_somewhere_path, :html => {:class => 'friendly'} do |f|
       = render :partial => "form", :object => f
-      = submit_tag 'Post Topic' 
+      = submit_tag 'Start Discussion' 
       or 
       - if @forum
-        = link_to('Cancel', forum_path(@forum))
+        = link_to('cancel', forum_path(@forum))
       - else
-        = link_to('Cancel', :back)
+        = link_to('cancel', :back)
 
 - content_for :pagetitle do
   Start a new discussion
@@ -22,13 +17,22 @@
 - content_for :breadhead do
   - if @forum
     = link_to "#{@forum.name} &raquo;", forum_url(@forum), {:class => 'breadhead'}
-    %br
 
 - content_for :controls do
   = render :partial => 'readers/controls'
-  
+
+- content_for :credits do
+  %p.context
+    You are logged in as 
+    = link_to "#{current_reader.name}.", reader_url(current_reader)
+    If that's not you, please 
+    = link_to "log out.", reader_logout_url
+
+- content_for :mugshot do
+  = gravatar_for(current_reader, {:size => 50}, {:alt => current_reader.name, :class => 'gravatar'})
+
 - content_for :breadcrumbs do
-  = link_to 'Forum', forums_url
+  = link_to 'Forum', topics_list_url
   \&gt;
   - if @forum
     = link_to @forum.name, forum_url(@forum)

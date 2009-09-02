@@ -5,22 +5,23 @@
     %p
       These are the broad filing areas we use to organise the forum. 
       You can also see a list of 
-      = link_to "all the most recent conversation", topics_list_url
+      = link_to "all the most recent discussion", topics_list_url
       in any category.
+
     %p
-      = link_to "start a conversation", new_topic_somewhere_url, :class => 'inviting'
+      = link_to "start a new discussion", new_topic_somewhere_url, :class => 'newmessage'
 
   - if @forums.empty?
     %p No categories defined here yet.
 
   - else
-    - paginated_section @forums do
-      %ul.main
-        = render :partial => 'forums/forum', :collection => @forums
+    - if @forums.previous_page
+      = paginate_and_summarise @forums, 'forums'
+    
+    %ul.main
+      = render :partial => 'forums/forum', :collection => @forums
 
-
-
-
+    = paginate_and_summarise @forums, 'forums'
 
 - content_for :pagetitle do
   Discussion Categories
@@ -32,6 +33,6 @@
   = render :partial => 'readers/controls'
   
 - content_for :breadcrumbs do
-  = link_to 'Forum', forums_url
+  = link_to 'Forum', topics_list_url
   \&gt;
   Categories

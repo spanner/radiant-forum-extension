@@ -13,17 +13,16 @@
       = topic.name
   %span.context
     from
-    = link_to topic.reader.name + '.', reader_url(topic.reader)
     - if topic.posts.count > 1
+      = link_to topic.reader.name + '.', reader_url(topic.reader)
       = topic.posts.count
       = pluralize(topic.posts.count, 'comment') + ','
       most recently from
       = link_to topic.replied_by.name, reader_url(topic.replied_by)
-      = time_ago_in_words(topic.replied_at)
-      ago
+      = friendly_date(topic.replied_at)
     - else 
-      = time_ago_in_words(topic.created_at)
-      ago
+      = link_to topic.reader.name, reader_url(topic.reader)
+      = friendly_date(topic.created_at)
   %div.preview
     = truncate_and_textilize(topic.first_post.body, 100)
     

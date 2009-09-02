@@ -21,8 +21,12 @@
     %br
     = @topic.errors.on(:body).to_a.to_sentence
     
-- if @topic.new_record? || admin?
+- if @topic.new_record? && !@forum
   %p 
     %label{:for => "topic_forum_id"} Discussion category
     %br
-    = form.select :forum_id, Forum.find(:all, :order => "position").map {|x| [x.name, x.id] }
+    = form.select :forum_id, Forum.find(:all).map {|x| [x.name, x.id] }
+- else
+  %p
+    The new discussion will be filed under 
+    = link_to(@forum.name, forum_url(@forum)) + '.'

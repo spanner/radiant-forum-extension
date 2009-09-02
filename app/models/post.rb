@@ -61,7 +61,8 @@ class Post < ActiveRecord::Base
     !editable_interval || Time.now - self.created_at < editable_interval
   end
   
-  def editable_by?(reader)
+  def editable_by?(reader=nil)
+    return false unless reader
     reader.is_admin? || still_editable? && reader && (reader.id == reader_id)
   end
 

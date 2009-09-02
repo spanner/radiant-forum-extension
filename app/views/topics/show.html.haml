@@ -1,11 +1,15 @@
 = render :partial => 'readers/flasher'
 
 #forum
-  - paginated_section @posts do
-    = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false, :first_post => @topic.posts.first }
-  - unless @posts.next_page
-    = render :partial => 'posts/reply'
+  - if @posts.previous_page
+    = paginate_and_summarise @posts, 'comments'
 
+  = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false, :first_post => @topic.posts.first }
+
+  - if @posts.next_page
+    = paginate_and_summarise @posts, 'comments'
+  - else
+    = render :partial => 'posts/reply'
 
 
 - content_for :pagetitle do
@@ -13,24 +17,14 @@
 
 - content_for :credits do
   %p.context
-    started by
-    = link_to @topic.reader.name + '.', reader_url(@topic.reader)
-    - if @topic.posts.count > 1
-      = @topic.posts.count
-      = pluralize(@topic.posts.count, 'comment') + ','
-      most recently from
-      = link_to @topic.replied_by.name, reader_url(@topic.replied_by)
-      = time_ago_in_words(@topic.replied_at)
-      ago
-    - else 
-      = time_ago_in_words(@topic.created_at)
-      ago
+    posted by
+    = link_to @topic.reader.name, reader_url(@topic.reader)
+    = friendly_date(@topic.created_at)
+    in
+    = link_to @topic.forum.name + '.', forum_url(@topic.forum), {:class => 'breadhead'}
 
 - content_for :mugshot do
-  = gravatar_for(@topic.reader, {:size => 40}, {:alt => @topic.reader.name, :class => 'gravatar'})
-
-- content_for :breadhead do
-  = link_to @topic.forum.name + ':', forum_url(@topic.forum), {:class => 'breadhead'}
+  = gravatar_for(@topic.reader, {:size => 50}, {:alt => @topic.reader.name, :class => 'gravatar'})
 
 - content_for :feed do
   = feed_link(formatted_topic_path(@topic.forum, @topic, :rss))

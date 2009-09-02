@@ -2,7 +2,7 @@
 // and instead bring it in with a remote call. most often this is for page comments, where
 // it has the advantage that the page can still be cached. that's why a login form might be returned.
 
-- message_type = @page ? 'comment' : 'message'
+- message_type = @page ? 'comment' : 'reply'
 - formurl = @page ? page_posts_url(@page) : posts_url(@forum, @topic)
 - @post ||= @topic.posts.build
 

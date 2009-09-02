@@ -55,7 +55,6 @@ namespace :radiant do
               reader.save(false)
             else
               reader.update_attribute( :old_id, row['UserID'] )
-              p "Using existing reader #{reader.name}"
             end
           end
         
@@ -68,8 +67,6 @@ namespace :radiant do
                 :position => row['Priority']
               )
               p "Imported forum #{forum.name}"
-            else
-              p "Using existing forum #{forum.name}"
             end
           end
         
@@ -98,26 +95,31 @@ namespace :radiant do
                 :old_id => row['DiscussionID']
               )
             
-              p "saving topic #{topic['DiscussionID']}: #{topic.inspect}"
-            
-              topic.save!
-              p "Imported topic #{topic.name}"
+              p "trying topic #{row['DiscussionID']}"
+              
+              begin
+                if topic.save
+                  p "Imported topic #{topic.name}"
           
-              topic_posts[row['DiscussionID']].each do |post|
-                unless post['CommentID'] == row['FirstCommentID']          # first post is created in a pre-validation filter, so we can't check for its old_id
-                  post = topic.posts.build(
-                    :forum => forum,
-                    :reader => Reader.find_by_old_id(post['AuthUserID']),
-                    :created_at => post['DateCreated'],
-                    :updated_at => post['DateEdited'],
-                    :body => post['Body'],
-                    :old_id => post['CommentID']
-                  )
-                  p "post.errors: #{post.errors.inspect}" unless post.valid?
-                  post.save
+                  topic_posts[row['DiscussionID']].each do |post|
+                    unless post['CommentID'] == row['FirstCommentID']          # first post is created in a pre-validation filter, so we can't check for its old_id
+                      post = topic.posts.build(
+                        :forum => forum,
+                        :reader => Reader.find_by_old_id(post['AuthUserID']),
+                        :created_at => post['DateCreated'],
+                        :updated_at => post['DateEdited'],
+                        :body => post['Body'],
+                        :old_id => post['CommentID']
+                      )
+                      post.save
+                    end
+                  end
+                  p "... with #{topic.posts.count} post" + (topic.posts.count == 1 ? '' : 's')
                 end
+              rescue ActiveRecord::RecordInvalid => e
+                p "!!! failed to import topic #{row['DiscussionID']}: #{e.inspect}"
               end
-              p "... with #{topic.posts.count} post" + (topic.posts.count == 1 ? '' : 's')
+              
             else
               p "skipping topic #{row['Name']}: no post"
             end

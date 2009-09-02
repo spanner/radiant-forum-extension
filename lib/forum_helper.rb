@@ -42,7 +42,53 @@ module ForumHelper
       def remove_link(post)
         link_to 'remove', post_url(post.forum, post.topic, post), :method => 'delete', :class => 'remove_post', :title => "remove post", :confirm => "Are you sure you want to delete this message?"
       end
-
+      
+      def friendly_date(datetime)
+        if datetime
+          date = datetime.to_date
+          if (date == Date.today)
+            format = "today at %l:%M%p"
+          elsif (date == Date.yesterday)
+            format = "yesterday at %l:%M%p"
+          elsif (date.year == Date.today.year)
+            format = "on %B %e"
+          else
+            format = "on %B %e, %Y"
+          end
+          datetime.strftime(format)
+        else 
+          "unknown date"
+        end
+      end
+      
+      def paginate_and_summarise(list, plural='')
+        pagination = will_paginate list, :separator => %{<span class="separator">|</span>}, :container => false
+        %{<div class="pagination">
+            #{pagination}
+            <span class="pagination_summary">
+              showing #{pagination_summary(list, plural)}
+            </span>
+          </div>
+        }
+      end
+        
+      def pagination_summary(list, plural='')
+        total = list.total_entries
+        if total == 1
+          if plural.blank?
+            "one"
+          else
+            %{one #{plural.singularize}}
+          end
+        elsif list.current_page == 1 && total < list.per_page
+          %{all #{total} #{plural}}
+        else
+          start = list.offset + 1
+          finish = ((list.offset + list.per_page) < list.total_entries) ? list.offset + list.per_page : list.total_entries
+          %{#{start} to #{finish} of #{total} #{plural}}
+        end
+      end
+      
     }
   end
   

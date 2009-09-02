@@ -36,14 +36,14 @@
       .post_info
         - if admin? || post.editable_by?(current_reader)
           .edit_control
-            = remove_link(post) unless post.first? && post.has_replies?
             = edit_link(post)
+            = remove_link(post) unless post.first? && post.has_replies?
         - if post.still_editable_for
           %strong
             editable 
           for 
           = distance_of_time_in_words(post.still_editable_for)
-        - if post.updated_at > post.created_at
+        - if post.updated_at && post.updated_at > post.created_at
           %strong
             updated 
           on 

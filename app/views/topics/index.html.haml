@@ -5,18 +5,22 @@
     %p
       This is a list of all the discussions going on here, with the most recently updated first. 
       You can also see a more organised list of 
-      = link_to("discussions by category", forums_url) + '.'
+      = link_to("discussion by category", forums_url) + '.'
     
     %p
-      = link_to "start a new conversation", new_topic_somewhere_url, :class => 'newmessage'
+      = link_to "start a new discussion", new_topic_somewhere_url, :class => 'newmessage'
 
   - if @topics.empty?
     %p No talk here yet.
 
   - else
-    - paginated_section @topics do
-      %ul.main
-        = render :partial => 'topics/topic', :collection => @topics, :locals => {:with_context => true}
+    - if @topics.previous_page
+      = paginate_and_summarise @topics, 'topics'
+      
+    %ul.main
+      = render :partial => 'topics/topic', :collection => @topics, :locals => {:with_context => true}
+
+    = paginate_and_summarise @topics, 'topics'
 
 - content_for :breadcrumbs do
   = link_to 'Forum', forums_url
@@ -24,7 +28,7 @@
   All Discussions 
 
 - content_for :pagetitle do
-  Forum
+  Latest discussion
 
 - content_for :feed do
   = feed_link(topics_feed_path)

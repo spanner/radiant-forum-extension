@@ -5,7 +5,7 @@ class TopicsController < ReaderActionController
   def index
     respond_to do |format|
       format.html do
-        @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :include => [:forum, :reader])
+        @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :per_page => params[:per_page] || 20, :include => [:forum, :reader])
       end
       format.rss do
         @topics = Topic.find(:all, :order => "topics.replied_at desc", :include => [:forum, :reader], :limit => 50)
