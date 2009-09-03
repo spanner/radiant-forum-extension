@@ -122,7 +122,7 @@ describe TopicsController do
         end
         it "should redirect to the topic page" do
           response.should be_redirect
-          response.should redirect_to(topic_url(@topic.forum, @topic))
+          response.should redirect_to(forum_topic_url(@topic.forum, @topic))
         end
       end
     end

@@ -1,12 +1,12 @@
 xml.channel do
   xml.atom :link, nil, {
-    :href => formatted_posts_url(:rss),
+    :href => search_posts_url(:rss),
     :rel => 'self', :type => 'application/rss+xml'
   }
 
-  xml.title "#{@site_title} : Latest posts"
-  xml.description "Latest posts in any topic or forum"
-  xml.link posts_url
+  xml.title "#{@site_title} : forum search"
+  xml.description @title
+  xml.link search_posts_url(params)
   xml.language "en-us"
   xml.ttl "60"
 

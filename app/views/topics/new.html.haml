@@ -2,7 +2,7 @@
 
 #forum
   #new_topic
-    - form_for :topic, :url  => @forum ? topics_path(@forum) : create_topic_somewhere_path, :html => {:class => 'friendly'} do |f|
+    - form_for :topic, :url  => @forum ? forum_topics_path(@forum) : topics_path, :html => {:class => 'friendly'} do |f|
       = render :partial => "form", :object => f
       = submit_tag 'Start Discussion' 
       or 
@@ -32,7 +32,7 @@
   = gravatar_for(current_reader, {:size => 50}, {:alt => current_reader.name, :class => 'gravatar'})
 
 - content_for :breadcrumbs do
-  = link_to 'Forum', topics_list_url
+  = link_to 'Forum', topics_url
   \&gt;
   - if @forum
     = link_to @forum.name, forum_url(@forum)

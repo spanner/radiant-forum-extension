@@ -7,16 +7,16 @@
     Edit discussion 
 
   #new_topic
-    = form_for :topic, :url  => topic_path(@forum, @topic), :html => {:method => :put, :class => 'friendly'} do |f|
+    = form_for :topic, :url  => forum_topic_path(@forum, @topic), :html => {:method => :put, :class => 'friendly'} do |f|
       = render :partial => "form", :object => f
 	    = submit_tag 'Save Changes' 
 	    or 
-	    = link_to('cancel', topic_path(@forum, @topic))
+	    = link_to('cancel', forum_topic_path(@forum, @topic))
 
 = render :partial => 'readers/controls'
 
 - content_for :breadcrumbs do
-  = link_to 'Forum', topics_list_url
+  = link_to 'Forum', topics_url
   \&gt;
   = link_to @forum.name, forum_url(@forum) 
   \&gt;

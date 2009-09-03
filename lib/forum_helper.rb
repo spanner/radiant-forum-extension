@@ -35,12 +35,20 @@ module ForumHelper
         end
       end
 
+      def paged_post_url(post)
+        if post.first?
+          topic_post_url(post.topic, post, :page => post.topic_page, :anchor => post.dom_id)
+        else
+          topic_post_url(post.topic, post, :page => post.topic_page, :anchor => post.dom_id)
+        end
+      end
+
       def edit_link(post)
-        link_to 'edit', edit_post_url(post.forum, post.topic, post), :class => 'edit_post', :id => "edit_post_#{post.id}", :title => "edit post"
+        link_to 'e', edit_topic_post_url(post.topic, post), :class => 'edit_post', :id => "edit_post_#{post.id}", :title => "edit post"
       end
 
       def remove_link(post)
-        link_to 'remove', post_url(post.forum, post.topic, post), :method => 'delete', :class => 'remove_post', :title => "remove post", :confirm => "Are you sure you want to delete this message?"
+        link_to 'x', topic_post_url(post.topic, post), :method => 'delete', :class => 'delete_post', :id => "delete_post_#{post.id}", :title => "remove post", :confirm => "Are you sure you want to delete this message?"
       end
       
       def friendly_date(datetime)

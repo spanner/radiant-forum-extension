@@ -8,7 +8,7 @@
       = link_to("discussion by category", forums_url) + '.'
     
     %p
-      = link_to "start a new discussion", new_topic_somewhere_url, :class => 'newmessage'
+      = link_to "start a new discussion", new_topic_url, :class => 'newmessage'
 
   - if @topics.empty?
     %p No talk here yet.
@@ -31,7 +31,10 @@
   Latest discussion
 
 - content_for :feed do
-  = feed_link(topics_feed_path)
+  = feed_link(formatted_topics_path(:rss))
 
 - content_for :controls do
   = render :partial => 'readers/controls'
+
+- content_for :help do
+  = render :partial => 'topics/help'

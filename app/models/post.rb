@@ -63,8 +63,9 @@ class Post < ActiveRecord::Base
   
   def editable_by?(reader=nil)
     return false unless reader
-    reader.is_admin? || still_editable? && reader && (reader.id == reader_id)
+    still_editable? && reader && (reader.id == reader_id)
   end
+  
 
   # we shouldn't have formatting in here, but page comments need to be rendered from a radius tag
   
@@ -77,7 +78,7 @@ class Post < ActiveRecord::Base
   end
   
   def save_attachments(files=nil)
-    files.collect {|file| self.attachments.create(:file => file) } if files
+    files.collect {|file| self.attachments.create(:file => file) unless file.blank? } if files
   end
   
 protected

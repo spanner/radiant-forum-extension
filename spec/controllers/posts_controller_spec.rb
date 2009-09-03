@@ -24,6 +24,17 @@ describe PostsController do
       response.should render_template("index")
     end  
   end
+
+  describe "on get to search" do
+    before do
+      get :search
+    end
+
+    it "should redirect to login" do
+      response.should be_redirect
+      response.should redirect_to(reader_login_url)
+    end  
+  end
     
   describe "on get to show" do
     
@@ -35,7 +46,7 @@ describe PostsController do
       end
       it "should redirect to the page address and post anchor" do
         response.should be_redirect
-        response.should redirect_to(@page.url + "#comment_#{@comment.id}")
+        response.should redirect_to(@page.url + "##{@comment.dom_id}")
       end
     end
     
@@ -45,7 +56,7 @@ describe PostsController do
       end
       it "should redirect to the topic address, post page and post anchor" do
         response.should be_redirect
-        response.should redirect_to(topic_url(@topic.forum, @topic, {:page => @post.topic_page, :anchor => "post_#{@post.id}"}))
+        response.should redirect_to(forum_topic_url(@topic.forum, @topic, {:page => @post.topic_page, :anchor => "post_#{@post.id}"}))
       end
     end
   end
@@ -98,7 +109,7 @@ describe PostsController do
         
         it "should redirect to the topic page" do 
           response.should be_redirect
-          response.should redirect_to(topic_url(@topic.forum, @topic))
+          response.should redirect_to(forum_topic_url(@topic.forum, @topic))
         end
         
         it "should flash an appropriate message" do 
@@ -163,7 +174,7 @@ describe PostsController do
           end
           it "should redirect to the topic page" do 
             response.should be_redirect
-            response.should redirect_to(topic_url(@topic.forum, @topic))
+            response.should redirect_to(forum_topic_url(@topic.forum, @topic))
           end
           
           it "should flash an appropriate error" do 
@@ -249,7 +260,7 @@ describe PostsController do
 
         it "should redirect to the right topic and page" do
           response.should be_redirect
-          response.should redirect_to(topic_url(@forum, @topic, {:page => @post.topic_page, :anchor => "post_#{@post.id}"}))
+          response.should redirect_to(forum_topic_url(@forum, @topic, {:page => @post.topic_page, :anchor => "post_#{@post.id}"}))
         end
       end
 

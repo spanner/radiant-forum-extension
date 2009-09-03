@@ -2,9 +2,9 @@
 
 This is a simple but comprehensive forum implementation that plugs into radiant. It's fairly well-featured, including:
 
+* forums, topics, posts etc
 * page comments
-* rss feeds at several levels
-* email monitoring of topics
+* rss feeds of pretty much anything (including search results and readers)
 * textile-formatted messages with html whitelisting
 * multiple message attachments and nice image-handling
 
@@ -16,12 +16,13 @@ The forum is compatible with multi_site but you have to use [our fork](https://g
 
 ## Status
 
-The release tagged 0.7 is fairly solid and almost complete. The current latest version is a candidate at best: it tests clean under 0.8 - and the tests are very comprehensive - but right now it fails to clear the page cache and there are no doubt other things I don't know about yet.
+I've just spent three days chasing gremlins out of this so it should be in good shape. I use it with some mootools-based scripts for inline editing. When I get a moment I'll generalise those and include them here. Until then it should work fine in the old-fashioned way.
 
 ## Still to do
 
 * Moderators among readership
 * Reinstate message preview
+* Reinstate email-monitoring
 * Message-flagging button
 * Admin pages that suck a lot less
 * Anonymous page-comment option
@@ -49,8 +50,6 @@ As well as the basic machinery this should give you:
 
 * a basic forum.css that you will want to improve upon,
 * an admin/forum.css that you can probably leave alone, 
-* a sample javascript front end. It uses mootools but in a very generic way and should be easy to adapt.
-* various useful images.
 * a sample layout that should be enough to let you experiment
 
 ## Load order
@@ -85,7 +84,7 @@ I've published this in the simplest form possible, on the assumption that everyo
 
 ## Smilies
 
-I've included a basic set here and a redcloth extension that catches :smile: notation alongside the textile markup. There's a javascript front end in the works for that - click on the smiley, you know - which will soon appear here.
+I've included a basic set here and a redcloth extension that catches :smile: notation alongside the textile markup. There's a javascript front end in the works for that - click on the smiley, you know - which will also soon appear here.
 
 ## Author & Copyright
 

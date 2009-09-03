@@ -3,15 +3,8 @@ class TopicsController < ReaderActionController
   before_filter :find_forum_and_topic, :except => :index
 
   def index
-    respond_to do |format|
-      format.html do
-        @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :per_page => params[:per_page] || 20, :include => [:forum, :reader])
-      end
-      format.rss do
-        @topics = Topic.find(:all, :order => "topics.replied_at desc", :include => [:forum, :reader], :limit => 50)
-        render :layout => 'feed'
-      end
-    end
+    @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :per_page => params[:per_page] || 20, :include => [:forum, :reader])
+    render_page_or_feed
   end
 
   def new
@@ -19,20 +12,9 @@ class TopicsController < ReaderActionController
   end
   
   def show
-    respond_to do |format|
-      format.html do
-        @topic.hit! unless current_reader and @topic.reader == current_reader
-        @posts = Post.paginate_by_topic_id(@topic.id, :page => params[:page], :include => :reader, :order => 'posts.created_at asc')
-      end
-      format.rss do
-        @posts = @topic.posts.find(:all, :order => 'created_at desc', :limit => 25)
-        render :layout => 'feed'
-      end
-      format.js do
-        @posts = Post.paginate_by_topic_id(@topic.id, :page => params[:page], :include => :reader, :order => 'posts.created_at asc')
-        render :layout => false
-      end
-    end
+    @topic.hit! unless current_reader and @topic.reader == current_reader
+    @posts = Post.paginate_by_topic_id(@topic.id, :page => params[:page], :include => :reader, :order => 'posts.created_at asc')
+    render_page_or_feed
   end
   
   def create
@@ -41,7 +23,7 @@ class TopicsController < ReaderActionController
     @forum = Forum.find(params[:topic][:forum_id]) if params[:topic][:forum_id]
     @topic = @forum.topics.create!(params[:topic])
     respond_to do |format|
-      format.html { redirect_to topic_path(@forum, @topic) }
+      format.html { redirect_to forum_topic_path(@forum, @topic) }
     end
   rescue ActiveRecord::RecordInvalid => invalid
     flash[:error] = "Sorry: #{invalid}. Please check the form"
@@ -55,7 +37,7 @@ class TopicsController < ReaderActionController
     @topic.attributes = params[:topic]
     @topic.save!
     respond_to do |format|
-      format.html { redirect_to topic_path(@forum, @topic) }
+      format.html { redirect_to forum_topic_path(@forum, @topic) }
     end
   end
   
@@ -70,9 +52,10 @@ class TopicsController < ReaderActionController
   protected
 
     def find_forum_and_topic
-      @forum = Forum.find(params[:forum_id]) if params[:forum_id]
-      @topic = @forum.topics.find(params[:id]) if params[:id]
+      @topic = Topic.find(params[:id]) if params[:id]
       @page = @topic.page if @topic
+      @forum = @topic.forum if @topic
+      @forum ||= Forum.find(params[:forum_id]) if params[:forum_id]
     end
     
 end

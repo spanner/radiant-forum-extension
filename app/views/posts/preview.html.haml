@@ -29,4 +29,4 @@
           or 
           = submit_tag 'revise', :class => 'revise', :id => 'revise' 
           or
-          = link_to 'cancel', @page ? @page.url : topic_url(@topic.forum, @topic), :class => 'cancelform'
+          = link_to 'cancel', @page ? @page.url : forum_topic_url(@topic.forum, @topic), :class => 'cancelform'

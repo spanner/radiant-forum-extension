@@ -1,7 +1,5 @@
 window.addEvent('domready', function(){
-  // getPosts();
-  // getRemoteCheckboxes();
-  getUploadHandler();
+  getPosts();
   flashErrors();
   fadeNotices();
 });
@@ -11,7 +9,17 @@ Element.implement({
     this.morph({opacity: 0, height: 0});
   }
 });
-  
+
+var block = function (e) {
+	if (e) {
+		if (e.target) e.target.blur();
+		e = new Event(e);
+		e.preventDefault();
+		e.stop;
+		return e;
+	}
+};
+
 // get rid of radiant notifications (after a pause)
 
 fadeNotices = function () {
@@ -45,57 +53,18 @@ getForms = function () {
   document.getElements('a.retrieve_form').each(function (a) { replaceWithDestination(a); });
 };
 
-// these are usually topic-monitoring forms
-
-getRemoteCheckboxes = function () {
-  document.getElements('input.monitor_submit').each(function (element) { element.hide(); });
-	FancyForm.start( 
-	  document.getElements('input.remote_checkbox'), {
-  	onSelect: function(chk){ remoteCheckBox(chk); },
-  	onDeselect: function(chk){ remoteCheckBox(chk); }
-  });
-};
-
-remoteCheckBox = function (chk) {
-  if (chk.form) {
-    var methodfield = form.getElement('#_method');
-    if (methodfield) methodfield.value = chk.hasClass('checked') ? '' : 'delete';
-    var req = new Request.JSON({
-      url: form.get('action'),
-      onRequest: function () { chk.addClass('waiting'); },
-      onSuccess: function (response) { chk.removeClass('waiting'); chk.highlight(); },
-      onFailure: function (response) { chk.removeClass('waiting'); chk.addClass('error'); }
-    }).post(form);
-  }
-};
-
 replaceWithDestination = function (element) {
   element.addClass('waiting');
   var formholder = element.getParent();
   formholder.load(element.get('href'));
 };
 
-getUploadHandler = function () {
-  document.getElements('div.upload_handler').each(function (div) { new UploadHandler(div); });
-};
-
-// thoroughly interfere with javascript events
-
-var block = function (e) {
-	if (e) {
-		if (e.target) e.target.blur();
-		e = new Event(e);
-		e.preventDefault();
-		e.stop;
-		return e;
-	}
-};
-
-// initialize the post machinery: editable, deletable and flaggable in place
-
 getPosts = function () {
   $$('div.post').each(function (div) { new Post(div); });
+  $$('div.upload_handler').each(function (div) { new UploadHandler(div); });
 };
+
+// post machinery: editable, deletable and soon flaggable in place
 
 var Post = new Class({
   initialize: function (div) {
@@ -107,7 +76,6 @@ var Post = new Class({
     this.editor = div.getElement('a.edit_post');
     if (this.editor) {
       this.editor.addEvent('click', this.edit.bindWithEvent(this));
-      this.body_holder.addEvent('dblclick', this.edit.bindWithEvent(this));
     }
     this.showing = false;
     this.form_holder = null;
@@ -123,59 +91,70 @@ var Post = new Class({
   },
   
   getForm: function (url) {
-    console.log('getform');
     if (url) this.formHolder().load(url);
-  },
-  
-  prepForm: function () {
-    this.body_holder.fade('hide');
-    this.form_holder.fade('in');
-    this.editor.removeClass('waiting');
-    this.form = this.formHolder().getElement('form');
-    this.input = this.form.getElement('textarea');
-    this.input.setStyle('height', this.h - 40);
-    this.formHolder().getElement('a.cancel').addEvent('click', this.cancel.bindWithEvent(this));
-		this.form.onsubmit = this.sendForm.bind(this);
-    this.showing = true;
-  },
-  
-  sendForm: function (e) {
-    block(e);
-    var finish_edit = this.finishEdit.bind(this);
-    var req = new Request.HTML({
-      url: this.form.get('action'),
-      update: this.container,
-      onComplete: finish_edit
-    }).post(this.form);
   },
   
   formHolder: function () {
     if (this.form_holder) return this.form_holder;
     this.form_holder = new Element('div', {'class': 'post_form'});
     this.form_holder.set('load', {onComplete: this.prepForm.bind(this)});
-    this.form_holder.setStyle('height', this.h);
-    this.form_holder.fade('hide');
-    this.form_holder.inject(this.wrapper, 'top');
     return this.form_holder;
   },
   
+  prepForm: function () {
+    this.form_holder.inject(this.wrapper, 'top');
+    this.body_holder.hide();
+    this.editor.removeClass('waiting');
+    this.form = this.form_holder.getElement('form');
+    this.input = this.form.getElement('textarea');
+    this.input.setStyle('height', this.h);
+    this.form_holder.getElement('a.cancel').addEvent('click', this.cancel.bindWithEvent(this));
+    this.uploader = new UploadHandler(this.form_holder.getElement('div.upload_handler'));
+    this.stumbit = this.form_holder.getElement('div.buttons');
+    this.form.onsubmit = this.sendForm.bind(this);
+    // new Fx.Morph(this.input, {duration: 'short'}).start({'height' : 240, opacity : 1});
+    this.form_holder.show();
+    this.showing = true;
+  },
+  
+  sendForm: function (e) {
+    var waiter = new Element('p', {'class' : 'waiting'}).set('text', 'please wait');
+    waiter.replaces(this.stumbit);
+
+    if (this.uploader && this.uploader.hasUploads()) {
+      // can't send uploads over xmlhttp so we allow the form to submit
+      // the update-post action will redirect to a hashed url that should return us to the right post
+    } else {
+      block(e);
+      new Request.HTML({
+        url: this.form.get('action'),
+        update: this.container,
+        onComplete: this.finishEdit.bind(this)
+      }).post(this.form);
+    }
+    
+  },
   cancel: function (e) {
     block(e);
-    this.form_holder.fade('hide');
-    this.body_holder.fade('in');
+    this.finishCancel();
+    // new Fx.Morph(this.input, {duration: 'short', onComplete : this.finishCancel.bind(this)}).start({'height' : this.h, opacity : 0});
+  },
+  finishCancel: function () {
+    this.form_holder.hide();
+    this.body_holder.show();
     this.editor.removeClass('waiting');
     this.showing = false;
   },
-  
   finishEdit: function () {
     this.container.highlight();
     new Post(this.container);
-  }  
+  }
 });
 
 var UploadHandler = new Class({
   initialize: function (div) {
     this.container = div;
+    this.shower = div.getElement('a');
     this.list = div.getElement('ul.attachments');
     this.pender = div.getElement('div.uploads');
     this.selector = div.getElement('div.selector');
@@ -184,61 +163,82 @@ var UploadHandler = new Class({
     this.file_pending_template = new Element('li');
 
     this.attachments = [];
-    this.list.getElements('li.attachment').each(function (li) {
+    this.list.getElements('lattachment').each(function (li) {
       this.attachments.push( new Attachment(li));
     }, this);
 
     this.uploads = [];
     this.uploader = this.selector.getElement('input');
     this.uploader.addEvent('change', this.addUpload.bindWithEvent(this));
+
+    this.reveal = new Fx.Slide(div.getElement('div.attachments'));
+    this.shower.addEvent('click', this.toggle.bindWithEvent(this));
+
+    if (!this.hasAttachments()) this.reveal.hide();
+  },
+  toggle: function (e) {
+    block(e);
+    this.reveal.toggle();
   },
   addUpload: function (e) {
     block(e);
-    this.uploads.push(new Upload(this.uploader, this.pender, this.list));
+    this.uploads.push(new Upload(this));
+    this.resize();
+  },
+  pendUpload: function (argument) {
+    var ul = this.uploader.clone().inject(this.pender);
     this.uploader.set('value', null);
+    return ul;
+  },
+  hasAttachments: function () {
+    return this.attachments.length != 0;
+  },
+  hasUploads: function () {
+    return this.uploads.length != 0;
+  },
+  resize: function () {
+    this.reveal.slideIn();
   }
 });
 
 var Upload = new Class({
-  initialize: function (file_input, ul_holder, list_div) {
-    this.uploader = file_input.clone().set('id', 'test').inject(ul_holder);
+  initialize: function (handler) {
+    this.handler = handler;
+    this.uploader = this.handler.pendUpload();
     this.container = new Element('li', {'class': 'attachment'}).set('text', ' ' + this.uploader.value + ' ');
     this.icon = new Element('img').set('src', this.icon_for(this.uploader.value)).inject(this.container, 'top');
     this.remover = new Element('a', {'class': 'remove', 'href': '#'}).set('text', 'remove').inject(this.container, 'bottom');
     this.remover.addEvent('click', this.remove.bindWithEvent(this));
-    this.container.inject(list_div, 'bottom');
+    this.container.inject(this.handler.list, 'bottom');
   },
   icon_for: function (filename) {
-    switch(filename.split('.').pop()) {
-      case 'pdf': return '/images/icons/24/pdf.png';
-      case 'mpg': return '/images/icons/24/video.png';
-      case 'mp3': return '/images/icons/24/audio.png';
-      default: return '/images/icons/24/image.png';
-    }
+    return '/images/forum/icons/attachment_new.png';
   },
   remove: function (e) {
     block(e);
     this.uploader.destroy();
-    this.container.dwindle();
+    this.container.nix();
+    this.handler.resize();
   }
 });
 
 var Attachment = new Class({
   initialize: function (li) {
     this.container = li;
-    this.checkbox = li.getElement('input.choose_attachment');
-    this.remover = li.getElement('a.remove');
+    this.checkbox = lgetElement('input.choose_attachment');
+    this.remover = lgetElement('a.remove');
     this.remover.addEvent('click', this.remove.bindWithEvent(this));
   },
   remove: function (e) {
     block(e);
     if (this.checkbox) this.checkbox.set('checked', false);
-    this.container.dwindle();
+    this.container.nix();
   },
   hide: function () {
     this.container.hide();
   }
 });
+
 
 
 

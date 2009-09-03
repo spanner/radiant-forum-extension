@@ -42,7 +42,7 @@
                       - if post.topic.page
                         = link_to post.topic.page.title, "#{post.topic.page.url}##{post.dom_id}", {:class => 'topic'}
                       - else
-                        = link_to post.topic.name, topic_url(post.topic.forum, post.topic, :page => post.topic_page, :anchor => post.dom_id), {:class => 'topic'}
+                        = link_to post.topic.name, forum_topic_url(post.topic.forum, post.topic, :page => post.topic_page, :anchor => post.dom_id), {:class => 'topic'}
                       %br
                       %span.context
                         - if post.topic.page

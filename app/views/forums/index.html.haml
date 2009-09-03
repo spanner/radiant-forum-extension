@@ -5,11 +5,11 @@
     %p
       These are the broad filing areas we use to organise the forum. 
       You can also see a list of 
-      = link_to "all the most recent discussion", topics_list_url
+      = link_to "all the most recent discussion", topics_url
       in any category.
 
     %p
-      = link_to "start a new discussion", new_topic_somewhere_url, :class => 'newmessage'
+      = link_to "start a new discussion", new_topic_url, :class => 'newmessage'
 
   - if @forums.empty?
     %p No categories defined here yet.
@@ -33,6 +33,9 @@
   = render :partial => 'readers/controls'
   
 - content_for :breadcrumbs do
-  = link_to 'Forum', topics_list_url
+  = link_to 'Forum', topics_url
   \&gt;
   Categories
+
+- content_for :help do
+  = render :partial => 'topics/help'

@@ -8,19 +8,25 @@
     - unless post == first_post
       .post_header
         %h2
-          %a{:href => reader_url(post.reader), :class => 'main'}
-            = gravatar_for(post.reader, {:size => 40}, {:alt => post.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
-            = post.reader.name
-        %p.context
-          - if post.created_at.to_date == ::Date.current
-            = time_ago_in_words(post.created_at)
-            ago
-          - elsif post.created_at.to_date == ::Date.current - 1
-            yesterday at
-            = post.created_at.to_s(:short_time)
+          - if with_context
+            %a{:href => forum_topic_url(post.topic.forum, post.topic), :class => post.first? ? 'begun' : 'replied'}
+              = gravatar_for(post.reader, {:size => 40}, {:alt => post.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
+              = post.topic.name
           - else
-            on
-            = post.created_at.to_s(:html_date)
+            %a{:href => reader_url(post.reader), :class => 'main'}
+              = gravatar_for(post.reader, {:size => 40}, {:alt => post.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
+              = post.reader.name
+      %p.context
+        - if with_context
+          = link_to post.reader.name, reader_url(post.reader)
+          - if post.first?
+            started a new discussion in 
+            = link_to(post.topic.forum.name, forum_url(post.topic.forum))
+          - else
+            replied
+        - else
+          posted
+        = friendly_date(post.created_at)
           
     .post_wrapper
       .post_body
@@ -28,23 +34,33 @@
           %p Post removed
         - else
           = clean_textilize(post.body)
-      - unless post.attachments.empty?
-        .post_attachments
-          %ul 
-            = render :partial => 'posts/attachment', :collection => post.attachments, :locals => {:removable => false}
+        
+        - unless post.attachments.empty?
+          .post_attachments
+            %h4 
+              attached:
+            %ul 
+              = render :partial => 'posts/attachment', :collection => post.attachments, :locals => {:removable => false}
 
-      .post_info
-        - if admin? || post.editable_by?(current_reader)
-          .edit_control
-            = edit_link(post)
-            = remove_link(post) unless post.first? && post.has_replies?
-        - if post.still_editable_for
-          %strong
-            editable 
-          for 
-          = distance_of_time_in_words(post.still_editable_for)
+      .post_control
+        - if post.editable_by?(current_reader)
+          %p
+            = link_to "editable", edit_topic_post_url(post.topic, post), :class => 'edit_post', :id => "revise_post_#{post.id}"
+            for 
+            = distance_of_time_in_words(post.still_editable_for)
+        - elsif admin?
+          %p.post_admin
+            = link_to "edit", edit_topic_post_url(post.topic, post), :class => 'edit_post', :id => "revise_post_#{post.id}"
+            %span.separator |
+            = link_to "delete", topic_post_url(post.topic, post), :method => 'delete', :class => 'delete_post', :id => "delete_post_#{post.id}", :title => "remove post", :confirm => "Are you sure you want to delete this message?"
+
         - if post.updated_at && post.updated_at > post.created_at
-          %strong
-            updated 
-          on 
-          = post.updated_at.to_s(:html_date)
+          %p.updatenote
+            updated
+            - if post.updated_by && post.updated_by != post.created_by
+              (by 
+              = post.updated_by.name + ')'
+            = friendly_date(post.updated_at)
+
+
+

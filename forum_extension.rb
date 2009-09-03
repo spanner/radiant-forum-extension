@@ -2,39 +2,26 @@ require_dependency 'application_controller'
 require 'will_paginate'
 
 class ForumExtension < Radiant::Extension
-  version "0.2"
-  description "Simple forums and page comments for inclusion in your radiant site. Derived long ago from beast. Requires the reader extension and share_layouts."
+  version "0.4"
+  description "Nice clean forums and page comments for inclusion in your radiant site. Derived long ago from beast. Requires the reader extension and share_layouts."
   url "http://spanner.org/radiant/forum"
 
   define_routes do |map|
-    map.resources :forums do |forum|
-      forum.resources :topics, :name_prefix => nil do |topic|
-        topic.resources :posts, :name_prefix => nil
-        topic.resource :monitorship, :controller => :monitorships, :name_prefix => nil
-      end
+    
+    map.with_options :path_prefix => '/forum' do |forum|
+      forum.resources :forums, :only => [:index, :show], :has_many => [:topics, :posts]
+      forum.resources :topics, :has_many => [:posts]
+      forum.resources :posts, :collection => {:search => :get, :monitored => :get}
     end
     
+    # forum admin is nested under readers to save interface clutter
+    # some time soon I'll add proper moderation of topics and posts
     map.namespace :admin, :member => { :remove => :get }, :path_prefix => 'admin/readers' do |admin|
       admin.resources :forums
-      # admin.resources :topics   for moderation
+      # admin.resources :topics
+      # admin.resources :posts
     end
-
-    %w(reader forum page).each do |attr|
-      map.resources :posts, :name_prefix => "#{attr}_", :path_prefix => "/#{attr.pluralize}/:#{attr}_id", :collection => 'preview'
-    end
-
-    map.with_options :controller => 'topics' do |topics|
-      topics.topics_list '/topics', :action => 'index'
-      topics.topics_feed '/topics/feed', :action => 'index', :format => 'rss'
-      topics.new_topic_somewhere '/topics/new', :action => 'new'
-      topics.create_topic_somewhere '/topics/create', :action => 'create', :method => :post
-    end
-
-    map.with_options :controller => 'posts' do |posts|
-      posts.posts_monitored '/posts/monitored', :action => 'monitored'
-      posts.posts_feed '/posts/feed', :action => 'index', :format => 'rss'
-      posts.posts_list '/posts', :action => 'index'
-    end
+        
   end
   
   def activate
@@ -66,12 +53,6 @@ class ForumExtension < Radiant::Extension
     end
     
     ApplicationHelper.send :include, ForumHelper
-
-    ActiveSupport::CoreExtensions::Time::Conversions::DATE_FORMATS.merge!( 
-      :informal => %{%B %d %Y at %H:%M},
-      :html_date => %{<span class="date">%e %b %Y</span> at <span class="time">%l:%M</span><span class="meridian">%p</span>},
-      :short_time => %{%l:%M<span class="meridian">%p</span>}
-    )
 
     if defined? ActiveRecord::SiteNotFound
       admin.forums.index.add :top, "admin/shared/site_jumper"

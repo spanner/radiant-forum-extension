@@ -46,10 +46,6 @@ describe Post do
       @post.editable_by?(@post.reader).should be_true
     end
 
-    it "should be editable by an administrator" do 
-      @post.editable_by?(readers(:admin)).should be_true
-    end
-  
     it "should not be editable by anyone else" do 
       @post.editable_by?(readers(:idle)).should be_false
     end
@@ -64,10 +60,6 @@ describe Post do
     
     it "should no longer be editable by its author" do 
       @post.editable_by?(@post.reader).should be_false
-    end
-  
-    it "should remain editable by an administrator" do 
-      @post.editable_by?(readers(:admin)).should be_true
     end
   end
 

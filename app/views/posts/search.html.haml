@@ -1,0 +1,74 @@
+= render :partial => 'readers/flasher'
+
+#forum
+  #search
+
+  - if @searching
+    - if @posts.empty?
+      %p No messages found.
+
+    - else
+      %p
+        We found
+        = @posts.total_entries
+        messages.
+
+      - if @posts.previous_page
+        = paginate_and_summarise @posts, 'posts'
+
+      %ul.main
+        = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true}
+
+      = paginate_and_summarise @posts, 'posts'
+
+  %form.friendly{:action => search_posts_url, :style => 'width: 400px'}
+    - if @searching
+      %h2 Forum Search
+  
+    %p
+      %label{:for => "q"}
+        Look for this text
+      = text_field_tag "q", params[:q], :class => 'standard'
+
+    %p
+      %label{:for => "reader_id"}
+        From this person
+      %select{:name => "reader_id"}
+        %option{:value => ""}
+          anyone
+        = options_from_collection_for_select(Reader.find(:all), "id", "name", params[:reader_id].to_i)
+
+    %p
+      %label{:for => "reader_id"}
+        In this discussion category
+      %select{:name => "forum_id"}
+        %option{:value => ""}
+          anywhere
+        = options_from_collection_for_select(Forum.find(:all), "id", "name", params[:forum_id].to_i)
+
+    %p
+      = submit_tag "search"
+
+
+- content_for :breadcrumbs do
+  = link_to 'Forum', topics_url
+  - if @searching
+    \&gt;
+    = link_to "Search", search_posts_url
+    \&gt;
+    = @title
+  - else
+    \&gt;
+    Search
+
+- content_for :pagetitle do
+  - if @searching
+    = @title || 'Search results'
+  - else
+    Forum Search
+
+- content_for :feed do
+  = feed_link(search_posts_url(params.merge(:format => :rss))) if @searching
+
+- content_for :controls do
+  = render :partial => 'readers/controls'

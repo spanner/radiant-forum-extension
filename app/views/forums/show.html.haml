@@ -5,7 +5,7 @@
     = clean_textilize(@forum.description)
 
   %p
-    = link_to "start a new discussion here", new_topic_url(@forum), :class => 'newmessage'
+    = link_to "start a new discussion here", new_forum_topic_url(@forum), :class => 'newmessage'
 
   - if @topics.empty?
     %p No talk here yet.

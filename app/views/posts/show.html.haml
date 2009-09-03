@@ -1,7 +1,7 @@
 = render :partial => 'post', :object => @post
 
 - content_for :breadhead do
-  = link_to @post.topic.name, topic_url(@post.topic.forum), {:class => 'breadhead'}
+  = link_to @post.topic.name, forum_topic_url(@post.topic.forum, @post.topic), {:class => 'breadhead'}
 
 - content_for :controls do
   = render :partial => 'readers/controls'

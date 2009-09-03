@@ -8,7 +8,7 @@
     - if with_context
       = link_to(topic.forum.name, forum_url(topic.forum)) + ':'
   %span.subject
-    %a{:href => topic_url(topic.forum, topic), :class => 'main'}
+    %a{:href => forum_topic_url(topic.forum, topic), :class => 'main'}
       = gravatar_for(topic.reader, {:size => 40}, {:alt => topic.reader.name, :class => 'gravatar'})
       = topic.name
   %span.context

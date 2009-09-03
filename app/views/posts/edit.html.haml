@@ -2,20 +2,20 @@
 
 - message_type = @topic.page ? 'comment' : 'message'
 
-- form_for :post, :url  => post_path(@topic.forum, @topic, @post), :html => {:method => 'put', :multipart => true, :id => "post_form_#{@post.id}", :class => 'friendly'} do |f|
+- form_for :post, :url  => topic_post_path(@topic, @post), :html => {:method => 'put', :multipart => true, :id => "post_form_#{@post.id}", :class => 'friendly'} do |f|
   = render :partial => "posts/form", :object => f
   %div.buttons
     = submit_tag "Update #{message_type}" 
     to confirm changes
     or
-    = link_to "cancel", topic_url(@topic.forum, @topic), :class => 'cancel'
+    = link_to "cancel", forum_topic_url(@topic.forum, @topic), :class => 'cancel'
 
 - content_for :pagetitle do
   Edit
   = message_type
 
 - content_for :breadhead do
-  = link_to @post.topic.name, topic_url(@post.topic.forum, @post.topic), {:class => 'breadhead'}
+  = link_to @post.topic.name, forum_topic_url(@post.topic.forum, @post.topic), {:class => 'breadhead'}
 
 - content_for :controls do
   = render :partial => 'readers/controls'

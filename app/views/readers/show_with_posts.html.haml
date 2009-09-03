@@ -13,7 +13,7 @@
   %h2{:style => 'clear: left;'}
     Messages from
     = @reader.name
-    = feed_link(formatted_reader_posts_path(@reader, :rss))
+    = feed_link(search_posts_url(:reader_id => @reader.id, :format => :rss))
   - if @posts
     %ul.main
       - paginated_section @posts do

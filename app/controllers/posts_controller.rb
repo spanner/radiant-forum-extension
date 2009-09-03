@@ -1,38 +1,56 @@
 class PostsController < ReaderActionController
 
+  before_filter :set_site_title
   before_filter :require_authority, :only => [:edit, :update, :destroy]
-  before_filter :find_topic_or_page, :except => [:index]
+  before_filter :find_topic_or_page, :except => [:index, :search]
   before_filter :require_unlocked_topic_and_page, :only => [:new, :create]
-  before_filter :find_post, :except => [:index, :new, :preview, :create, :monitored]
+  before_filter :find_post, :except => [:index, :search, :new, :preview, :create, :monitored]
   before_filter :build_post, :only => [:new]
 
   # protect_from_forgery :except => :create # because the post form is typically generated from radius tags, which are defined in a model with no access to the controller
 
-  @@query_options = { :per_page => 25, :select => 'posts.*, topics.name as topic_name, forums.name as forum_name', :joins => 'inner join topics on posts.topic_id = topics.id inner join forums on topics.forum_id = forums.id', :order => 'posts.created_at desc' }
+  @@default_query_options = { 
+    :page => 1,
+    :per_page => 20,
+    :order => 'posts.created_at desc',
+    :include => [:topic, :forum, :reader]
+  }
   
   def index
+    @posts = Post.paginate(:all, @@default_query_options.merge(:page => params[:page], :per_page => params[:per_page]))
+    render_page_or_feed
+  end
+
+  def search
     conditions = []
-    params.delete :commit
-    @searching = false
-    [:reader_id, :forum_id, :topic_id, :q].each { |attr| params[attr].blank? ? params.delete(attr) : @searching = true }
-    [:reader_id, :forum_id, :topic_id].each { |attr| conditions << Post.send(:sanitize_sql, ["posts.#{attr} = ?", params[attr]]) if params[attr] && !params[attr].blank? }
-    conditions << Post.send(:sanitize_sql, ['LOWER(posts.body) LIKE ?', "%#{params[:q]}%"]) unless params[:q].blank?
-    conditions = conditions.any? ? conditions.collect { |c| "(#{c})" }.join(' AND ') : nil
-    @posts = Post.paginate(:all, @@query_options.merge(:conditions => conditions, :page => params[:page] || 1))
     @reader = Reader.find(params[:reader_id]) unless params[:reader_id].blank?
     @topic = Topic.find(params[:topic_id]) unless params[:topic_id].blank?
     @forum = Forum.find(params[:forum_id]) unless params[:forum_id].blank?
-    @readers = Reader.find(:all, :select => 'distinct *', :conditions => ['id in (?)', @posts.collect(&:reader_id).uniq]).index_by(&:id)
 
-    @title = ((defined? Site) ? current_site.name : Radiant::Config['site.title']) || ''
-    @title << ": everything"
-    @title << " matching '#{params[:q]}'" if params[:q]
-    @title << " from #{@reader.name}" if @reader
-    if @topic
-      @title << " under #{@topic.name}"
-    elsif @forum
-      @title << " in #{@forum.name}"
+    conditions << Post.send(:sanitize_sql, ["posts.reader_id = ?", @reader.id]) if @reader
+    conditions << Post.send(:sanitize_sql, ["posts.topic_id = ?", @topic.id]) if @topic
+    conditions << Post.send(:sanitize_sql, ["posts.forum_id = ?", @forum.id]) if @forum
+    conditions << Post.send(:sanitize_sql, ['LOWER(posts.body) LIKE ?', "%#{params[:q]}%"]) unless params[:q].blank?
+    @searching = true if conditions.any?
+    
+    @posts = Post.paginate(:all, @@default_query_options.merge(:conditions => @searching ? conditions.collect { |c| "(#{c})" }.join(' AND ') : nil, :page => params[:page], :per_page => params[:per_page]))
+
+    # for summary of the set, and onward links
+    @forums = @posts.collect(&:forum).uniq
+    @topics = @posts.collect(&:topic).uniq
+    @readers = @posts.collect(&:reader).uniq
+    
+    if @searching
+      @title = "Posts"
+      @title << " matching '#{params[:q]}'" unless params[:q].blank?
+      @title << " from #{@reader.name}" if @reader
+      if @topic
+        @title << " under #{@topic.name}"
+      elsif @forum
+        @title << " in #{@forum.name}"
+      end
     end
+    
     render_page_or_feed
   end
 
@@ -111,7 +129,6 @@ class PostsController < ReaderActionController
     @post.attributes = params[:post]
     @post.save!
     @post.save_attachments(params[:files])
-    # cache.expire_response(@post.topic.page.url) if @post.topic.page
     Radiant::Cache.clear if @post.topic.page
   rescue ActiveRecord::RecordInvalid
     flash[:error] = "Sorry: message can't be empty"
@@ -141,84 +158,77 @@ class PostsController < ReaderActionController
     end
   end
 
-  protected
-    def require_authority
-      current_user.admin? || @post.editable_by?(current_reader)      # includes an editable-interval check
-    end
-            
-    def find_topic_or_page
-      if params[:page_id]
-        @page = Page.find(params[:page_id])
-        @topic = @page.find_or_build_topic
-        @forum = @topic.forum if @topic
-      elsif params[:topic_id]
-        @topic = Topic.find(params[:topic_id], :include => :forum)
-        @forum = @topic.forum if @topic
-      end
-    end
-    
-    def require_unlocked_topic_and_page
-      return page_locked if @page && @page.locked?
-      return topic_locked if @topic.locked?
-      true
-    end
+protected
 
-    def find_post
-      @post = @topic.posts.find(params[:id])
+  def require_authority
+    current_user.admin? || @post.editable_by?(current_reader)      # includes an editable-interval check
+  end
+          
+  def find_topic_or_page
+    if params[:page_id]
+      @page = Page.find(params[:page_id])
+      @topic = @page.find_or_build_topic
+      @forum = @topic.forum if @topic
+    elsif params[:topic_id]
+      @topic = Topic.find(params[:topic_id], :include => :forum)
+      @forum = @topic.forum if @topic
     end
-    
-    def build_post
-      @post = Post.new(params[:post])
-      @post.topic = @topic if @topic
-      @post.reader = current_reader
-    end
+  end
+  
+  def require_unlocked_topic_and_page
+    return page_locked if @page && @page.locked?
+    return topic_locked if @topic.locked?
+    true
+  end
 
-    def render_page_or_feed(template_name = action_name)
-      respond_to do |format|
-        format.html { render :action => template_name }
-        format.rss  { render :action => template_name, :layout => 'feed' }
-        format.js  { render :action => template_name, :layout => false }
-      end
+  def find_post
+    @post = @topic.posts.find(params[:id])
+  end
+  
+  def build_post
+    @post = Post.new(params[:post])
+    @post.topic = @topic if @topic
+    @post.reader = current_reader
+  end
+  
+  def redirect_to_page_or_topic   
+    if (@topic.page)
+      post_location = @post ? "##{@post.dom_id}" : ""
+      redirect_to @topic.page.url + post_location
+    else
+      post_location = @post ? {:page => @post.topic_page, :anchor => @post.dom_id} : {}
+      redirect_to forum_topic_url(@topic.forum, @topic, post_location)
     end
-    
-    def redirect_to_page_or_topic   
-      if (@topic.page)
-        post_location = @post ? "#comment_#{@post.id}" : ""
-        redirect_to @topic.page.url + post_location
-      else
-        post_location = @post ? {:page => @post.topic_page, :anchor => "post_#{@post.id}"} : {}
-        redirect_to topic_url(@topic.forum, @topic, post_location)
-      end
-    end
+  end
 
-    def redirect_to_forum
-      redirect_to forum_url(@topic.forum)
+  def redirect_to_forum
+    redirect_to forum_url(@topic.forum)
+  end
+  
+  def page_locked
+    respond_to do |format|
+      format.html {
+        flash[:error] = 'This page is not commentable.'
+        redirect_to @page.url
+      }
+      format.js {
+        render :template => 'locked', :layout => false
+      }
     end
-    
-    def page_locked
-      respond_to do |format|
-        format.html {
-          flash[:error] = 'This page is not commentable.'
-          redirect_to @page.url
-        }
-        format.js {
-          render :template => 'locked', :layout => false
-        }
-      end
-      false
+    false
+  end
+  
+  def topic_locked
+    respond_to do |format|
+      format.html {
+        flash[:error] = 'This topic is locked.'
+        redirect_to_page_or_topic
+      }
+      format.js {
+        render :template => 'locked', :layout => false
+      }
     end
-    
-    def topic_locked
-      respond_to do |format|
-        format.html {
-          flash[:error] = 'This topic is locked.'
-          redirect_to_page_or_topic
-        }
-        format.js {
-          render :template => 'locked', :layout => false
-        }
-      end
-      false
-    end
-    
+    false
+  end
+  
 end
