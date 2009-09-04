@@ -12,7 +12,9 @@ class ForumExtension < Radiant::Extension
       forum.resources :forums, :only => [:index, :show], :has_many => [:topics, :posts]
       forum.resources :topics, :has_many => [:posts]
       forum.resources :posts, :collection => {:search => :get, :monitored => :get}
+      forum.resources :pages, :has_many => [:posts], :has_one => [:topic]
     end
+    
     
     # forum admin is nested under readers to save interface clutter
     # some time soon I'll add proper moderation of topics and posts

@@ -74,7 +74,7 @@ class Post < ActiveRecord::Base
   end
     
   def date_html
-    self.created_at.to_s(:html_date)
+    self.created_at.to_s
   end
   
   def save_attachments(files=nil)

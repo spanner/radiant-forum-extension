@@ -1,0 +1,10 @@
+#forum
+  %h2 Comments
+
+  - if @posts.previous_page
+    = paginate_and_summarise @posts, 'comments'
+
+  = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false }
+
+  - if @posts.next_page
+    = paginate_and_summarise @posts, 'comments'

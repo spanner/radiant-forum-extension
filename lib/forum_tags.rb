@@ -15,73 +15,17 @@ module ForumTags
   }
   tag 'comments' do |tag|
     raise TagError, "can't have comments without a page" unless page = tag.locals.page
-    tag.locals.comments = page.posts
-    tag.expand
-  end
-  
-  desc %{
-    Returns a string in the form "x comments" or "no comments yet".
-  
-    *Usage:*
-    <pre><code><r:comments:summary /></code></pre>
-  }
-  tag 'comments:summary' do |tag|
-    if tag.locals.comments.empty?
-      "no comments yet"
-    elsif tag.locals.comments.size == 1
-      "one comment"
-    else
-      "#{tag.locals.comments.size} comments"
+    if page.commentable?
+      tag.locals.comments = page.posts
+      tag.expand
     end
   end
-  
-  tag 'comments:all' do |tag|
-    posts = tag.locals.comments
-    results = []
-    results << "<h2>Comments</h2>"
-    results << %{<div id="forum">}
-    if posts.empty?
-      results << "<p>None yet.</p>"
-    else
-      posts.each do |post|
-        tag.locals.comment = post
-        results << tag.render('comment')
-      end
-    end
-    results << %{<h3><a href="/pages/#{tag.locals.page.id}/posts/new" class="comment_link">Add a comment</a></h3>}
-    results << "</div>"
-    results
-  end
-
-  tag 'comment' do |tag|
-    raise TagError, "can't have r:comment without a post" unless post = tag.locals.comment
     
-    result = []
-    if tag.double?
-      tag.locals.reader = post.reader
-      result << tag.expand
-    else
-      result << %{
-<div class="post" id="#{post.dom_id}>"
-  <div class = "post_header">
-    <h2>
-      <img src="#{post.reader.gravatar_url(:size => 40)}" width="40" height ="40" class="gravatar" />
-      #{post.reader.name}
-    </h2>
-    <p class="context">#{post.date_html}</p>
-  </div>
-  <div class = "post_body">#{post.body_html}</div>
-</div>
-      }
-    end
-    result
-  end
-
   desc %{
     If you would like comments to have the same appearance and inline editing controls as a normal forum page,
     you'll be serving reader-specific content that isn't cacheable. The best way to do that is to include a remote 
     call after the cached page has been served, but only if the page has comments. It does make the cache a bit 
-    redundant, yes, but the plan is to add per-reader fragment caching as well.
+    redundant, yes, but if you have relatively few logged-in readers it's a good enough approach.
 
     There are a hundred ways to get the comments - all it takes is a JS or JSON request to /pages/:id/topic -
     but if you're using the sample mootools-based forum.js, you can just do this:
@@ -96,13 +40,13 @@ module ForumTags
       topic = tag.locals.page.topic
       %{
         <div class="comments">
-          <a href="/forums/#{topic.forum.id}/topics/#{topic.id}" class="remote_content">Comments</a>
+          <a href="#{forum_topic_path(topic.forum, topic)}" class="remote_content">#{tag.render('comments:summary')}</a>
         </div>
       }
     else
       %{
         <div class="comments">
-          <a href="/pages/#{tag.locals.page.id}/posts/new" class="remote_content">Post a comment</a>
+          #{tag.render('comment_link', :class => 'remote_content')}
         </div>
       }
     end
@@ -168,6 +112,43 @@ module ForumTags
     results
   end
   
+    tag 'comments:all' do |tag|
+      posts = tag.locals.comments
+      results = ""
+      results << %{<div class="page_comments">}
+      results << "<h2>Comments</h2>"
+      results << %{<div id="forum">
+  }
+      if posts.empty?
+        results << "<p>None yet.</p>"
+      else
+        posts.each do |post|
+          tag.locals.comment = post
+          results << tag.render('comment')
+        end
+      end
+
+      results << %{<p>#{tag.render('comment_link', :class => 'newmessage')}</p>} unless tag.locals.page.comments_closed?
+      results << "</div></div>"
+      results
+    end
+
+    tag 'comment' do |tag|
+      raise TagError, "can't have r:comment without a post" unless post = tag.locals.comment
+      if tag.double?
+        tag.locals.reader = post.reader
+        tag.expand
+      else
+        %{<div class="post" id="#{post.dom_id}">
+    <div class="post_header">
+      <h2><img src="#{post.reader.gravatar_url(:size => 40)}" width="40" height ="40" class="gravatar" /> #{post.reader.name}</h2>
+      <p class="context">#{post.date_html}</p>
+    </div>
+    <div class="post_body">#{post.body_html}</div>
+  </div>}
+      end
+    end
+
   tag 'comment:reader' do |tag|
     raise TagError, "can't have comment:reader without a comment" unless reader = tag.locals.reader
     tag.expand
@@ -235,7 +216,8 @@ module ForumTags
   tag 'comment_link' do |tag|
     raise TagError, "can't have `comment_link' without a page." unless tag.locals.page
     options = tag.attr.dup
-    attributes = options.inject('') { |s, (k, v)| s << %{#{k.downcase}="#{v}" } }.strip
+    options['class'] ||= 'newmessage'
+    attributes = options.inject('') { |s, (k, v)| s << %{#{k.to_s.downcase}="#{v}" } }.strip
     attributes = " #{attributes}" unless attributes.empty?
     text = tag.double? ? tag.expand : "Add a comment"
     %{<a href="#{tag.render('comment_url')}"#{attributes}>#{text}</a>}

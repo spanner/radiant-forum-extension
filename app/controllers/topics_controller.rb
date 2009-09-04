@@ -14,7 +14,7 @@ class TopicsController < ReaderActionController
   def show
     @topic.hit! unless current_reader and @topic.reader == current_reader
     @posts = Post.paginate_by_topic_id(@topic.id, :page => params[:page], :include => :reader, :order => 'posts.created_at asc')
-    render_page_or_feed
+    render_page_or_feed(@topic.page ? 'comments' : 'show')
   end
   
   def create

@@ -93,12 +93,13 @@ class PostsController < ReaderActionController
     end
 
     @post.save_attachments(params[:files]) unless @page && !Radiant::Config['forum.comments_have_attachments']
-    Radiant::Cache.clear if @page
+    Radiant::Cache.clear if @post.topic.page
 
     respond_to do |format|
       format.html { redirect_to_page_or_topic }
       format.js { render :action => 'show', :layout => false }
     end
+    
   rescue ActiveRecord::RecordInvalid
     flash[:error] = 'Problem!'
     respond_to do |format|
