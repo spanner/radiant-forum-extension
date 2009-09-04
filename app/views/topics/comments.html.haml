@@ -8,3 +8,5 @@
 
   - if @posts.next_page
     = paginate_and_summarise @posts, 'comments'
+  - else
+    = render :partial => 'posts/reply'
