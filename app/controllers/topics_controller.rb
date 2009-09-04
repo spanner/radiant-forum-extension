@@ -3,7 +3,8 @@ class TopicsController < ReaderActionController
   before_filter :find_forum_and_topic, :except => :index
 
   def index
-    @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :per_page => params[:per_page] || 20, :include => [:forum, :reader])
+    params[:per_page] ||= 20
+    @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :per_page => params[:per_page], :include => [:forum, :reader])
     render_page_or_feed
   end
 
@@ -13,7 +14,10 @@ class TopicsController < ReaderActionController
   
   def show
     @topic.hit! unless current_reader and @topic.reader == current_reader
-    @posts = Post.paginate_by_topic_id(@topic.id, :page => params[:page], :include => :reader, :order => 'posts.created_at asc')
+    params[:per_page] ||= 20
+    params[:page] = 1 if params[:page] == 'first'
+    params[:page] = (@topic.posts.count.to_f / params[:per_page].to_f).ceil if params[:page] == 'last'
+    @posts = Post.paginate_by_topic_id(@topic.id, :page => params[:page], :per_page => params[:per_page], :include => :reader, :order => 'posts.created_at asc')
     render_page_or_feed(@topic.page ? 'comments' : 'show')
   end
   
