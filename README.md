@@ -29,7 +29,7 @@ I've just spent three days chasing gremlins out of this so it should be in good 
 
 ## Requirements
 
-Radiant 0.8 with the [reader](http://github.com/spanner/radiant-reader-extension) extension, [paperclipped](https://github.com/kbingman/paperclipped/tree) and [share_layouts](https://github.com/radiant/radiant-share-layouts-extension/tree).
+Radiant 0.8.x with the [reader](http://github.com/spanner/radiant-reader-extension) extension, [paperclipped](https://github.com/kbingman/paperclipped/tree) and [share_layouts](https://github.com/radiant/radiant-share-layouts-extension/tree).
 
 ## Installation
 
