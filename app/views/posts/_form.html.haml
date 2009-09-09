@@ -6,7 +6,7 @@
   .upload_handler
     %h4.label
       = link_to "attach files...", '#'
-    %div.attachments
+    %div.hidden_attachments
       %ul.attachments
         = hidden_field_tag "post[attachment_ids][]", ""
         - @post.attachments.each do |attachment|

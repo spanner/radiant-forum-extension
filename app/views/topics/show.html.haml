@@ -29,8 +29,15 @@
 - content_for :feed do
   = feed_link(formatted_topic_path(@topic, :rss))
 
+- content_for :marginalia do
+= render :partial => 'posts/latest'
+  = render :partial => 'readers/controls'
+
 - content_for :controls do
   = render :partial => 'readers/controls'
+
+- content_for :breadhead do
+  = link_to "#{@forum.name}:", forum_url(@forum), {:class => 'breadhead'}
 
 - content_for :breadcrumbs do
   = link_to 'Forum', topics_url

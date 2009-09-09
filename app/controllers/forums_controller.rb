@@ -1,6 +1,7 @@
 class ForumsController < ReaderActionController
   skip_before_filter :require_reader
   before_filter :no_changes_here, :except => [:index, :show]
+  radiant_layout { |controller| controller.layout_for :forum }
 
   def index
     @forums = Forum.paginate(:all, :order => "position", :page => params[:page] || 1, :per_page => params[:per_page] || 20)

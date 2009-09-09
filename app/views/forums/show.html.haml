@@ -4,8 +4,9 @@
   #forum_preamble
     = clean_textilize(@forum.description)
 
-  %p
-    = link_to "start a new discussion here", new_forum_topic_url(@forum), :class => 'newmessage'
+  - unless @forum.for_comments?
+    %p
+      = link_to "start a new discussion here", new_forum_topic_url(@forum), :class => 'newmessage'
 
   - if @topics.empty?
     %p No talk here yet.
@@ -18,10 +19,6 @@
       = render :partial => 'topics/topic', :collection => @topics, :locals => { :with_context => false }
 
     = paginate_and_summarise @topics, 'topics'
-
-
-
-
 
 - content_for :pagetitle do
   = @forum.name

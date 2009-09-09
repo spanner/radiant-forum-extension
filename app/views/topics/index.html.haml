@@ -33,6 +33,10 @@
 - content_for :feed do
   = feed_link(formatted_topics_path(:rss))
 
+- content_for :marginalia do
+  = render :partial => 'posts/latest'
+  = render :partial => 'readers/controls'
+
 - content_for :controls do
   = render :partial => 'readers/controls'
 

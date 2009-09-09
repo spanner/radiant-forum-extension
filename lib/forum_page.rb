@@ -13,7 +13,7 @@ module ForumPage
       if self.topic
         self.topic
       elsif self.still_commentable?
-        self.build_topic(:name => self.title, :forum => Forum.find_or_create_comments_forum)         # posts_controller will do the right thing with a new topic
+        self.build_topic(:name => title, :forum => Forum.find_or_create_comments_forum, :reader => Reader.find_or_create_for_user(created_by))         # posts_controller will do the right thing with a new topic
       end
     end
   

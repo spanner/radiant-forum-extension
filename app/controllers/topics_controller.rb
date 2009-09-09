@@ -1,6 +1,7 @@
 class TopicsController < ReaderActionController
   
   before_filter :find_forum_and_topic, :except => :index
+  radiant_layout { |controller| controller.layout_for :forum }
 
   def index
     params[:per_page] ||= 20
@@ -13,12 +14,16 @@ class TopicsController < ReaderActionController
   end
   
   def show
+    if @page && request.format == 'text/html'
+      redirect_to "#{@page.url}#forum"
+      return false
+    end
     @topic.hit! unless current_reader and @topic.reader == current_reader
     params[:per_page] ||= 20
     params[:page] = 1 if params[:page] == 'first'
     params[:page] = (@topic.posts.count.to_f / params[:per_page].to_f).ceil if params[:page] == 'last'
     @posts = Post.paginate_by_topic_id(@topic.id, :page => params[:page], :per_page => params[:per_page], :include => :reader, :order => 'posts.created_at asc')
-    render_page_or_feed(@topic.page ? 'comments' : 'show')
+    render_page_or_feed(@page ? 'comments' : 'show')
   end
   
   def create

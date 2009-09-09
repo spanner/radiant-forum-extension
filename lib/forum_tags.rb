@@ -39,15 +39,11 @@ module ForumTags
     if tag.locals.page.has_posts?
       topic = tag.locals.page.topic
       %{
-        <div class="comments">
-          <a href="#{forum_topic_path(topic.forum, topic)}" class="remote_content">#{tag.render('comments:summary')}</a>
-        </div>
+        <div class="comments"><a href="#{forum_topic_path(topic.forum, topic)}" class="remote_content">#{tag.render('comments:summary')}</a></div>
       }
     else
       %{
-        <div class="comments">
-          #{tag.render('comment_link', :class => 'remote_content')}
-        </div>
+        <div class="comments"><a href="#{tag.render('comment_url')}" class="remote_content">Add a comment</a></div>
       }
     end
   end

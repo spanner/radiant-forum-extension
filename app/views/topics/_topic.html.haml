@@ -1,7 +1,7 @@
 - with_context ||= false
 - cssclass = ['topic']
-- cssclass << 'sticky' if topic.sticky
-- cssclass << 'locked' if topic.locked
+- cssclass << 'sticky' if topic.sticky?
+- cssclass << 'locked' if topic.locked?
 
 %li{:id => topic.dom_id, :class => cssclass.join(' ')}
   %span.context
@@ -24,5 +24,10 @@
       = link_to topic.reader.name, reader_url(topic.reader)
       = friendly_date(topic.created_at)
   %div.preview
-    = truncate_and_textilize(topic.first_post.body, 100)
+    - if topic.page
+      = truncate_words(topic.page.render_part(:body), 100)
+    - elsif topic.first_post
+      = truncate_and_textilize(topic.first_post.body, 100)
+    - else
+      %p Topic empty!
     

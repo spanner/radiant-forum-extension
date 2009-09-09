@@ -19,6 +19,13 @@ class Post < ActiveRecord::Base
   
   validates_presence_of :reader, :topic, :body
 
+  named_scope :latest, lambda { |count|
+    {
+      :order => 'created_at DESC',
+      :limit => count
+    }
+  }
+
   def topic_page
     self.topic.page_for(self)
   end

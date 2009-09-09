@@ -6,6 +6,7 @@ class PostsController < ReaderActionController
   before_filter :require_unlocked_topic_and_page, :only => [:new, :create]
   before_filter :find_post, :except => [:index, :search, :new, :preview, :create, :monitored]
   before_filter :build_post, :only => [:new]
+  radiant_layout { |controller| controller.layout_for :forum }
 
   # protect_from_forgery :except => :create # because the post form is typically generated from radius tags, which are defined in a model with no access to the controller
 

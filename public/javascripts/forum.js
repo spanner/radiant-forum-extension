@@ -1,13 +1,8 @@
 window.addEvent('domready', function(){
   getPosts();
+  getRemoteContent();
   flashErrors();
   fadeNotices();
-});
-
-Element.implement({
-  dwindle: function () {
-    this.morph({opacity: 0, height: 0});
-  }
 });
 
 var block = function (e) {
@@ -49,15 +44,19 @@ flashAnchor = function () {
 // this allows us to return a cached page but display suitable interaction
 // which does slightly defeat the object, but keeps the server side clean
 
-getForms = function () {
-  document.getElements('a.retrieve_form').each(function (a) { replaceWithDestination(a); });
+getRemoteContent = function (container) {
+  container.getElements('a.remote_content').each(function (a) { replaceWithDestination(a); });
 };
 
-replaceWithDestination = function (element) {
-  element.addClass('waiting');
-  var formholder = element.getParent();
-  formholder.load(element.get('href'));
-};
+replaceWithDestination = function (a) {
+  var destination = a.get('href');
+  var holder = new Element('div', {'class' : 'remote_content'});
+  var waiter = new Element('p', {'class' : 'waiting'}).set('text', a.get('text'));
+  waiter.inject(holder);
+  holder.replaces(a);
+  holder.set('load', {onComplete: function () { i.activate(holder); }});
+  holder.load(destination);
+}
 
 getPosts = function () {
   $$('div.post').each(function (div) { new Post(div); });
