@@ -227,4 +227,49 @@ module ForumTags
     new_page_post_url(tag.locals.page)
   end
 
+  desc %{
+    Shows the standard block of recent discussion activity.
+  }
+  tag 'forum_latest' do |tag|
+    results = []
+    results << %{<ul class="clean">}
+    Post.latest(6).each do |post|
+      results << %{<li><img src="#{post.reader.gravatar_url(:size => 42)}" width="42" height="42" class="gravatar">}
+      results << %{<a href="#{forum_topic_path(post.topic.forum, post.topic)}">#{post.topic.name}</a>}
+      results << %{<br /><span class="credit">}
+      if post.topic.page
+        results << "commented upon by "
+      elsif post.first?
+        results << "started by "
+      else
+        results << "replied to by "
+      end
+      results << "#{post.reader.name} #{friendly_date(post.created_at)}"
+      results << %{</span></li>}
+    end
+    results << %{</ul>}
+    results
+  end
+
+
+private
+
+  # copied from forum_helper
+  
+  def friendly_date(datetime)
+    if datetime
+      date = datetime.to_date
+      if (date == Date.today)
+        format = "today at %l:%M%p"
+      elsif (date == Date.yesterday)
+        format = "yesterday at %l:%M%p"
+      elsif (date.year == Date.today.year)
+        format = "on %B %e"
+      else
+        format = "on %B %e, %Y"
+      end
+      datetime.strftime(format)
+    end
+  end
+
 end

@@ -1,15 +1,17 @@
 %h3
   Latest discussion
-%ul
+%ul.clean
   - Post.latest(6).each do |post|
     %li
+      = gravatar_for(post.reader, {:size => '30'}, {:class => 'gravatar'})
       = link_to post.topic.name, forum_topic_url(post.topic.forum, post.topic)
-      %span.credit
-        - if post.topic.page
-          was commented upon by
-        - elsif post.first?
-          was started by
-        - else
-          was replied to by
-        = post.reader.name
-        = friendly_date(post.created_at)
+      %br
+        %span.credit
+          - if post.topic.page
+            commented upon by
+          - elsif post.first?
+            started by
+          - else
+            replied to by
+          = post.reader.name
+          = friendly_date(post.created_at)

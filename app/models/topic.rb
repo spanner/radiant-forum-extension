@@ -26,6 +26,13 @@ class Topic < ActiveRecord::Base
   
   attr_accessor :body
 
+  named_scope :latest, lambda { |count|
+    {
+      :order => 'replied_at DESC',
+      :limit => count
+    }
+  }
+
   def voice_count
     posts.count(:select => "DISTINCT reader_id")
   end

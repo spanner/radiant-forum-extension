@@ -34,8 +34,22 @@
   = feed_link(formatted_topics_path(:rss))
 
 - content_for :marginalia do
-  = render :partial => 'posts/latest'
-  = render :partial => 'readers/controls'
+  - if current_reader
+    %h3
+      your topics
+    %ul
+      - current_reader.topics.latest(10).each do |topic|
+        %li
+          = link_to topic.name, forum_topic_url(topic.forum, topic)
+          %span.credit
+            = topic.posts.count
+            - if topic.has_posts?
+              = pluralize(topic.posts.count, 'reply') + ','
+              - if topic.posts.count > 1
+                most recently
+              from
+              = topic.replied_by.name
+              = friendly_date(topic.replied_at)
 
 - content_for :controls do
   = render :partial => 'readers/controls'
