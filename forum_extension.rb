@@ -23,7 +23,10 @@ class ForumExtension < Radiant::Extension
       # admin.resources :topics
       # admin.resources :posts
     end
-        
+  end
+
+  extension_config do |config|
+    config.extension 'reader'
   end
   
   def activate

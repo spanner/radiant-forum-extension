@@ -14,8 +14,8 @@ describe Topic do
     end
     
     it "should set default values" do
-      @topic.sticky.should be_false
-      @topic.locked.should be_false
+      @topic.sticky?.should be_false
+      @topic.locked?.should be_false
       @topic.replied_by.should be_nil
       @topic.replied_at.should be_nil
     end
