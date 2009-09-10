@@ -1,5 +1,4 @@
 require_dependency 'application_controller'
-require 'will_paginate'
 
 class ForumExtension < Radiant::Extension
   version "0.4"
@@ -26,6 +25,8 @@ class ForumExtension < Radiant::Extension
   end
 
   extension_config do |config|
+    config.gem 'paperclip'
+    config.gem 'mislav-will_paginate', :version => '~> 2.3.11', :lib => 'will_paginate', :source => 'http://gems.github.com'
     config.extension 'reader'
   end
   

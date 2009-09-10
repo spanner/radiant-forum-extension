@@ -16,7 +16,11 @@ The forum is compatible with multi_site but you have to use [our fork](https://g
 
 ## Status
 
-I've just spent three days chasing gremlins out of this so it should be in good shape. I use it with some mootools-based scripts for inline editing. When I get a moment I'll generalise those and include them here. Until then it should work fine in the old-fashioned way.
+Fairly mature, but there's a lot going on here and plenty of places for me to hide bugs. Tests are fairly thorough.
+
+## Latest
+
+Updated for 0.8.1 with gem and extension dependencies, and many small fixes to keep up with the `reader` and `group_forum` extensions.
 
 ## Still to do
 
@@ -24,12 +28,18 @@ I've just spent three days chasing gremlins out of this so it should be in good 
 * Reinstate message preview
 * Reinstate email-monitoring
 * Message-flagging button
-* Admin pages that suck a lot less
+* Admin pages that are slightly less crappy
 * Anonymous page-comment option
 
 ## Requirements
 
-Radiant 0.8.x with the [reader](http://github.com/spanner/radiant-reader-extension) extension, [paperclipped](https://github.com/kbingman/paperclipped/tree) and [share_layouts](https://github.com/radiant/radiant-share-layouts-extension/tree).
+Radiant 0.8.1 (we're using the new config machinery) with the [reader](http://github.com/spanner/radiant-reader-extension) extension. Reader has a few requirements of its own so it's best to install that one first, make sure it's testing clean and then install the forum.
+
+We also require paperclip as a gem for the post attachments. If you've got Keith Bingman's paperclipped installed (and it loads before this) then you can skip that: otherwise, run 
+
+	sudo rake gems:install
+	
+To get everything you need. 
 
 ## Installation
 
@@ -54,14 +64,10 @@ As well as the basic machinery this should give you:
 
 ## Load order
 
-You will want this in your environment.rb
+You will want something like this in your environment.rb
 
 	config.extensions # [ :share_layouts, :multi_site, :reader, :all ] 
 	
-If you add [reader_groups](http://github.com/spanner/radiant-reader_groups-extension) then that should be specified after :reader, and incidentally you would probably also want to install the [group_forums](http://github.com/spanner/radiant-group_forums-extension) glue that lets you make a forum private to a group.
-
-You
-
 ## Administration
 
 The forum is easy to use and almost entirely separate from your page hierarchy. Forums - which are described as 'discussion categories' most of the time and pushed into the background - are created and edited in the admin interface, and there readers can also (soon) be promoted to moderate selected forums. Everything else happens through the reader interface including the editing and deletion of posts.
