@@ -234,9 +234,9 @@ module ForumTags
     results = []
     results << %{<ul class="clean">}
     Post.latest(6).each do |post|
-      results << %{<li><img src="#{post.reader.gravatar_url(:size => 42)}" width="42" height="42" class="gravatar">}
-      results << %{<a href="#{forum_topic_path(post.topic.forum, post.topic)}">#{post.topic.name}</a>}
-      results << %{<br /><span class="credit">}
+      results << %{<li><img src="#{post.reader.gravatar_url(:size => 42)}" width="42" height="42" class="gravatar"> }
+      results << %{<a href="#{forum_topic_path(post.topic.forum, post.topic)}">#{post.topic.name}</a> }
+      results << %{<span class="credit">}
       if post.topic.page
         results << "commented upon by "
       elsif post.first?
