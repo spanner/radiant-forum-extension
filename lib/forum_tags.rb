@@ -238,11 +238,11 @@ module ForumTags
       results << %{<a href="#{forum_topic_path(post.topic.forum, post.topic)}">#{post.topic.name}</a> }
       results << %{<span class="credit">}
       if post.topic.page
-        results << "commented upon by "
+        results << " commented upon by "
       elsif post.first?
-        results << "started by "
+        results << " started by "
       else
-        results << "replied to by "
+        results << " replied to by "
       end
       results << "#{post.reader.name} #{friendly_date(post.created_at)}"
       results << %{</span></li>}
