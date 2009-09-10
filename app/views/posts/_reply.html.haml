@@ -27,3 +27,4 @@
     = message_type
     please log in
   = render :partial => 'reader_sessions/login_form'
+  - session[:return_to] = request.referer

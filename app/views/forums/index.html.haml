@@ -15,13 +15,8 @@
     %p No categories defined here yet.
 
   - else
-    - if @forums.previous_page
-      = paginate_and_summarise @forums, 'forums'
-    
     %ul.main
       = render :partial => 'forums/forum', :collection => @forums
-
-    = paginate_and_summarise @forums, 'forums'
 
 - content_for :pagetitle do
   Discussion Categories

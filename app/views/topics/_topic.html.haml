@@ -1,33 +1,34 @@
-- with_context ||= false
-- cssclass = ['topic']
-- cssclass << 'sticky' if topic.sticky?
-- cssclass << 'locked' if topic.locked?
+- if topic.visible_to?(current_reader)
+  - with_context ||= false
+  - cssclass = ['topic']
+  - cssclass << 'sticky' if topic.sticky?
+  - cssclass << 'locked' if topic.locked?
 
-%li{:id => topic.dom_id, :class => cssclass.join(' ')}
-  %span.context
-    - if with_context
-      = link_to(topic.forum.name, forum_url(topic.forum)) + ':'
-  %span.subject
-    %a{:href => forum_topic_url(topic.forum, topic), :class => 'main'}
-      = gravatar_for(topic.reader, {:size => 40}, {:alt => topic.reader.name, :class => 'gravatar'})
-      = topic.name
-  %span.context
-    from
-    - if topic.posts.count > 1
-      = link_to topic.reader.name + '.', reader_url(topic.reader)
-      = topic.posts.count
-      = pluralize(topic.posts.count, 'comment') + ','
-      most recently from
-      = link_to topic.replied_by.name, reader_url(topic.replied_by)
-      = friendly_date(topic.replied_at)
-    - else 
-      = link_to topic.reader.name, reader_url(topic.reader)
-      = friendly_date(topic.created_at)
-  %div.preview
-    - if topic.page
-      = truncate_words(topic.page.render_part(:body), 100)
-    - elsif topic.first_post
-      = truncate_and_textilize(topic.first_post.body, 100)
-    - else
-      %p Topic empty!
+  %li{:id => topic.dom_id, :class => cssclass.join(' ')}
+    %span.context
+      - if with_context
+        = link_to(topic.forum.name, forum_url(topic.forum)) + ':'
+    %span.subject
+      %a{:href => forum_topic_url(topic.forum, topic), :class => 'main'}
+        = gravatar_for(topic.reader, {:size => 40}, {:alt => topic.reader.name, :class => 'gravatar'})
+        = topic.name
+    %span.context
+      from
+      - if topic.posts.count > 1
+        = link_to topic.reader.name + '.', reader_url(topic.reader)
+        = topic.posts.count
+        = pluralize(topic.posts.count, 'comment') + ','
+        most recently from
+        = link_to topic.replied_by.name, reader_url(topic.replied_by)
+        = friendly_date(topic.replied_at)
+      - else 
+        = link_to topic.reader.name, reader_url(topic.reader)
+        = friendly_date(topic.created_at)
+    %div.preview
+      - if topic.page
+        = truncate_words(topic.page.render_part(:body), 100)
+      - elsif topic.first_post
+        = truncate_and_textilize(topic.first_post.body, 100)
+      - else
+        %p Topic empty!
     

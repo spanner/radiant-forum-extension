@@ -73,6 +73,9 @@ class Post < ActiveRecord::Base
     still_editable? && reader && (reader.id == reader_id)
   end
   
+  def visible_to?(reader=nil)
+    topic.forum.visible_to?(reader)
+  end
 
   # we shouldn't have formatting in here, but page comments need to be rendered from a radius tag
   

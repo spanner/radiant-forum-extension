@@ -31,10 +31,6 @@ class Forum < ActiveRecord::Base
     end
   end
   
-  def dom_id
-    "forum_#{self.id}"
-  end
-  
   def self.find_or_create_comments_forum
     @comments_forum = self.find_by_for_comments(true) || self.create(
       :name => 'Page Comments',
@@ -46,12 +42,16 @@ class Forum < ActiveRecord::Base
       )
   end
   
-  def visible_to?(reader)
-    # I might put some admin or user-only options in here
-    reader && reader.is_a?(Reader)
+  def dom_id
+    "forum_#{self.id}"
+  end
+  
+  # I might put some admin or user-only options in here but for now it's just a fixing point for chains in other extensions
+  def visible_to?(reader=nil)
+    true
   end
 
-  # this is overriden
+  # this too is for chaining elsewhere
   def visible_by_default?
     true
   end

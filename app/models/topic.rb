@@ -91,6 +91,10 @@ class Topic < ActiveRecord::Base
     "topic_#{self.id}"
   end
   
+  def visible_to?(reader=nil)
+    forum.visible_to?(reader)
+  end
+  
   protected
 
     def set_reader

@@ -1,14 +1,14 @@
 class ForumsController < ReaderActionController
   skip_before_filter :require_reader
+  before_filter :find_forum, :only => :show
   before_filter :no_changes_here, :except => [:index, :show]
   radiant_layout { |controller| controller.layout_for :forum }
 
   def index
-    @forums = Forum.paginate(:all, :order => "position", :page => params[:page] || 1, :per_page => params[:per_page] || 20)
+    @forums = Forum.find(:all, :order => "position").select {|forum| forum.visible_to?(current_reader)}
   end
 
   def show
-    @forum = Forum.find(params[:id]) 
     respond_to do |format|
       format.html { 
         @topics = Topic.paginate_by_forum_id(params[:id], :page => params[:page] || 1, :per_page => params[:per_page] || 20, :include => :replied_by, :order => 'sticky desc, replied_at desc')
@@ -22,6 +22,12 @@ class ForumsController < ReaderActionController
 
   def no_changes_here
     redirect_to admin_forums_url
+  end
+
+protected
+
+  def find_forum
+    @forum = Forum.find(params[:id])
   end
 
 end

@@ -25,7 +25,7 @@
   %p 
     %label{:for => "topic_forum_id"} Discussion category
     %br
-    = form.select :forum_id, Forum.find(:all).map {|x| [x.name, x.id] }
+    = form.select :forum_id, Forum.find(:all).select{|f| f.visible_to?(current_reader) && !f.for_comments?}.map {|f| [f.name, f.id] }
 - else
   %p
     The new discussion will be filed under 
