@@ -8,7 +8,7 @@
       = link_to("discussion by category", forums_url) + '.'
     
     %p
-      = link_to "start a new discussion", new_topic_url, :class => 'newmessage'
+      = link_to "start a new conversation", new_topic_url, :class => 'newmessage'
 
   - if @topics.empty?
     %p No talk here yet.
@@ -37,19 +37,24 @@
   - if current_reader
     %h3
       your topics
-    %ul
-      - current_reader.topics.latest(10).each do |topic|
-        %li
-          = link_to topic.name, forum_topic_url(topic.forum, topic)
-          %span.credit
-            = topic.posts.count
-            - if topic.has_posts?
-              = pluralize(topic.posts.count, 'reply') + ','
-              - if topic.posts.count > 1
-                most recently
-              from
-              = topic.replied_by.name
-              = friendly_date(topic.replied_at)
+    - if current_reader.topics.any?
+      %ul
+        - current_reader.topics.latest(10).each do |topic|
+          %li
+            = link_to topic.name, forum_topic_url(topic.forum, topic)
+            %span.credit
+              = topic.posts.count
+              - if topic.has_posts?
+                = pluralize(topic.posts.count, 'reply') + ','
+                - if topic.posts.count > 1
+                  most recently
+                from
+                = topic.replied_by.name
+                = friendly_date(topic.replied_at)
+    - else
+      %p
+        None yet. 
+        = link_to "Start a conversation!", new_topic_url
 
 - content_for :controls do
   = render :partial => 'readers/controls'
