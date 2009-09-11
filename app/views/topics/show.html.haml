@@ -9,7 +9,8 @@
   - if @posts.next_page
     = paginate_and_summarise @posts, 'comments'
   - else
-    = render :partial => 'posts/reply'
+    /= render :partial => 'posts/reply'
+    = link_to "Post a reply", new_topic_post_url(@topic), :class => 'inviting remote_content'
 
 - content_for :pagetitle do
   = @topic.name
