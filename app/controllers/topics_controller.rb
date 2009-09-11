@@ -19,6 +19,8 @@ class TopicsController < ReaderActionController
       return false
     end
     @topic.hit! unless current_reader and @topic.reader == current_reader
+    store_location((request.format == 'text/html') ? request.request_uri : request.referer)
+    
     params[:per_page] ||= 20
     params[:page] = 1 if params[:page] == 'first'
     params[:page] = (@topic.posts.count.to_f / params[:per_page].to_f).ceil if params[:page] == 'last'

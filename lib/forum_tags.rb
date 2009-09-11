@@ -3,48 +3,11 @@ module ForumTags
   
   class TagError < StandardError; end
 
-  desc %{
-    To enable page commenting, all you have to do is put this in your layout:
-  
-    *Usage:*
-    <pre><code><r:comments:all /></code></pre>
-    
-    In order that pages can still be cached, we show a comment link rather than a comment form. The sample
-    javascript library included with the forum extension will turn this into a login or comment
-    form as appropriate.
-  }
   tag 'comments' do |tag|
     raise TagError, "can't have comments without a page" unless page = tag.locals.page
     if page.commentable?
       tag.locals.comments = page.posts
       tag.expand
-    end
-  end
-    
-  desc %{
-    If you would like comments to have the same appearance and inline editing controls as a normal forum page,
-    you'll be serving reader-specific content that isn't cacheable. The best way to do that is to include a remote 
-    call after the cached page has been served, but only if the page has comments. It does make the cache a bit 
-    redundant, yes, but if you have relatively few logged-in readers it's a good enough approach.
-
-    There are a hundred ways to get the comments - all it takes is a JS or JSON request to /pages/:id/topic -
-    but if you're using the sample mootools-based forum.js, you can just do this:
-
-    *Usage:*
-    <pre><code>
-    <r:comments:remote />
-    </code></pre>
-  }
-  tag 'comments:remote' do |tag|
-    if tag.locals.page.has_posts?
-      topic = tag.locals.page.topic
-      %{
-        <div class="comments"><a href="#{forum_topic_path(topic.forum, topic)}" class="remote_content">#{tag.render('comments:summary')}</a></div>
-      }
-    else
-      %{
-        <div class="comments"><a href="#{tag.render('comment_url')}" class="remote_content">Add a comment</a></div>
-      }
     end
   end
 
@@ -108,42 +71,47 @@ module ForumTags
     results
   end
   
-    tag 'comments:all' do |tag|
-      posts = tag.locals.comments
-      results = ""
-      results << %{<div class="page_comments">}
-      results << "<h2>Comments</h2>"
-      results << %{<div id="forum">
+  desc %{
+    To enable page commenting, all you have to do is put this in your layout:
+  
+    *Usage:*
+    <pre><code><r:comments:all /></code></pre>
   }
-      if posts.empty?
-        results << "<p>None yet.</p>"
-      else
-        posts.each do |post|
-          tag.locals.comment = post
-          results << tag.render('comment')
-        end
-      end
-
-      results << %{<p>#{tag.render('comment_link', :class => 'newmessage')}</p>} unless tag.locals.page.comments_closed?
-      results << "</div></div>"
-      results
-    end
-
-    tag 'comment' do |tag|
-      raise TagError, "can't have r:comment without a post" unless post = tag.locals.comment
-      if tag.double?
-        tag.locals.reader = post.reader
-        tag.expand
-      else
-        %{<div class="post" id="#{post.dom_id}">
-    <div class="post_header">
-      <h2><img src="#{post.reader.gravatar_url(:size => 40)}" width="40" height ="40" class="gravatar" /> #{post.reader.name}</h2>
-      <p class="context">#{post.date_html}</p>
-    </div>
-    <div class="post_body">#{post.body_html}</div>
-  </div>}
+  tag 'comments:all' do |tag|
+    posts = tag.locals.comments
+    results = ""
+    results << %{<div class="page_comments">}
+    results << "<h2>Comments</h2>"
+    results << %{<div id="forum">
+}
+    if posts.empty?
+      results << "<p>None yet.</p>"
+    else
+      posts.each do |post|
+        tag.locals.comment = post
+        results << tag.render('comment')
       end
     end
+    results << %{#{tag.render('comment_link', 'class' => 'inline inviting')}}
+    results << "</div></div>"
+    results
+  end
+
+  tag 'comment' do |tag|
+    raise TagError, "can't have r:comment without a post" unless post = tag.locals.comment
+    if tag.double?
+      tag.locals.reader = post.reader
+      tag.expand
+    else
+      %{<div class="post" id="#{post.dom_id}">
+  <div class="post_header">
+    <h2><img src="#{post.reader.gravatar_url(:size => 40)}" width="40" height ="40" class="gravatar" /> #{post.reader.name}</h2>
+    <p class="context">#{friendly_date(post.created_at)}</p>
+  </div>
+  <div class="post_body">#{post.body_html}</div>
+</div>}
+    end
+  end
 
   tag 'comment:reader' do |tag|
     raise TagError, "can't have comment:reader without a comment" unless reader = tag.locals.reader
@@ -210,7 +178,7 @@ module ForumTags
     </code></pre>
   }
   tag 'comment_link' do |tag|
-    raise TagError, "can't have `comment_link' without a page." unless tag.locals.page
+    raise TagError, "can't have `r:comment_link' without a page." unless tag.locals.page
     options = tag.attr.dup
     options['class'] ||= 'newmessage'
     attributes = options.inject('') { |s, (k, v)| s << %{#{k.to_s.downcase}="#{v}" } }.strip
@@ -223,7 +191,7 @@ module ForumTags
     The address for add-a-comment links
   }
   tag 'comment_url' do |tag|
-    raise TagError, "can't have `comment_url' without a page." unless tag.locals.page
+    raise TagError, "can't have `r:comment_url' without a page." unless tag.locals.page
     new_page_post_url(tag.locals.page)
   end
 

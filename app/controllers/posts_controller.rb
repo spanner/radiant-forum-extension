@@ -1,14 +1,13 @@
 class PostsController < ReaderActionController
 
   before_filter :set_site_title
-  before_filter :require_authority, :only => [:edit, :update, :destroy]
   before_filter :find_topic_or_page, :except => [:index, :search]
   before_filter :require_unlocked_topic_and_page, :only => [:new, :create]
   before_filter :find_post, :except => [:index, :search, :new, :preview, :create, :monitored]
   before_filter :build_post, :only => [:new]
-  radiant_layout { |controller| controller.layout_for :forum }
+  before_filter :require_authority, :only => [:edit, :update, :destroy]
 
-  # protect_from_forgery :except => :create # because the post form is typically generated from radius tags, which are defined in a model with no access to the controller
+  radiant_layout { |controller| controller.layout_for :forum }
 
   @@default_query_options = { 
     :page => 1,
@@ -76,9 +75,10 @@ class PostsController < ReaderActionController
   # if the reader is not logged in, reader_required should have intervened and caused the return of a login form instead
 
   def new
+    logger.warn "*** request for #{request.request_uri} has format #{request.format}"
     respond_to do |format|
-      format.html { render :template => 'posts/new' } # we specify because sometimes we're reverting from a post to create 
-      format.js { render :template => 'posts/new', :layout => false }
+      format.html { render :template => 'posts/new' } # we specify the template because in theory we could be reverting from a post to create 
+      format.js { render :partial => 'posts/reply' }
     end
   end
     
@@ -94,7 +94,7 @@ class PostsController < ReaderActionController
     end
 
     @post.save_attachments(params[:files]) unless @page && !Radiant::Config['forum.comments_have_attachments']
-    Radiant::Cache.clear if @post.topic.page
+    Radiant::Cache.clear if @page
 
     respond_to do |format|
       format.html { redirect_to_page_or_topic }
@@ -163,7 +163,7 @@ class PostsController < ReaderActionController
 protected
 
   def require_authority
-    current_user.admin? || @post.editable_by?(current_reader)      # includes an editable-interval check
+    (current_user && current_user.admin?) || @post.editable_by?(current_reader)      # includes an editable-interval check
   end
           
   def find_topic_or_page
@@ -231,6 +231,21 @@ protected
       }
     end
     false
+  end
+  
+  # overriding default version in ReaderActionController to return a slightly different form
+  
+  def require_reader
+    if current_reader
+      Reader.current = current_reader
+    else
+      store_location
+      respond_to do |format|
+        format.html { redirect_to reader_login_url }
+        format.js { render :partial => 'reader_sessions/login_form' }
+      end
+      return false
+    end
   end
   
 end
