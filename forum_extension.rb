@@ -10,7 +10,7 @@ class ForumExtension < Radiant::Extension
     map.with_options :path_prefix => '/forum' do |forum|
       forum.resources :forums, :only => [:index, :show], :has_many => [:topics, :posts]
       forum.resources :topics, :has_many => [:posts]
-      forum.resources :posts, :collection => {:search => :get, :monitored => :get}
+      forum.resources :posts, :collection => {:search => :get}
       forum.resources :pages, :has_many => [:posts], :has_one => [:topic]
     end
     

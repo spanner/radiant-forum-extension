@@ -1,0 +1,14 @@
+.upload_handler
+  %h4.label
+    = link_to "attach files...", '#'
+  %div.hidden_attachments
+    %ul.attachments
+      = hidden_field_tag "post[attachment_ids][]", ""
+      - @post.attachments.each do |attachment|
+        %li.attachment
+          = check_box_tag "post[attachment_ids][]", attachment.id, true, {:id => "post_attachment_#{attachment.id}", :class => 'choose_attachment'}
+          = link_to attachment.filename, attachment.file.url, :class => "attachment #{attachment.extension}"
+          = link_to 'remove', '#', :class => 'remove', :id => "remove_attachment_#{attachment.id}" 
+    .uploads
+    .selector
+      = file_field_tag "files[]", :id => ""

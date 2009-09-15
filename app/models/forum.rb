@@ -11,8 +11,6 @@ class Forum < ActiveRecord::Base
     end
   end
 
-  # this is used to see if a forum is "fresh"... we can't use .topics because it puts
-  # stickies first even if they are not the most recently modified
   has_many :recent_topics, :class_name => 'Topic', :order => 'replied_at desc' do 
     def first 
       @first_recent_topic ||= find(:first) 
@@ -46,12 +44,16 @@ class Forum < ActiveRecord::Base
     "forum_#{self.id}"
   end
   
-  # I might put some admin or user-only options in here but for now it's just a fixing point for chains in other extensions
+  # I might put some admin or user-only options in here but for now these methods are here just to help other extensions
+
+  def self.visible
+    all
+  end
+  
   def visible_to?(reader=nil)
     true
   end
 
-  # this too is for chaining elsewhere
   def visible_by_default?
     true
   end

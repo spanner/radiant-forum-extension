@@ -75,7 +75,6 @@ class PostsController < ReaderActionController
   # if the reader is not logged in, reader_required should have intervened and caused the return of a login form instead
 
   def new
-    logger.warn "*** request for #{request.request_uri} has format #{request.format}"
     respond_to do |format|
       format.html { render :template => 'posts/new' } # we specify the template because in theory we could be reverting from a post to create 
       format.js { render :partial => 'posts/reply' }

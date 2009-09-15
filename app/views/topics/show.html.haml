@@ -27,7 +27,7 @@
   = gravatar_for(@topic.reader, {:size => 50}, {:alt => @topic.reader.name, :class => 'gravatar'})
 
 - content_for :feed do
-  = feed_link(formatted_topic_path(@topic, :rss))
+  = feed_link(topic_path(@topic, :format => :rss))
 
 - content_for :controls do
   = render :partial => 'readers/controls'
@@ -41,3 +41,6 @@
   = link_to @forum.name, forum_url(@forum) 
   \&gt;
   = @topic.name
+
+- content_for :test do
+  "what what?"
