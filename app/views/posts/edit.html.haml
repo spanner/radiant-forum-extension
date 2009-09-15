@@ -6,6 +6,8 @@
   = render :partial => 'posts/form', :object => f
   %p.buttons
     = f.submit "Save changes"
+    or
+    = link_to "cancel", topic_post_path(@topic, @post), :class => 'cancel'
 
 - content_for :pagetitle do
   Edit
