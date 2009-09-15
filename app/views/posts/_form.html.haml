@@ -1,33 +1,6 @@
-- message_type = @page ? 'comment' : 'reply'
-- formurl = @page ? page_posts_url(@page) : topic_posts_url(@topic)
-- @post ||= @topic.posts.build
+.post_wrapper
+  .post_body
+    = form.text_area :body, :rows => 10, :class => 'post_body'
 
-%div.reply#replyform
-  - form_for :post, :url => formurl, :html => {:id => 'reply_form', :multipart => true, :class => 'friendly inline'} do |f|
-    .post_header
-      %h2
-        %a{:href => reader_url(current_reader), :class => 'main'}
-          = gravatar_for(current_reader, {:size => 40}, {:alt => current_reader.name, :class => 'gravatar', :width => '40', :height => '40'})
-        Add a 
-        = message_type
-        to 
-        - if @page
-          = link_to @page.title, @page.url
-        - else 
-          = link_to @topic.name, forum_topic_url(@topic.forum, @topic)
-        
-      %p.context
-        You are currently logged in as 
-        = link_to(current_reader.name, reader_url(current_reader)) + '.'
-        If that's not you, please 
-        = link_to("log out", reader_logout_url) + '.'
-
-    .post_wrapper
-      .post_body
-        = f.text_area :body, :rows => 10, :class => 'post_body'
-
-        - unless @page && !Radiant::Config['forum.comments_have_attachments']
-          = render :partial => 'uploader'
-          
-        %p.buttons
-          = submit_tag "Post #{message_type}"
+    - unless @topic.page && !Radiant::Config['forum.comments_have_attachments']
+      = render :partial => 'uploader'

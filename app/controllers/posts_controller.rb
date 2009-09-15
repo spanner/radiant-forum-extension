@@ -231,20 +231,5 @@ protected
     end
     false
   end
-  
-  # overriding default version in ReaderActionController to return a slightly different form
-  
-  def require_reader
-    if current_reader
-      Reader.current = current_reader
-    else
-      store_location
-      respond_to do |format|
-        format.html { redirect_to reader_login_url }
-        format.js { render :partial => 'reader_sessions/login_form' }
-      end
-      return false
-    end
-  end
-  
+
 end

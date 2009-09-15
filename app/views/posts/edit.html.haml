@@ -3,12 +3,9 @@
 - message_type = @topic.page ? 'comment' : 'message'
 
 - form_for :post, :url  => topic_post_path(@topic, @post), :html => {:method => 'put', :multipart => true, :id => "post_form_#{@post.id}", :class => 'friendly'} do |f|
-  = render :partial => "posts/form", :object => f
-  %div.buttons
-    = submit_tag "Update #{message_type}" 
-    to confirm changes
-    or
-    = link_to "cancel", forum_topic_url(@topic.forum, @topic), :class => 'cancel'
+  = render :partial => 'posts/form', :object => f
+  %p.buttons
+    = f.submit "Save changes"
 
 - content_for :pagetitle do
   Edit
