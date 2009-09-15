@@ -89,7 +89,7 @@ describe PostsController do
 
         it "should render a bare login form for inclusion in the page" do
           response.should be_success
-          response.should render_template('readers/login')
+          response.should render_template('reader_sessions/_login_form')
           response.layout.should be_nil
         end
       end
@@ -137,7 +137,7 @@ describe PostsController do
 
         it "should render a bare comment form for inclusion in the page" do
           response.should be_success
-          response.should render_template('new')
+          response.should render_template('posts/_reply')
           response.layout.should be_nil
         end
       end
