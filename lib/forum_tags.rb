@@ -201,23 +201,36 @@ module ForumTags
   tag 'forum_latest' do |tag|
     results = []
     results << %{<ul class="clean">}
-    Post.latest(6).each do |post|
-      results << %{<li><img src="#{post.reader.gravatar_url(:size => 42)}" width="42" height="42" class="gravatar"> }
-      results << %{<a href="#{forum_topic_path(post.topic.forum, post.topic)}">#{post.topic.name}</a> }
-      results << %{<span class="credit">}
-      if post.topic.page
-        results << " commented upon by "
-      elsif post.first?
-        results << " started by "
-      else
-        results << " replied to by "
-      end
-      results << "#{post.reader.name} #{friendly_date(post.created_at)}"
-      results << %{</span></li>}
+    Topic.visible.latest(6).each do |topic|
+      tag.locals.topic = topic.
+      results << %{<li>#{tag.render('topic:summary')}</li>}
     end
     results << %{</ul>}
     results
   end
+
+  tag 'topic' do |tag|
+    tag.expand if tag.locals.topic
+  end
+  tag 'topic:summary' do |tag|
+    results = []
+    topic = tag.locals.topic
+    post = topic.posts.last
+    results << %{<img src="#{post.reader.gravatar_url(:size => 42)}" width="42" height="42" class="gravatar"> } if tag.attr['gravatar'] == 'true'
+    results << %{<a href="#{forum_topic_path(topic.forum, topic)}">#{topic.name}</a> }
+    results << %{<span class="credit">}
+    if topic.page
+      results << " commented upon by "
+    elsif post.first?
+      results << " started by "
+    else
+      results << " replied to by "
+    end
+    results << "#{post.reader.name} #{friendly_date(post.created_at)}"
+    results << %{</span>}
+    results
+  end
+
 
 
 private

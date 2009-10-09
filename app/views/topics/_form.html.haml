@@ -1,10 +1,7 @@
-%p{ :class => @topic.errors.on(:name) ? 'with_errors' : '' }
-  %label{:for => 'topic_name', :class => 'required'} Discussion title
+- with_error_report(@topic.errors.on(:name)) do
+  = form.label :name, 'Discussion title', :class => 'required'
   %br
-  = form.text_field :name, :class => "titular"
-  - if @topic.errors.on(:name)
-    %br
-    = @topic.errors.on(:name).to_a.to_sentence
+  = form.text_field :name, :class => 'titular'
   - if admin?
     %br
     %span.quiet
@@ -13,20 +10,12 @@
       = form.check_box :locked
       %label{:for => 'topic_locked', :class => 'admin'} Locked
 
-%p{ :class => @topic.errors.on(:body) ? 'with_errors' : '' }
-  %label{:for => 'topic_body', :class => 'required'} Opening message
+- with_error_report(@topic.errors.on(:body)) do
+  = form.label :name, 'Opening message'
   %br
   = form.text_area :body, :class=> 'standard', :rows => 12
-  - if @topic.errors.on(:body)
-    %br
-    = @topic.errors.on(:body).to_a.to_sentence
-    
-- if @topic.new_record? && !@forum
-  %p 
-    %label{:for => "topic_forum_id"} Discussion category
-    %br
-    = form.select :forum_id, Forum.find(:all).select{|f| f.visible_to?(current_reader) && !f.for_comments?}.map {|f| [f.name, f.id] }
-- else
-  %p
-    The new discussion will be filed under 
-    = link_to(@forum.name, forum_url(@forum)) + '.'
+
+- unless @topic.page && !Radiant::Config['forum.comments_have_attachments']
+  = render :partial => 'posts/uploader', :locals => {:post => @topic.first_post}
+
+

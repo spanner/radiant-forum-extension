@@ -24,7 +24,7 @@
     = link_to @topic.forum.name + '.', forum_url(@topic.forum), {:class => 'breadhead'}
 
 - content_for :mugshot do
-  = gravatar_for(@topic.reader, {:size => 50}, {:alt => @topic.reader.name, :class => 'gravatar'})
+  = gravatar_for(@topic.reader, {:size => 42}, {:alt => @topic.reader.name, :class => 'gravatar'})
 
 - content_for :feed do
   = feed_link(topic_path(@topic, :format => :rss))

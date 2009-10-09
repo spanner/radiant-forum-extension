@@ -30,7 +30,7 @@ class PostAttachment < ActiveRecord::Base
   acts_as_list :scope => :post_id
   has_attached_file :file,
                     :styles => thumbnail_sizes,
-                    :whiny_thumbnails => true,
+                    :whiny_thumbnails => false,
                     :url => "/:class/:id/:basename:no_original_style.:extension",
                     :path => ":rails_root/public/:class/:id/:basename:no_original_style.:extension"
 

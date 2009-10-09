@@ -4,6 +4,7 @@ class Forum < ActiveRecord::Base
   belongs_to :created_by, :class_name => 'User'
   belongs_to :updated_by, :class_name => 'User'
   validates_presence_of :name
+  named_scope :visible, {}
 
   has_many :topics, :order => 'sticky desc, replied_at desc', :dependent => :destroy do
     def first
@@ -22,7 +23,7 @@ class Forum < ActiveRecord::Base
 
   has_many :posts, :order => 'posts.created_at desc' do
     def last
-      @last_post ||= find(:first, :include => :user)
+      @last_post ||= find(:first, :include => :reader)
     end
     def latest
       @latest_posts ||= find(:all, :limit => 5)
@@ -37,25 +38,11 @@ class Forum < ActiveRecord::Base
       :position => 999,
       :created_at => Time.now,
       :for_comments => true
-      )
+    )
   end
   
   def dom_id
     "forum_#{self.id}"
-  end
-  
-  # I might put some admin or user-only options in here but for now these methods are here just to help other extensions
-
-  def self.visible
-    all
-  end
-  
-  def visible_to?(reader=nil)
-    true
-  end
-
-  def visible_by_default?
-    true
   end
 
 end

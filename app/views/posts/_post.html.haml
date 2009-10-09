@@ -46,8 +46,9 @@
         - if post.editable_by?(current_reader)
           %p
             = link_to "editable", edit_topic_post_url(post.topic, post), :class => 'edit_post', :id => "revise_post_#{post.id}"
-            for 
-            = distance_of_time_in_words(post.still_editable_for)
+            - if post.editable_interval
+              for 
+              = distance_of_time_in_words(post.still_editable_for)
         - elsif admin?
           %p.post_admin
             = link_to "edit", edit_topic_post_url(post.topic, post), :class => 'edit_post', :id => "revise_post_#{post.id}"

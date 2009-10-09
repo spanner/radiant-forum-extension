@@ -2,14 +2,15 @@
 
 #forum
   #new_topic
-    - form_for :topic, :url  => @forum ? forum_topics_path(@forum) : topics_path, :html => {:class => 'friendly'} do |f|
+    - form_for :topic, :url  => @forum ? forum_topics_path(@forum) : topics_path, :html => {:class => 'friendly', :multipart => true} do |f|
       = render :partial => "form", :object => f
-      = submit_tag 'Start Discussion' 
-      or 
-      - if @forum
-        = link_to('cancel', forum_path(@forum))
-      - else
-        = link_to('cancel', :back)
+      %p.buttons
+        = submit_tag 'Start Discussion' 
+        or 
+        - if @forum
+          = link_to('cancel', forum_path(@forum))
+        - else
+          = link_to('cancel', :back)
 
 - content_for :pagetitle do
   Start a new discussion

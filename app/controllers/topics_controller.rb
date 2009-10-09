@@ -11,6 +11,7 @@ class TopicsController < ReaderActionController
 
   def new
     @topic = Topic.new
+    @topic.first_post = @topic.posts.build
   end
   
   def show
@@ -33,6 +34,8 @@ class TopicsController < ReaderActionController
     # and then calls back to set initial reply data in the topic
     @forum = Forum.find(params[:topic][:forum_id]) if params[:topic][:forum_id]
     @topic = @forum.topics.create!(params[:topic])
+    @topic.first_post.save_attachments(params[:files]) unless @topic.page && !Radiant::Config['forum.comments_have_attachments']
+    
     respond_to do |format|
       format.html { redirect_to forum_topic_path(@forum, @topic) }
     end

@@ -19,6 +19,7 @@ class Post < ActiveRecord::Base
   
   validates_presence_of :reader, :topic, :body
 
+  named_scope :visible, {}
   named_scope :latest, lambda { |count|
     {
       :order => 'created_at DESC',
@@ -61,7 +62,11 @@ class Post < ActiveRecord::Base
   end
   
   def still_editable_for
-    self.created_at + editable_interval - Time.now if editable_interval && still_editable?
+    if editable_interval && still_editable?
+      self.created_at + editable_interval - Time.now 
+    else
+      0
+    end
   end
   
   def still_editable?

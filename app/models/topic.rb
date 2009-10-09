@@ -10,10 +10,11 @@ class Topic < ActiveRecord::Base
   belongs_to :first_post, :class_name => 'Post', :include => :reader                                                # aka topic.body. should not change
   belongs_to :last_post, :class_name => 'Post', :include => :reader                                                 # this is just for display efficiency.
   belongs_to :replied_by, :class_name => 'Reader'                                                                   # this too.
-  has_many :posts, :order => 'posts.created_at', :include => :reader, :dependent => :destroy
-
-  has_many :monitorships, :dependent => :destroy
-  has_many :monitors, :through => :monitorships, :conditions => ['monitorships.active = ?', true], :source => :user, :order => 'users.login'
+  has_many :posts, :order => 'posts.created_at', :include => :reader, :dependent => :destroy do
+    def last
+      @last_post ||= find(:first, :include => :reader)
+    end
+  end
 
   validates_presence_of :forum, :reader, :name
 
@@ -26,6 +27,7 @@ class Topic < ActiveRecord::Base
   
   attr_accessor :body
 
+  named_scope :visible, {}
   named_scope :latest, lambda { |count|
     {
       :order => 'replied_at DESC',
