@@ -1,5 +1,5 @@
+require 'sanitize'
 class Post < ActiveRecord::Base
-  include WhiteListHelper
   
   is_site_scoped if defined? ActiveRecord::SiteNotFound
   
@@ -85,7 +85,12 @@ class Post < ActiveRecord::Base
   # we shouldn't have formatting in here, but page comments need to be rendered from a radius tag
   
   def body_html
-    white_list(RedCloth.new(self.body, [ :hard_breaks, :filter_html ]).to_html(:textile, :smilies)) if self.body
+    if body
+      html = RedCloth.new(body, [ :hard_breaks, :filter_html ]).to_html(:textile, :smilies)
+      Sanitize.clean(html, Sanitize::Config::RELAXED)
+    else
+      ""
+    end
   end
     
   def date_html

@@ -12,7 +12,7 @@ class Topic < ActiveRecord::Base
   belongs_to :replied_by, :class_name => 'Reader'                                                                   # this too.
   has_many :posts, :order => 'posts.created_at', :include => :reader, :dependent => :destroy do
     def last
-      @last_post ||= find(:first, :include => :reader)
+      @last_post ||= find(:last)
     end
   end
 

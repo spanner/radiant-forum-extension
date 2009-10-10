@@ -215,7 +215,7 @@ module ForumTags
   tag 'topic:summary' do |tag|
     results = []
     topic = tag.locals.topic
-    post = topic.posts.last
+    post = topic.last_post
     results << %{<img src="#{post.reader.gravatar_url(:size => 42)}" width="42" height="42" class="gravatar"> } if tag.attr['gravatar'] == 'true'
     results << %{<a href="#{forum_topic_path(topic.forum, topic)}">#{topic.name}</a> }
     results << %{<span class="credit">}

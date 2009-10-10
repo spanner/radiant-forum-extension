@@ -1,3 +1,4 @@
+require 'sanitize'
 module ForumHelper
 
   def self.included(base)
@@ -17,7 +18,7 @@ module ForumHelper
         else
           textilized = RedCloth.new(text, [ :hard_breaks ])
           textilized.hard_breaks = true if textilized.respond_to?("hard_breaks=")
-          white_list( textilized.to_html(:textile, :smilies) )
+          Sanitize.clean(textilized.to_html(:textile, :smilies), Sanitize::Config::RELAXED)
         end
       end
       

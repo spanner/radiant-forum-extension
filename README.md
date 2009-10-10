@@ -82,7 +82,7 @@ You can also use `<r:comments:each>...</r:comments:each>` and the various r:comm
 
 ## Security & Spam
 
-The reader extension includes email confirmation and a simple honeytrap that should prevent most bots from registering. The post forms include proper XSS protection via the old white_list plugin and the usual CSRF protection is enabled. I probably need to go through making sure everything is h'd that should be.
+The reader extension includes email confirmation and a simple honeytrap that should prevent most bots from registering. The post forms include proper XSS protection via the sanitize gem and the usual CSRF protection is enabled.
 
 ## Ajax
 

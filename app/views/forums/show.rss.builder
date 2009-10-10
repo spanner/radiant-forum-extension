@@ -9,5 +9,5 @@ xml.channel do
   xml.language "en-us"
   xml.ttl "60"
 
-  render :partial => "topics/topic", :collection => @topics, :locals => {:xml => xml}
+  render :partial => "topics/topic", :collection => @topics, :locals => {:xm => xml}
 end
