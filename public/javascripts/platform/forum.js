@@ -1,70 +1,3 @@
-window.addEvent('domready', function(){
-  getPosts();
-  getRemoteContent();
-  flashErrors();
-  fadeNotices();
-});
-
-var block = function (e) {
-	if (e) {
-		if (e.target) e.target.blur();
-		e = new Event(e);
-		e.preventDefault();
-		e.stop;
-		return e;
-	}
-};
-
-// get rid of radiant notifications (after a pause)
-
-fadeNotices = function () {
-  reallyFadeNotices.delay(2000);
-}
-
-reallyFadeNotices = function () {
-  $$('div#notice').fade('out');
-  $$('div#error').fade('out');
-}
-
-// flash validation errors
-
-flashErrors = function () {
-  $$('p.with_errors').each(function (element) { element.highlight(); });
-}
-
-// flash #destination
-
-flashAnchor = function () {
-  var hash = window.location.hash;
-  if (hash && $(hash)) $(hash).highlight();
-};
-
-// turns a link into a form
-// so that eg a reply link becomes a reply form or a login form as required
-// this allows us to return a cached page but display suitable interaction
-// which does slightly defeat the object, but keeps the server side clean
-
-getRemoteContent = function (container) {
-  container.getElements('a.remote_content').each(function (a) { replaceWithDestination(a); });
-};
-
-replaceWithDestination = function (a) {
-  var destination = a.get('href');
-  var holder = new Element('div', {'class' : 'remote_content'});
-  var waiter = new Element('p', {'class' : 'waiting'}).set('text', a.get('text'));
-  waiter.inject(holder);
-  holder.replaces(a);
-  holder.set('load', {onComplete: function () { i.activate(holder); }});
-  holder.load(destination);
-}
-
-getPosts = function () {
-  $$('div.post').each(function (div) { new Post(div); });
-  $$('div.upload_handler').each(function (div) { new UploadHandler(div); });
-};
-
-// post machinery: editable, deletable and soon flaggable in place
-
 var Post = new Class({
   initialize: function (div) {
     this.container = div;
@@ -82,7 +15,7 @@ var Post = new Class({
   },
   
   edit: function(e){
-    block(e);
+    if (e) new Event(e).stop();
     this.editor.addClass('waiting');
     if (this.showing) this.cancel();
     else if (this.form_holder) this.prepForm();
@@ -124,7 +57,7 @@ var Post = new Class({
       // can't send uploads over xmlhttp so we allow the form to submit
       // the update-post action will redirect to a hashed url that should return us to the right post
     } else {
-      block(e);
+      if (e) new Event(e).stop();
       new Request.HTML({
         url: this.form.get('action'),
         update: this.container,
@@ -134,7 +67,7 @@ var Post = new Class({
     
   },
   cancel: function (e) {
-    block(e);
+    if (e) new Event(e).stop();
     this.finishCancel();
     // new Fx.Morph(this.input, {duration: 'short', onComplete : this.finishCancel.bind(this)}).start({'height' : this.h, opacity : 0});
   },
@@ -150,6 +83,7 @@ var Post = new Class({
   }
 });
 
+var uh = null;
 var UploadHandler = new Class({
   initialize: function (div) {
     this.container = div;
@@ -157,30 +91,29 @@ var UploadHandler = new Class({
     this.list = div.getElement('ul.attachments');
     this.pender = div.getElement('div.uploads');
     this.selector = div.getElement('div.selector');
-
+    this.attacher = div.getElement('div.hidden_attachments');
     this.file_field_template = this.selector.getElement('input').clone();
     this.file_pending_template = new Element('li');
 
     this.attachments = [];
-    this.list.getElements('lattachment').each(function (li) {
-      this.attachments.push( new Attachment(li));
-    }, this);
+    this.list.getElements('li.attachment').each(function (li) { this.attachments.push( new Attachment(li)); }, this);
 
     this.uploads = [];
     this.uploader = this.selector.getElement('input');
     this.uploader.addEvent('change', this.addUpload.bindWithEvent(this));
-
-    this.reveal = new Fx.Slide(div.getElement('div.attachments'));
+    
+    this.reveal = new Fx.Slide(this.attacher);
     this.shower.addEvent('click', this.toggle.bindWithEvent(this));
 
-    if (!this.hasAttachments()) this.reveal.hide();
+    this.reveal.hide();
+    uh = this;
   },
   toggle: function (e) {
-    block(e);
+    if (e) new Event(e).stop();
     this.reveal.toggle();
   },
   addUpload: function (e) {
-    block(e);
+    if (e) new Event(e).stop();
     this.uploads.push(new Upload(this));
     this.resize();
   },
@@ -190,10 +123,10 @@ var UploadHandler = new Class({
     return ul;
   },
   hasAttachments: function () {
-    return this.attachments.length != 0;
+    return this.attachments.length > 0;
   },
   hasUploads: function () {
-    return this.uploads.length != 0;
+    return this.uploads.length > 0;
   },
   resize: function () {
     this.reveal.slideIn();
@@ -214,7 +147,7 @@ var Upload = new Class({
     return '/images/forum/icons/attachment_new.png';
   },
   remove: function (e) {
-    block(e);
+    if (e) new Event(e).stop();
     this.uploader.destroy();
     this.container.nix();
     this.handler.resize();
@@ -224,12 +157,12 @@ var Upload = new Class({
 var Attachment = new Class({
   initialize: function (li) {
     this.container = li;
-    this.checkbox = lgetElement('input.choose_attachment');
-    this.remover = lgetElement('a.remove');
+    this.checkbox = li.getElement('input.choose_attachment');
+    this.remover = li.getElement('a.remove');
     this.remover.addEvent('click', this.remove.bindWithEvent(this));
   },
   remove: function (e) {
-    block(e);
+    if (e) new Event(e).stop();
     if (this.checkbox) this.checkbox.set('checked', false);
     this.container.nix();
   },
@@ -242,8 +175,7 @@ var Attachment = new Class({
 
 
 
-
-
-
-
-
+activations.push(function (scope) {
+  scope.getElements('div.post').each(function (div) { new Post(div); });
+  scope.getElements('div.upload_handler').each(function (div) { new UploadHandler(div); });  
+});
