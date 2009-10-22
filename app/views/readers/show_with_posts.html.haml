@@ -20,8 +20,6 @@
         = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => true, :without_author => false }
   - else
     %p None yet
-
-= render :partial => 'controls'
     
 - content_for :breadcrumbs do
   = link_to 'Home', '/'
@@ -30,5 +28,5 @@
   &gt;
   = @reader.name
 
-- content_for :title do
+- content_for :pagetitle do
   = @reader.name
