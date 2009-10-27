@@ -33,7 +33,7 @@
   = render :partial => 'readers/controls'
 
 - content_for :breadhead do
-  = link_to "#{@forum.name}:", forum_url(@forum), {:class => 'breadhead'}
+  = link_to @forum.name, forum_url(@forum), :class => 'breadhead'
 
 - content_for :breadcrumbs do
   = link_to 'Forum', topics_url
@@ -41,6 +41,3 @@
   = link_to @forum.name, forum_url(@forum) 
   \&gt;
   = @topic.name
-
-- content_for :test do
-  "what what?"

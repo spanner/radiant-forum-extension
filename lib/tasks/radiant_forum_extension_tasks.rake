@@ -32,7 +32,7 @@ namespace :radiant do
           database = ENV['database'] || 'vanilla'
           user = ENV['user'] || 'forum'
           password = ENV['password'] || ''
-          Page.current_site = Site.find_by_id(ENV['site']) || Site.catchall
+          Page.current_site = Site.find_by_id(ENV['site']) || Site.catchall if defined? Site
         
           dbh = DBI.connect("DBI:Mysql:#{database}", user, password)
         

@@ -27,6 +27,9 @@
 - content_for :controls do
   = render :partial => 'readers/controls'
   
+- content_for :breadhead do
+  = link_to "Forum", topics_url, :class => 'breadhead'
+
 - content_for :breadcrumbs do
   = link_to 'Forum', topics_url
   \&gt;

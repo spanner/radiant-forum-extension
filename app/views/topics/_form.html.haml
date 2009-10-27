@@ -5,7 +5,7 @@
   - if admin?
     %br
     %span.quiet
-      = form.check_box :locked
+      = form.check_box :sticky
       %label{:for => 'topic_sticky', :class => 'admin'} Sticky
       = form.check_box :locked
       %label{:for => 'topic_locked', :class => 'admin'} Locked

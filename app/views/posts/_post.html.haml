@@ -5,17 +5,16 @@
 
 %div.post{:id => post.dom_id}
   %div{:class => post.first? ? 'first_post' : 'reply'}
-    - unless post == first_post
-      .post_header
-        %h2
-          - if with_context
-            %a{:href => forum_topic_url(post.topic.forum, post.topic), :class => post.first? ? 'begun' : 'replied'}
-              = gravatar_for(post.reader, {:size => 40}, {:alt => post.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
-              = post.topic.name
-          - else
-            %a{:href => reader_url(post.reader), :class => 'main'}
-              = gravatar_for(post.reader, {:size => 40}, {:alt => post.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
-              = post.reader.name
+    .post_header
+      %h2
+        - if with_context
+          %a{:href => forum_topic_url(post.topic.forum, post.topic), :class => post.first? ? 'begun' : 'replied'}
+            = gravatar_for(post.reader, {:size => 40}, {:alt => post.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
+            = post.topic.name
+        - else
+          %a{:href => reader_url(post.reader), :class => 'main'}
+            = gravatar_for(post.reader, {:size => 40}, {:alt => post.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
+            = post.reader.name
       %p.context
         - if with_context
           = link_to post.reader.name, reader_url(post.reader)

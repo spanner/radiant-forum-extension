@@ -22,6 +22,9 @@
 
     = paginate_and_summarise @topics, 'topics'
 
+- content_for :breadhead do
+  = link_to 'Forum', forums_url, :class => 'breadhead'
+
 - content_for :breadcrumbs do
   = link_to 'Forum', forums_url
   \&gt;
@@ -32,29 +35,6 @@
 
 - content_for :feed do
   = feed_link(formatted_topics_path(:rss))
-
-- content_for :marginalia do
-  - if current_reader
-    %h3
-      your topics
-    - if current_reader.topics.any?
-      %ul
-        - current_reader.topics.latest(10).each do |topic|
-          %li
-            = link_to topic.name, forum_topic_url(topic.forum, topic)
-            %span.credit
-              = topic.posts.count
-              - if topic.has_posts?
-                = pluralize(topic.posts.count, 'reply') + ','
-                - if topic.posts.count > 1
-                  most recently
-                from
-                = topic.replied_by.name
-                = friendly_date(topic.replied_at)
-    - else
-      %p
-        None yet. 
-        = link_to "Start a conversation!", new_topic_url
 
 - content_for :controls do
   = render :partial => 'readers/controls'

@@ -17,8 +17,10 @@
 
 - content_for :breadhead do
   - if @forum
-    = link_to "#{@forum.name} &raquo;", forum_url(@forum), {:class => 'breadhead'}
-
+    = link_to @forum.name, forum_url(@forum), :class => 'breadhead'
+  - else
+    = link_to "Forum", topics_url, :class => 'breadhead'
+  
 - content_for :controls do
   = render :partial => 'readers/controls'
 
@@ -28,9 +30,6 @@
     = link_to "#{current_reader.name}.", reader_url(current_reader)
     If that's not you, please 
     = link_to "log out.", reader_logout_url
-
-- content_for :mugshot do
-  = gravatar_for(current_reader, {:size => 50}, {:alt => current_reader.name, :class => 'gravatar'})
 
 - content_for :breadcrumbs do
   = link_to 'Forum', topics_url

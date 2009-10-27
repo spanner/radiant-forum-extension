@@ -16,7 +16,7 @@ The forum is compatible with multi_site but you have to use [our fork](https://g
 
 ## Status
 
-Fairly mature, but there's a lot going on here and plenty of places for me to hide bugs. Tests are fairly thorough.
+Fairly mature, but with a few rough edges. There's a lot going on here and plenty of places for me to hide bugs. Tests are fairly thorough.
 
 ## Latest
 
