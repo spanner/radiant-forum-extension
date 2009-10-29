@@ -2,6 +2,7 @@
 - first_post ||= nil
 - with_context ||= false
 - without_author ||= false
+- preview ||= false
 
 %div.post{:id => post.dom_id}
   %div{:class => post.first? ? 'first_post' : 'reply'}
@@ -43,6 +44,8 @@
       .post_body
         - if post.frozen?
           %p Post removed
+        - elsif preview
+          = truncate_and_textilize(post.body, 100)
         - else
           = clean_textilize(post.body)
         

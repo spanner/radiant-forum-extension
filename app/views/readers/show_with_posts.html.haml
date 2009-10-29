@@ -22,7 +22,7 @@
       - if @posts.previous_page
         = paginate_and_summarise @posts, 'comments'
 
-      = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => true, :without_author => false }
+      = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => true, :without_author => false, :preview => true }
 
       - if @posts.next_page
         = paginate_and_summarise @posts, 'comments'

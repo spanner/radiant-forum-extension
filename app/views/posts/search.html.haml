@@ -17,7 +17,7 @@
         = paginate_and_summarise @posts, 'posts'
 
       %ul.main
-        = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true}
+        = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true, :hide_author => false, :preview => true}
 
       = paginate_and_summarise @posts, 'posts'
 
