@@ -100,7 +100,13 @@ These parts are only defined where they're relevent, so you can do something lik
 	  <r:content part="feed" />
 	</h1>
 
-and it will look right for all the forum pages. Have a look at the included sample layout for a starting point.
+and it will look right for all the forum pages. 
+
+You probably also want to include this somewhere, as on all reader-service pages:
+
+	<r:if_reader><r:reader:controls /></r:if_reader>
+
+Have a look at the included sample layout for a starting point. You will need to put [mootools](http://mootools.net/) in your /javascripts directory first.
 
 ## Multi_site
 

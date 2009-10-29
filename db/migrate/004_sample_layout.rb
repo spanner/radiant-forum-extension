@@ -6,21 +6,18 @@ class SampleLayout < ActiveRecord::Migration
 <html>
   <head>
     <title>Forum : <r:content part="pagetitle" /></title>
-    <link rel="stylesheet" href="/stylesheets/reader.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="/stylesheets/forum.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="/stylesheets/forum_example.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/stylesheets/platform/reader.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/stylesheets/platform/forum.css" type="text/css" media="all" />
     <script type="text/javascript" charset="utf-8" src="/javascripts/mootools.js"></script>
-    <script type="text/javascript" charset="utf-8" src="/javascripts/forum.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/javascripts/platform/core.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/javascripts/platform/forum.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/javascripts/platform/remotecontent.js"></script>
   </head>
   <body>
     <div id="container">
       <div id="header">
-        <p class="breadhead">
-          <a href="/">site title</a> &gt;
-          <a href="/topics">forum</a> &gt;
-          <r:content part="breadhead" />
-        </p>
         <h1>
+          <r:content part="breadhead" />
           <r:content part="pagetitle" />
           <r:content part="feed" />
         <h1>
