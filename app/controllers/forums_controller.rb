@@ -5,7 +5,7 @@ class ForumsController < ReaderActionController
   radiant_layout { |controller| controller.layout_for :forum }
 
   def index
-    @forums = Forum.find(:all, :order => "position").select {|forum| forum.visible_to?(current_reader)}
+    @forums = Forum.find(:all, :order => "position")
   end
 
   def show
