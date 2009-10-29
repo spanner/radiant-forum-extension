@@ -1,11 +1,8 @@
 = render :partial => 'flasher'
 
 #reader
-  = gravatar_for(@reader, {:size => 128}, {:class => 'big_gravatar'})
-  %h1.reader
-    = @reader.name
   - if @reader.description.blank?
-    %p No description available.
+    %p No description provided.
   - else
     = clean_textilize @reader.description
 
@@ -14,10 +11,17 @@
     Messages from
     = @reader.name
     = feed_link(search_posts_url(:reader_id => @reader.id, :format => :rss))
+
   - if @posts
     %ul.main
-      - paginated_section @posts do
-        = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => true, :without_author => false }
+      - if @posts.previous_page
+        = paginate_and_summarise @posts, 'comments'
+
+      = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => true, :without_author => false }
+
+      - if @posts.next_page
+        = paginate_and_summarise @posts, 'comments'
+
   - else
     %p None yet
     
@@ -30,3 +34,7 @@
 
 - content_for :pagetitle do
   = @reader.name
+
+- content_for :mugshot do
+  = gravatar_for(@reader, {:size => 42}, {:alt => @reader.name, :class => 'gravatar'})
+  
