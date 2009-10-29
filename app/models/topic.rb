@@ -134,9 +134,10 @@ class Topic < ActiveRecord::Base
 
     def save_post
       self.first_post = self.posts.create!(:body => self.body, :created_at => self.created_at, :reader => self.reader)
+      self.replied_at = Time.now();
       self.save(false)
     end
-
+    
     def update_post
       post = self.first_post
       if !self.body.nil? && self.body != post.body
