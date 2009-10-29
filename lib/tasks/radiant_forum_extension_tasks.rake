@@ -32,32 +32,38 @@ namespace :radiant do
           database = ENV['database'] || 'vanilla'
           user = ENV['user'] || 'forum'
           password = ENV['password'] || ''
-          Page.current_site = Site.find_by_id(ENV['site']) || Site.catchall if defined? Site
+          Page.current_site = Site.find_by_id(ENV['site']) if ENV['site'] && defined? Site
         
           dbh = DBI.connect("DBI:Mysql:#{database}", user, password)
         
           dbh.select_all('select * from LUM_User') do | row |
-            reader = Reader.find_or_create_by_email(row['Email'])
-            if reader.new_record?
-              reader_name = [row['FirstName'], row['LastName']].join(' ')
-              reader_name = row['Name'] if reader_name == ' '
-              reader.update_attributes!(
-                :old_id => row['UserID'],
-                :name => reader_name,
-                :login => row['Name'],
-                :last_login_ip => row['RemoteIp'],
-                :last_request_at => row['DateLastActive'],
-                :password => 'import',
-                :password_confirmation => 'import'
-              )
-              p "Imported reader #{reader.name}"
-              reader.crypted_password = row['Password']
-              reader.save(false)
-            else
-              reader.update_attribute( :old_id, row['UserID'] )
+            begin
+              reader = Reader.find_or_create_by_email(row['Email'])
+              if reader.new_record?
+                reader_name = [row['FirstName'], row['LastName']].join(' ')
+                reader_name = row['Name'] if reader_name == ' '
+                reader.update_attributes(
+                  :old_id => row['UserID'],
+                  :name => reader_name,
+                  :login => row['Name'],
+                  :last_login_ip => row['RemoteIp'],
+                  :last_request_at => row['DateLastActive'],
+                  :password => 'import',
+                  :password_confirmation => 'import'
+                )
+                p "Imported reader #{reader.name} (#{reader.old_id})"
+                reader.crypted_password = row['Password']
+                reader.save!
+              else
+                reader.update_attribute( :old_id, row['UserID'] )
+              end
+            rescue ActiveRecord::RecordInvalid => e
+              p "!!! failed to import person #{row['UserID']}: #{e.inspect}"
             end
           end
-        
+
+          p "*** importing forums"
+
           dbh.select_all('select * from LUM_Category') do | row |
             forum = Forum.find_or_create_by_old_id(row['CategoryID'])
             if forum.new_record?
@@ -77,7 +83,9 @@ namespace :radiant do
             topic_posts[row['DiscussionID']] ||= []
             topic_posts[row['DiscussionID']].push(row)
           end
-                
+          
+          p "*** importing topics"
+          
           dbh.select_all('select * from LUM_Discussion') do | row |
             first_post = posts[row['FirstCommentID']] || topic_posts[row['DiscussionID']].shift
             forum = Forum.find_by_old_id(row['CategoryID'])
@@ -94,11 +102,9 @@ namespace :radiant do
                 :replied_by => Reader.find_by_old_id(row['LastUserID']),
                 :old_id => row['DiscussionID']
               )
-            
-              p "trying topic #{row['DiscussionID']}"
-              
+                          
               begin
-                if topic.save
+                if topic.save!
                   p "Imported topic #{topic.name}"
           
                   topic_posts[row['DiscussionID']].each do |post|

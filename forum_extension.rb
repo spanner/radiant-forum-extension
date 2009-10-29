@@ -14,7 +14,6 @@ class ForumExtension < Radiant::Extension
       forum.resources :pages, :has_many => [:posts], :has_one => [:topic]
     end
     
-    
     # forum admin is nested under readers to save interface clutter
     # some time soon I'll add proper moderation of topics and posts
     map.namespace :admin, :member => { :remove => :get }, :path_prefix => 'admin/readers' do |admin|
@@ -25,8 +24,8 @@ class ForumExtension < Radiant::Extension
   end
 
   extension_config do |config|
-    config.gem 'paperclip'
-    config.gem 'mislav-will_paginate', :version => '~> 2.3.11', :lib => 'will_paginate', :source => 'http://gems.github.com'
+    config.gem 'paperclip', :source => 'http://gemcutter.org'
+    config.gem 'will_paginate', :version => '~> 2.3.11', :source => 'http://gemcutter.org'
     config.extension 'reader'
   end
   
@@ -38,20 +37,19 @@ class ForumExtension < Radiant::Extension
     UserActionObserver.instance.send :add_observer!, Forum
     UserActionObserver.instance.send :add_observer!, Topic
     UserActionObserver.instance.send :add_observer!, Post
- 
     Page.send :include, ForumTags
     
-    unless defined? admin.forum # UI is a singleton and already loaded
+    unless defined? admin.forum # UI is a singleton
       Radiant::AdminUI.send :include, ForumAdminUI
       admin.forum = Radiant::AdminUI.load_default_forum_regions
       admin.pages.edit.add :parts_bottom, "edit_commentability", :after => "edit_layout_and_type"
-      if defined? Site && admin.sites       # currently we know it's the spanner multi_site if admin.sites is defined
+      if defined? Site && admin.sites
         Site.send :include, ForumSite
         admin.sites.edit.add :form, "admin/sites/choose_forum_layout", :after => "edit_homepage"
       end
     end
     
-    if defined? RedCloth::DEFAULT_RULES
+    if defined? RedCloth::DEFAULT_RULES     # identifies redcloth 3
       RedCloth.send :include, ForumRedCloth3
       RedCloth::DEFAULT_RULES.push(:smilies)
     else

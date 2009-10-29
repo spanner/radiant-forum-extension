@@ -5,3 +5,6 @@
 
 - content_for :controls do
   = render :partial => 'readers/controls'
+
+- content_for :mugshot do
+  = gravatar_for(@post.reader, {:size => 42}, {:alt => @post.reader.name, :class => 'gravatar'})

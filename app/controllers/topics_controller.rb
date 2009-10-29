@@ -12,6 +12,7 @@ class TopicsController < ReaderActionController
   def new
     @topic = Topic.new
     @topic.first_post = @topic.posts.build
+    @topic.forum = @forum || Forum.find_by_name(Radiant::Config['forum.default_forum'])
   end
   
   def show

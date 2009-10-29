@@ -226,7 +226,7 @@ protected
         redirect_to_page_or_topic
       }
       format.js {
-        render :template => 'locked', :layout => false
+        render :partial => 'topics/locked'
       }
     end
     false

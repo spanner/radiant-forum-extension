@@ -17,6 +17,7 @@ class Topic < ActiveRecord::Base
   end
 
   validates_presence_of :forum, :reader, :name
+  validates_uniqueness_of :old_id, :allow_nil => true
 
   before_validation :set_reader
   before_create :set_defaults

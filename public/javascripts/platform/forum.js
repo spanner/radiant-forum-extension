@@ -5,21 +5,22 @@ var Post = new Class({
     this.wrapper = div.getElement('div.post_wrapper');
     this.body_holder = div.getElement('div.post_body');
     this.h = this.body_holder.getHeight();
-    this.editor = div.getElement('a.edit_post');
-    if (this.editor) {
-      this.editor.addEvent('click', this.edit.bindWithEvent(this));
-    }
+    this.editors = this.container.getElements('a.edit_post');
+    this.editors.each(function (a) {
+      a.addEvent('click', this.edit.bindWithEvent(this));
+    }, this);
     this.showing = false;
     this.form_holder = null;
     this.form = null;
   },
   
   edit: function(e){
-    if (e) new Event(e).stop();
-    this.editor.addClass('waiting');
+    unevent(e);
+    var link = e.target;
+    link.addClass('waiting');
     if (this.showing) this.cancel();
     else if (this.form_holder) this.prepForm();
-    else this.getForm(this.editor.get('href'));
+    else this.getForm(link.get('href'));
   },
   
   getForm: function (url) {
@@ -36,7 +37,7 @@ var Post = new Class({
   prepForm: function () {
     this.form_holder.inject(this.wrapper, 'top');
     this.body_holder.hide();
-    this.editor.removeClass('waiting');
+    this.editors.removeClass('waiting');
     this.form = this.form_holder.getElement('form');
     this.input = this.form.getElement('textarea');
     this.input.setStyle('height', this.h);
@@ -57,7 +58,7 @@ var Post = new Class({
       // can't send uploads over xmlhttp so we allow the form to submit
       // the update-post action will redirect to a hashed url that should return us to the right post
     } else {
-      if (e) new Event(e).stop();
+      unevent(e);
       new Request.HTML({
         url: this.form.get('action'),
         update: this.container,
@@ -67,14 +68,14 @@ var Post = new Class({
     
   },
   cancel: function (e) {
-    if (e) new Event(e).stop();
+    unevent(e);
     this.finishCancel();
     // new Fx.Morph(this.input, {duration: 'short', onComplete : this.finishCancel.bind(this)}).start({'height' : this.h, opacity : 0});
   },
   finishCancel: function () {
     this.form_holder.hide();
     this.body_holder.show();
-    this.editor.removeClass('waiting');
+    this.editors.removeClass('waiting');
     this.showing = false;
   },
   finishEdit: function () {
@@ -91,7 +92,6 @@ var UploadHandler = new Class({
     this.list = div.getElement('ul.attachments');
     this.pender = div.getElement('div.uploads');
     this.selector = div.getElement('div.selector');
-    this.attacher = div.getElement('div.hidden_attachments');
     this.file_field_template = this.selector.getElement('input').clone();
     this.file_pending_template = new Element('li');
 
@@ -101,21 +101,15 @@ var UploadHandler = new Class({
     this.uploads = [];
     this.uploader = this.selector.getElement('input');
     this.uploader.addEvent('change', this.addUpload.bindWithEvent(this));
+    this.fakelink = this.selector.getElement('a');
     
-    this.reveal = new Fx.Slide(this.attacher);
-    this.shower.addEvent('click', this.toggle.bindWithEvent(this));
-
-    this.reveal.hide();
+    // this.reveal.hide();
     uh = this;
   },
-  toggle: function (e) {
-    if (e) new Event(e).stop();
-    this.reveal.toggle();
-  },
   addUpload: function (e) {
-    if (e) new Event(e).stop();
+    unevent(e);
     this.uploads.push(new Upload(this));
-    this.resize();
+    this.fakelink.set('text', 'attach another file');
   },
   pendUpload: function (argument) {
     var ul = this.uploader.clone().inject(this.pender);
@@ -127,9 +121,6 @@ var UploadHandler = new Class({
   },
   hasUploads: function () {
     return this.uploads.length > 0;
-  },
-  resize: function () {
-    this.reveal.slideIn();
   }
 });
 
@@ -142,15 +133,16 @@ var Upload = new Class({
     this.remover = new Element('a', {'class': 'remove', 'href': '#'}).set('text', 'remove').inject(this.container, 'bottom');
     this.remover.addEvent('click', this.remove.bindWithEvent(this));
     this.container.inject(this.handler.list, 'bottom');
+    this.container.set('morph', {duration : 'long'});
+    this.container.reveal();
   },
   icon_for: function (filename) {
-    return '/images/forum/icons/attachment_new.png';
+    return '/images/forum/attachment.png';
   },
   remove: function (e) {
-    if (e) new Event(e).stop();
+    unevent(e);
     this.uploader.destroy();
     this.container.nix();
-    this.handler.resize();
   }
 });
 
@@ -162,7 +154,7 @@ var Attachment = new Class({
     this.remover.addEvent('click', this.remove.bindWithEvent(this));
   },
   remove: function (e) {
-    if (e) new Event(e).stop();
+    unevent(e);
     if (this.checkbox) this.checkbox.set('checked', false);
     this.container.nix();
   },
