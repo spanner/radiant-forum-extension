@@ -112,8 +112,9 @@ var UploadHandler = new Class({
     this.fakelink.set('text', 'attach another file');
   },
   pendUpload: function (argument) {
-    var ul = this.uploader.clone().inject(this.pender);
-    this.uploader.set('value', null);
+    var ul = this.uploader.inject(this.pender);
+    this.uploader = ul.clone().inject(this.selector);
+    this.uploader.addEvent('change', this.addUpload.bindWithEvent(this));
     return ul;
   },
   hasAttachments: function () {
@@ -128,6 +129,9 @@ var Upload = new Class({
   initialize: function (handler) {
     this.handler = handler;
     this.uploader = this.handler.pendUpload();
+    
+    console.log('uploader is ', this.uploader, ' and its value is ', this.uploader.value);
+    
     this.container = new Element('li', {'class': 'attachment'}).set('text', ' ' + this.uploader.value + ' ');
     this.icon = new Element('img').set('src', this.icon_for(this.uploader.value)).inject(this.container, 'top');
     this.remover = new Element('a', {'class': 'remove', 'href': '#'}).set('text', 'remove').inject(this.container, 'bottom');
