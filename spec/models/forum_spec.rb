@@ -20,8 +20,7 @@ describe Forum do
   end
   
   it "should list its topics with the sticky first" do
-    @forum = forums(:private)
-    @forum.topics.first.should == topics(:sticky)
+    forums(:private).topics.first.should == topics(:sticky)
   end
 
   describe ".find_or_create_comments_forum" do

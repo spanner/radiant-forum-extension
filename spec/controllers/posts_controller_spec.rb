@@ -189,7 +189,7 @@ describe PostsController do
 
           it "should render a bare 'locked' template for inclusion in the page" do
             response.should be_success
-            response.should render_template('locked')
+            response.should render_template('topics/_locked')
             response.layout.should be_nil
           end
         end

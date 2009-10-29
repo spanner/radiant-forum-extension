@@ -17,7 +17,7 @@ describe Topic do
       @topic.sticky?.should be_false
       @topic.locked?.should be_false
       @topic.replied_by.should be_nil
-      @topic.replied_at.should be_nil
+      @topic.replied_at.should be_close(@topic.created_at, 1.minute)
     end
 
     [:name, :forum].each do |field|
