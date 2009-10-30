@@ -37,6 +37,11 @@ describe Topic do
       @topic.first_post.body.should == 'this is the first post body but validation requires it'
     end
 
+    it "should report itself visible" do
+      @topic.visible_to?(@reader).should be_true
+      @topic.visible_to?(nil).should be_true
+    end
+
   end
   
   describe "with posts" do

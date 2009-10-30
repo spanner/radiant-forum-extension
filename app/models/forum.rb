@@ -44,5 +44,9 @@ class Forum < ActiveRecord::Base
   def dom_id
     "forum_#{self.id}"
   end
+  
+  def visible_to?(reader=nil)
+    true
+  end
 
 end

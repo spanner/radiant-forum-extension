@@ -98,55 +98,55 @@ class Topic < ActiveRecord::Base
     forum.visible_to?(reader)
   end
   
-  protected
+protected
 
-    def set_reader
-      self.reader ||= Reader.current
-    end
-  
-    def set_defaults
-      self.sticky ||= 0
-      self.locked ||= 0
-    end
+  def set_reader
+    self.reader ||= Reader.current
+  end
 
-    def check_for_changing_forums
-      old = Topic.find(id)
-      if old.forum_id != forum_id
-        set_posts_forum_id
-        Forum.update_all ["posts_count = posts_count - ?", posts_count], ["id = ?", old.forum_id]
-        Forum.update_all ["posts_count = posts_count + ?", posts_count], ["id = ?", forum_id]
-      end
-    end
+  def set_defaults
+    self.sticky ||= 0
+    self.locked ||= 0
+  end
 
-    def set_posts_forum_id
-      Post.update_all ['forum_id = ?', forum_id], ['topic_id = ?', id]
+  def check_for_changing_forums
+    old = Topic.find(id)
+    if old.forum_id != forum_id
+      set_posts_forum_id
+      Forum.update_all ["posts_count = posts_count - ?", posts_count], ["id = ?", old.forum_id]
+      Forum.update_all ["posts_count = posts_count + ?", posts_count], ["id = ?", forum_id]
     end
+  end
 
-    def post_valid?
-      post = Post.new(:body => self.body, :reader => self.reader, :topic => self)
-      unless post.valid?
-        self.errors.add(:body, post.errors.on(:body))
-        self.errors.add(:reader, post.errors.on(:reader))
-        raise ActiveRecord::RecordInvalid.new(self)
-      end
-      true
-    end
+  def set_posts_forum_id
+    Post.update_all ['forum_id = ?', forum_id], ['topic_id = ?', id]
+  end
 
-    def save_post
-      self.first_post = self.posts.create!(:body => self.body, :created_at => self.created_at, :reader => self.reader)
-      self.replied_at = Time.now();
-      self.save(false)
-    end
-    
-    def update_post
-      post = self.first_post
-      if !self.body.nil? && self.body != post.body
-        post.body = self.body
-        post.save!
-      end
-    rescue ActiveRecord::RecordInvalid => ow
+  def post_valid?
+    post = Post.new(:body => self.body, :reader => self.reader, :topic => self)
+    unless post.valid?
       self.errors.add(:body, post.errors.on(:body))
-      raise
+      self.errors.add(:reader, post.errors.on(:reader))
+      raise ActiveRecord::RecordInvalid.new(self)
     end
+    true
+  end
+
+  def save_post
+    self.first_post = self.posts.create!(:body => self.body, :created_at => self.created_at, :reader => self.reader)
+    self.replied_at ||= Time.now();
+    self.save(false)
+  end
+  
+  def update_post
+    post = self.first_post
+    if !self.body.nil? && self.body != post.body
+      post.body = self.body
+      post.save!
+    end
+  rescue ActiveRecord::RecordInvalid => ow
+    self.errors.add(:body, post.errors.on(:body))
+    raise
+  end
 
 end

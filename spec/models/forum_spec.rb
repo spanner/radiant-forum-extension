@@ -22,6 +22,11 @@ describe Forum do
   it "should list its topics with the sticky first" do
     forums(:private).topics.first.should == topics(:sticky)
   end
+  
+  it "should report itself visible" do
+    forums(:public).visible_to?(@reader).should be_true
+    forums(:public).visible_to?(nil).should be_true
+  end
 
   describe ".find_or_create_comments_forum" do
     
