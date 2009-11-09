@@ -1,5 +1,8 @@
 module ForumTags
   include Radiant::Taggable
+  include ActionView::Helpers::TagHelper
+  include ActionView::Helpers::FormTagHelper
+  include ActionView::Helpers::FormOptionsHelper
   
   class TagError < StandardError; end
 
@@ -202,10 +205,24 @@ module ForumTags
     results = []
     results << %{<ul class="clean">}
     Topic.visible.latest(6).each do |topic|
-      tag.locals.topic = topic.
+      tag.locals.topic = topic
       results << %{<li>#{tag.render('topic:summary')}</li>}
     end
     results << %{</ul>}
+    results
+  end
+
+  desc %{
+    Shows the standard forum search form in a reasonably compact and stylable way.
+  }
+  tag 'forum_search' do |tag|
+    results = []
+    results << %{<form class="friendly" action="#{search_posts_url}">}
+    results << %{<h2>Forum Search</h2>} if tag.attr['with_title'] == 'true'
+    results << %{<p><label for="q">Look for this text</label><br />#{text_field_tag("q", params[:q], :class => 'standard')}</p>}
+    results << %{<p><label for="reader_id">From this person</label><br /><select name="reader_id"><option value="">anyone</option>#{options_from_collection_for_select(Reader.all, "id", "name")}</select></p>}
+    results << %{<p><label for="forum_id">In this discussion category</label><br /><select name="forum_id"><option value="">anywhere</option>#{options_from_collection_for_select(Forum.visible, "id", "name")}</select></p>}
+    results << %{<p>#{submit_tag "search"}</p></form>}
     results
   end
 

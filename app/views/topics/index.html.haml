@@ -8,7 +8,7 @@
       = link_to("discussion by category", forums_url) + '.'
     
     %p
-      = link_to "start a new conversation", new_topic_url, :class => 'newmessage'
+      = link_to "Start a new discussion", new_topic_url, :class => 'newmessage'
 
   - if @topics.empty?
     %p No talk here yet.
@@ -23,18 +23,16 @@
     = paginate_and_summarise @topics, 'topics'
 
 - content_for :breadhead do
-  = link_to 'Forum', forums_url, :class => 'breadhead'
+  = home_page_link
 
 - content_for :breadcrumbs do
-  = link_to 'Forum', forums_url
-  \&gt;
-  All Discussions 
+  Forum
 
 - content_for :pagetitle do
   Latest discussion
 
 - content_for :feed do
-  = feed_link(formatted_topics_path(:rss))
+  = feed_link(topics_path(:format => :rss))
 
 - content_for :controls do
   = render :partial => 'readers/controls'

@@ -4,6 +4,11 @@ module ForumHelper
   def self.included(base)
     base.module_eval {
       
+      def home_page_link
+        home_page = (defined? Site && Site.current) ? Site.current.home_page : Page.find_by_parent_id(nil)
+        link_to home_page.title, home_page.url
+      end
+      
       def feed_tag(text, url, options={})
         link_to text, url, options.merge(:class => 'floating feedlink')
       end

@@ -24,11 +24,12 @@
       - else 
         = link_to topic.reader.name, reader_url(topic.reader)
         = friendly_date(topic.created_at)
+        
     %div.preview
       - if topic.page
-        = truncate_words(topic.page.render_part(:body), 100)
+        = truncate_words(topic.page.render_part(:body), 50)
       - elsif topic.first_post
-        = truncate_and_textilize(topic.first_post.body, 100)
+        = truncate_and_textilize(topic.first_post.body, 50)
       - else
         %p Topic empty!
     

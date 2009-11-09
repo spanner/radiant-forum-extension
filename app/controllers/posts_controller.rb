@@ -41,13 +41,14 @@ class PostsController < ReaderActionController
     @readers = @posts.collect(&:reader).uniq
     
     if @searching
-      @title = "Posts"
-      @title << " matching '#{params[:q]}'" unless params[:q].blank?
-      @title << " from #{@reader.name}" if @reader
+      @title = "Search Results"
+      @description = "Posts"
+      @description << " matching '#{params[:q]}'" unless params[:q].blank?
+      @description << " from #{@reader.name}" if @reader
       if @topic
-        @title << " under #{@topic.name}"
+        @description << " under #{@topic.name}"
       elsif @forum
-        @title << " in #{@forum.name}"
+        @description << " in #{@forum.name}"
       end
     end
     

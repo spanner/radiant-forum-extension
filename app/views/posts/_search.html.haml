@@ -1,0 +1,27 @@
+%form.friendly{:action => search_posts_url}
+  %h2 
+    Forum Search
+
+  %p
+    %label{:for => "q"}
+      Look for this text
+    = text_field_tag "q", params[:q], :class => 'standard'
+
+  %p
+    %label{:for => "reader_id"}
+      From this person
+    %select{:name => "reader_id"}
+      %option{:value => ""}
+        anyone
+      = options_from_collection_for_select(Reader.find(:all), "id", "name", params[:reader_id].to_i)
+
+  %p
+    %label{:for => "forum_id"}
+      In this discussion category
+    %select{:name => "forum_id"}
+      %option{:value => ""}
+        anywhere
+      = options_from_collection_for_select(Forum.find(:all), "id", "name", params[:forum_id].to_i)
+
+  %p
+    = submit_tag "search"

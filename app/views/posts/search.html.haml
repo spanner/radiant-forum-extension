@@ -11,7 +11,7 @@
       %p
         We found
         = @posts.total_entries
-        messages.
+        = @description + ':'
 
       - if @posts.previous_page
         = paginate_and_summarise @posts, 'posts'
@@ -21,34 +21,7 @@
 
       = paginate_and_summarise @posts, 'posts'
 
-  %form.friendly{:action => search_posts_url, :style => 'width: 400px'}
-    - if @searching
-      %h2 Forum Search
-  
-    %p
-      %label{:for => "q"}
-        Look for this text
-      = text_field_tag "q", params[:q], :class => 'standard'
-
-    %p
-      %label{:for => "reader_id"}
-        From this person
-      %select{:name => "reader_id"}
-        %option{:value => ""}
-          anyone
-        = options_from_collection_for_select(Reader.find(:all), "id", "name", params[:reader_id].to_i)
-
-    %p
-      %label{:for => "reader_id"}
-        In this discussion category
-      %select{:name => "forum_id"}
-        %option{:value => ""}
-          anywhere
-        = options_from_collection_for_select(Forum.find(:all), "id", "name", params[:forum_id].to_i)
-
-    %p
-      = submit_tag "search"
-
+  = render :partial => 'posts/search'
 
 - content_for :breadcrumbs do
   = link_to 'Forum', topics_url
@@ -60,6 +33,12 @@
   - else
     \&gt;
     Search
+
+- content_for :breadhead do
+  - if @searching
+    = link_to "Search", search_posts_url
+  - else
+    = link_to "Forum", topics_url, :class => 'breadhead'
 
 - content_for :pagetitle do
   - if @searching

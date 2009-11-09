@@ -1,19 +1,18 @@
 = render :partial => 'readers/flasher'
 
 #forum
-  #search
-    %p
-      Search form...
-
   - if @posts.empty?
     %p No talk here yet.
   - else
     - if @posts.previous_page
       = paginate_and_summarise @posts, 'posts'
+
     %ul.main
       = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true}
 
     = paginate_and_summarise @posts, 'posts'
+
+    = render :partial => 'posts/search'
 
 - content_for :breadcrumbs do
   = link_to 'Forum', topics_url
@@ -23,8 +22,11 @@
 - content_for :pagetitle do
   Posts
 
+- content_for :breadhead do
+  = link_to "Forum", topics_url, :class => 'breadhead'
+
 - content_for :feed do
-  = feed_link(posts_feed_path)
+  = feed_link(posts_path(:format => :rss))
 
 - content_for :controls do
   = render :partial => 'readers/controls'
