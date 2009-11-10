@@ -219,16 +219,21 @@ module ForumTags
   }
   tag 'forum_search' do |tag|
     results = []
+    compact = true unless tag.attr['by_forum'] == 'true' || tag.attr['by_reader'] == 'true' 
+    q_label = tag.attr['label']
+    q_label = "Look for this text" if q_label.blank? && !compact
     results << %{<form class="friendly" action="#{search_posts_url}">}
     results << %{<h2>Forum Search</h2>} unless tag.attr['with_title'] == 'false'
     results << %{<p>}
-    results << %{<label for="q">#{tag.attr['label']}</label><br />} if tag.attr['label']
+    results << %{<label for="q">#{q_label}</label><br />} unless q_label.blank?
     results << %{#{text_field_tag("q", params[:q], :class => 'standard')}}
-    results << %{#{submit_tag "search", :class => 'button'}} unless tag.attr['by_forum'] == 'true' or tag.attr['by_reader'] == 'true'
+    results << %{#{submit_tag "search", :class => 'button'}} if compact
     results << %{</p>}
-    results << %{<p><label for="reader_id">From this person</label><br /><select name="reader_id"><option value="">anyone</option>#{options_from_collection_for_select(Reader.all, "id", "name")}</select></p>} if tag.attr['by_reader'] == 'true'
-    results << %{<p><label for="forum_id">In this discussion category</label><br /><select name="forum_id"><option value="">anywhere</option>#{options_from_collection_for_select(Forum.visible, "id", "name")}</select></p>} if tag.attr['by_forum'] == 'true'
-    results << %{<p>#{submit_tag "search", :class => 'button'}</p>} if tag.attr['by_forum'] == 'true' or tag.attr['by_reader'] == 'true'
+    unless compact
+      results << %{<p><label for="reader_id">From this person</label><br /><select name="reader_id"><option value="">anyone</option>#{options_from_collection_for_select(Reader.all, "id", "name")}</select></p>} if tag.attr['by_reader'] == 'true'
+      results << %{<p><label for="forum_id">In this discussion category</label><br /><select name="forum_id"><option value="">anywhere</option>#{options_from_collection_for_select(Forum.visible, "id", "name")}</select></p>} if tag.attr['by_forum'] == 'true'
+      results << %{<p class="buttons">#{submit_tag "search", :class => 'button'}</p>} 
+    end
     results << %{</form>}
     results
   end
