@@ -21,11 +21,14 @@
 
       = paginate_and_summarise @posts, 'posts'
 
+  - else
+    = render :partial => 'posts/search'
+
 - content_for :breadcrumbs do
   = link_to 'Forum', topics_url
   - if @searching
     \&gt;
-    = link_to "Search", search_posts_url
+    = link_to "Posts", posts_url
     \&gt;
     = @title
   - else
@@ -34,15 +37,15 @@
 
 - content_for :breadhead do
   - if @searching
-    = link_to "Search", search_posts_url, :class => 'breadhead'
+    = link_to "Posts", posts_url, :class => 'breadhead'
   - else
-    = link_to "Forum", topics_url, :class => 'breadhead'
+    = link_to "Posts", topics_url, :class => 'breadhead'
 
 - content_for :pagetitle do
   - if @searching
-    = @title || 'Forum Search results'
+    = @title || 'Search results'
   - else
-    Forum Search
+    Search
 
 - content_for :feed do
   = feed_link(search_posts_url(params.merge(:format => :rss))) if @searching

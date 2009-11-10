@@ -17,7 +17,7 @@ class PostsController < ReaderActionController
   }
   
   def index
-    @posts = Post.paginate(:all, @@default_query_options.merge(:page => params[:page], :per_page => params[:per_page]))
+    @posts = Post.visible.paginate(:all, @@default_query_options.merge(:page => params[:page], :per_page => params[:per_page]))
     render_page_or_feed
   end
 

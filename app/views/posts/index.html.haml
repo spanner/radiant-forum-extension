@@ -12,8 +12,6 @@
 
     = paginate_and_summarise @posts, 'posts'
 
-    = render :partial => 'posts/search'
-
 - content_for :breadcrumbs do
   = link_to 'Forum', topics_url
   \&gt;

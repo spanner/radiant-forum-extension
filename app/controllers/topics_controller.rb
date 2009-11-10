@@ -6,7 +6,7 @@ class TopicsController < ReaderActionController
 
   def index
     params[:per_page] ||= 20
-    @topics = Topic.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :per_page => params[:per_page], :include => [:forum, :reader])
+    @topics = Topic.visible.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :per_page => params[:per_page], :include => [:forum, :reader])
     render_page_or_feed
   end
 

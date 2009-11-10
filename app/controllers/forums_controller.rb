@@ -6,7 +6,7 @@ class ForumsController < ReaderActionController
   radiant_layout { |controller| controller.layout_for(:forum) }
 
   def index
-    @forums = Forum.find(:all, :order => "position")
+    @forums = Forum.visible.paginate(:all, :order => "position", :page => params[:page] || 1, :per_page => params[:per_page])
   end
 
   def show
