@@ -4,9 +4,9 @@ module ForumHelper
   def self.included(base)
     base.module_eval {
       
-      def home_page_link
+      def home_page_link(options={})
         home_page = (defined? Site && Site.current) ? Site.current.home_page : Page.find_by_parent_id(nil)
-        link_to home_page.title, home_page.url
+        link_to home_page.title, home_page.url, options
       end
       
       def feed_tag(text, url, options={})

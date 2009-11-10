@@ -23,7 +23,7 @@
     = paginate_and_summarise @topics, 'topics'
 
 - content_for :breadhead do
-  = home_page_link
+  = home_page_link(:class => 'breadhead')
 
 - content_for :breadcrumbs do
   Forum

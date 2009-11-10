@@ -2,7 +2,8 @@ class ForumsController < ReaderActionController
   skip_before_filter :require_reader
   before_filter :find_forum, :only => :show
   before_filter :no_changes_here, :except => [:index, :show]
-  radiant_layout { |controller| controller.layout_for :forum }
+
+  radiant_layout { |controller| controller.layout_for(:forum) }
 
   def index
     @forums = Forum.find(:all, :order => "position")

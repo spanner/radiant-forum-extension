@@ -1,7 +1,8 @@
 class TopicsController < ReaderActionController
   
   before_filter :find_forum_and_topic, :except => :index
-  radiant_layout { |controller| controller.layout_for :forum }
+
+  radiant_layout { |controller| controller.layout_for(:forum) }
 
   def index
     params[:per_page] ||= 20

@@ -7,7 +7,7 @@ class PostsController < ReaderActionController
   before_filter :build_post, :only => [:new]
   before_filter :require_authority, :only => [:edit, :update, :destroy]
 
-  radiant_layout { |controller| controller.layout_for :forum }
+  radiant_layout { |controller| controller.layout_for(:forum) }
 
   @@default_query_options = { 
     :page => 1,
