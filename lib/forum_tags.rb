@@ -213,16 +213,23 @@ module ForumTags
   end
 
   desc %{
-    Shows the standard forum search form in a reasonably compact and stylable way.
+    Shows the standard forum search form in a reasonably compact and stylable way. 
+    
+    Takes options with_title (set to false to omit the usual heading), by_forum (set to true to show a discussion category dropdown) and by_reader (set to true to show a message-from dropdown) and label (set to the title you would like to display over the main search field).
   }
   tag 'forum_search' do |tag|
     results = []
     results << %{<form class="friendly" action="#{search_posts_url}">}
-    results << %{<h2>Forum Search</h2>} if tag.attr['with_title'] == 'true'
-    results << %{<p><label for="q">Look for this text</label><br />#{text_field_tag("q", params[:q], :class => 'standard')}</p>}
-    results << %{<p><label for="reader_id">From this person</label><br /><select name="reader_id"><option value="">anyone</option>#{options_from_collection_for_select(Reader.all, "id", "name")}</select></p>}
-    results << %{<p><label for="forum_id">In this discussion category</label><br /><select name="forum_id"><option value="">anywhere</option>#{options_from_collection_for_select(Forum.visible, "id", "name")}</select></p>}
-    results << %{<p>#{submit_tag "search"}</p></form>}
+    results << %{<h2>Forum Search</h2>} unless tag.attr['with_title'] == 'false'
+    results << %{<p>}
+    results << %{<label for="q">#{tag.attr['label']}</label><br />} if tag.attr['label']
+    results << %{#{text_field_tag("q", params[:q], :class => 'standard')}}
+    results << %{#{submit_tag "search", :class => 'button'}} unless tag.attr['by_forum'] == 'true' or tag.attr['by_reader'] == 'true'
+    results << %{</p>}
+    results << %{<p><label for="reader_id">From this person</label><br /><select name="reader_id"><option value="">anyone</option>#{options_from_collection_for_select(Reader.all, "id", "name")}</select></p>} if tag.attr['by_reader'] == 'true'
+    results << %{<p><label for="forum_id">In this discussion category</label><br /><select name="forum_id"><option value="">anywhere</option>#{options_from_collection_for_select(Forum.visible, "id", "name")}</select></p>} if tag.attr['by_forum'] == 'true'
+    results << %{<p>#{submit_tag "search", :class => 'button'}</p>} if tag.attr['by_forum'] == 'true' or tag.attr['by_reader'] == 'true'
+    results << %{</form>}
     results
   end
 
