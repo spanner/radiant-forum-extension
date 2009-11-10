@@ -20,7 +20,7 @@ class SampleLayout < ActiveRecord::Migration
           <r:content part="breadhead" />
           <r:content part="pagetitle" />
           <r:content part="feed" />
-        <h1>
+        </h1>
       </div>
       <div id="page">
         <r:content />

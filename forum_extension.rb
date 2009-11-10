@@ -58,9 +58,6 @@ class ForumExtension < Radiant::Extension
     
     ApplicationHelper.send :include, ForumHelper
 
-    if defined? ActiveRecord::SiteNotFound
-      admin.forums.index.add :top, "admin/shared/site_jumper"
-    end
     admin.tabs['Readers'].add_link('forum admin', '/admin/readers/forums')
   end
   
