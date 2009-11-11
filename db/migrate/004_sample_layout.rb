@@ -8,7 +8,7 @@ class SampleLayout < ActiveRecord::Migration
     <title>Forum : <r:content part="pagetitle" /></title>
     <link rel="stylesheet" href="/stylesheets/platform/reader.css" type="text/css" media="all" />
     <link rel="stylesheet" href="/stylesheets/platform/forum.css" type="text/css" media="all" />
-    <script type="text/javascript" charset="utf-8" src="/javascripts/mootools.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/javascripts/platform/mootools.js"></script>
     <script type="text/javascript" charset="utf-8" src="/javascripts/platform/core.js"></script>
     <script type="text/javascript" charset="utf-8" src="/javascripts/platform/forum.js"></script>
     <script type="text/javascript" charset="utf-8" src="/javascripts/platform/remotecontent.js"></script>

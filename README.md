@@ -106,7 +106,7 @@ You probably also want to include this somewhere, as on all reader-service pages
 
 	<r:if_reader><r:reader:controls /></r:if_reader>
 
-Have a look at the included sample layout for a starting point. You will need to put [mootools](http://mootools.net/) in your /javascripts directory first.
+Have a look at the included sample layout for a starting point.
 
 ## Multi_site
 
@@ -126,7 +126,7 @@ To enable page comments, all you have to do is put `<r:comments:all />` somewher
 
 The page cache means we don't want anything personal on the page itself - no edit controls or logout buttons - but there are a couple of ways you can get around this with a remote call. 
 
-* Put `<r:comments:remote />` on the page instead and a stub will be included suitable for your scripts to grab. A simple example is included in forum.js.
+* Put `<r:comments:remote />` on the page instead and a stub will be included suitable for your scripts to grab. A simple example is included in platform/forum.js.
 * `<r:comments:all /><r:comments:link />` is more efficient but less friendly: it will give you a static list of all comments followed by a reply link. Posting a comment clears the page cache, btw.
 
 You can also use `<r:comments:each>...</r:comments:each>` and the various r:comment tags to compose page comments however you like. See the tags-available documentation for details.
@@ -145,7 +145,7 @@ I've included a basic set here and a redcloth extension that catches :smile: not
 
 ## Bugs
 
-No doubt. Issues in github, please, or for small things an email or github message is fine.
+Very likely. [Github issues](http://github.com/spanner/radiant-forum-extension/issues), please, or for little things an email or github message is fine.
 
 ## Author & Copyright
 
