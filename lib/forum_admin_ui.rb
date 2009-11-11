@@ -7,9 +7,9 @@ module ForumAdminUI
       alias_method :forums, :forum
 
       def load_default_regions_with_forum
+        load_default_regions_without_forum
         @forum = load_default_forum_regions
       end
-
       alias_method_chain :load_default_regions, :forum
 
       protected
