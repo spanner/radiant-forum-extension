@@ -120,6 +120,8 @@ If you install the [reader_group](http://github.com/spanner/radiant-reader_group
 
 The forum has its own simple search mechanism. It's not very bright but it has two great advantages: you can combine text search with filtering by author and category, and you can bookmark any search query as an RSS feed to be alerted when new posts match that search. There are arguments for integrating this with eg `sphinx_search` but at the moment I quite like keeping them separate: I find that searching for messages is not the same as searching for pages, but usually a different group seeking different results. Let me know if you disagree.
 
+To enable the search, you can either link to `/forum/posts/search` or put `<r:forum_search>` somewhere in your forum layout. See the tag documentation for control of the search form presentation.
+
 ## Page Comments
 
 To enable page comments, all you have to do is put `<r:comments:all />` somewhere in the layout (or in a snippet or on an individual page). Behind the scenes this will create a dedicated forum for page comments and a topic for each page as it is commented upon. The rest of the mechanism is the same, and the comments themselves are just posts. 
