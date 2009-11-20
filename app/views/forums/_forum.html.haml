@@ -9,13 +9,14 @@
       containing
       = forum.posts.count
       messages,
+      %br
       most recently in
       = link_to topic.name, forum_topic_url(forum, topic)
       = time_ago_in_words(topic.replied_at || topic.created_at)
-      ago
+      ago.
   - else 
     %span.context
-      no posts yet
+      No posts yet.
   %div.preview
     = truncate_and_textilize(forum.description, 40)
     

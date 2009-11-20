@@ -16,11 +16,6 @@
               = gravatar_for(current_reader, {:size => 40}, {:alt => current_reader.name, :class => 'gravatar', :width => '40', :height => '40'})
             Add a 
             = message_type
-            to 
-            - if @page
-              = link_to @page.title, @page.url
-            - else 
-              = link_to @topic.name, forum_topic_url(@topic.forum, @topic)
         
           %p.context
             You are currently logged in as 
@@ -33,4 +28,4 @@
           = f.submit "Post #{message_type}"
           
   - else
-    = render :partial => 'reader_sessions/login_form'
+    = render :partial => 'reader_sessions/login_form', :locals => {:purpose => @page ? 'add a comment' : 'reply'}
