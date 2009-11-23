@@ -1,5 +1,6 @@
 class SampleLayout < ActiveRecord::Migration
   def self.up
+    Layout.reset_column_information
     Layout.create :name => 'forum_example', :content => <<-EO
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
