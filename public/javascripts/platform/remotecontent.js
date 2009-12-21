@@ -20,7 +20,7 @@ var InlineLink = new Class({
   finish: function (response) {
     activate(this.catcher);
     this.catcher.highlight('#f27877');
-    getRemoteForms(this.catcher);
+    activate(this.catcher);
   },
   fail: function (response) {
     this.notWaiting();
@@ -59,7 +59,7 @@ var InlineForm = new Class ({
   finish: function (response) {
     activate(this.catcher);
     this.catcher.highlight('#f27877');
-    getRemoteForms(this.catcher);
+    activate(this.catcher);
   },
   
   fail: function (argument) {
