@@ -87,6 +87,7 @@ class PostsController < ReaderActionController
       # only happens if it's a page comment and the topic has just been built
       # in that case we can let the topic-creation routines do the post work
       @topic.body = params[:post][:body]
+      @topic.reader = current_reader
       @topic.save!
       @post = @topic.first_post
     else
