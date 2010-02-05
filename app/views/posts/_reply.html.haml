@@ -1,31 +1,36 @@
+- message_type = @page ? 'comment' : 'reply'
+- purpose = @page ? 'To add a comment' : 'To reply'
+
 - if @topic.locked?
   %p.administrative
     This topic is closed.
 
 - else
   - if current_reader
-    - message_type = @page ? 'comment' : 'reply'
-    - formurl = @page ? page_posts_url(@page) : topic_posts_url(@topic)
-    - @post ||= @topic.posts.build
+    - if current_reader.activated?
+      - formurl = @page ? page_posts_url(@page) : topic_posts_url(@topic)
+      - @post ||= @topic.posts.build
 
-    %div.reply#replyform
-      - form_for :post, :url => formurl, :html => {:id => 'reply_form', :multipart => true, :class => 'friendly inline'} do |f|
-        .post_header
-          %h2
-            %a{:href => reader_url(current_reader), :class => 'main'}
-              = gravatar_for(current_reader, {:size => 40}, {:alt => current_reader.name, :class => 'gravatar', :width => '40', :height => '40'})
-            Add a 
-            = message_type
+      %div.reply#replyform
+        - form_for :post, :url => formurl, :html => {:id => 'reply_form', :multipart => true, :class => 'friendly inline'} do |f|
+          .post_header
+            %h2
+              %a{:href => reader_url(current_reader), :class => 'main'}
+                = gravatar_for(current_reader, {:size => 40}, {:alt => current_reader.name, :class => 'gravatar', :width => '40', :height => '40'})
+              Add a 
+              = message_type
         
-          %p.context
-            You are currently logged in as 
-            = link_to(current_reader.name, reader_url(current_reader)) + '.'
-            If that's not you, please 
-            = link_to("log out", reader_logout_url) + '.'
+            %p.context
+              You are currently logged in as 
+              = link_to(current_reader.name, reader_url(current_reader)) + '.'
+              If that's not you, please 
+              = link_to("log out", reader_logout_url) + '.'
 
-        = render :partial => 'posts/form', :object => f
-        %p.buttons
-          = f.submit "Post #{message_type}"
-          
+          = render :partial => 'posts/form', :object => f
+          %p.buttons
+            = f.submit "Post #{message_type}"
+    - else
+      = render :partial => 'reader_activations/activation_required', :locals => {:purpose => purpose}
+      
   - else
-    = render :partial => 'reader_sessions/login_form', :locals => {:purpose => @page ? 'add a comment' : 'reply'}
+    = render :partial => 'reader_sessions/login_form', :locals => {:purpose => purpose}

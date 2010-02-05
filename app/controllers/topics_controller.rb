@@ -1,6 +1,7 @@
 class TopicsController < ReaderActionController
   
   before_filter :find_forum_and_topic, :except => :index
+  before_filter :require_activated_reader, :except => [:index, :show]
 
   radiant_layout { |controller| controller.layout_for(:forum) }
 

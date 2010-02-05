@@ -1,9 +1,10 @@
 class PostsController < ReaderActionController
 
   before_filter :set_site_title
+  before_filter :require_activated_reader, :except => [:index, :show, :search]
   before_filter :find_topic_or_page, :except => [:index, :search]
   before_filter :require_unlocked_topic_and_page, :only => [:new, :create]
-  before_filter :find_post, :except => [:index, :search, :new, :preview, :create, :monitored]
+  before_filter :find_post, :only => [:show, :edit, :update]
   before_filter :build_post, :only => [:new]
   before_filter :require_authority, :only => [:edit, :update, :destroy]
 
