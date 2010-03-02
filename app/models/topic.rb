@@ -12,7 +12,7 @@ class Topic < ActiveRecord::Base
   belongs_to :replied_by, :class_name => 'Reader'                                                                   # this too.
   has_many :posts, :order => 'posts.created_at', :include => :reader, :dependent => :destroy do
     def last
-      @last_post ||= find(:last)    # used to populate last_post
+      @last_post ||= find(:last)
     end
   end
 
@@ -49,17 +49,11 @@ class Topic < ActiveRecord::Base
     self.class.increment_counter :hits, id
   end
 
-  def sticky?
-    sticky == 1 
-  end
+  def sticky?() sticky == 1 end
 
-  def views
-    hits
-  end
+  def views() hits end
 
-  def paged?
-    posts_count > posts_per_page 
-  end
+  def paged?() posts_count > posts_per_page end
   
   def posts_per_page
     ppp = Radiant::Config['forum.posts_per_page'] || 25
@@ -82,14 +76,6 @@ class Topic < ActiveRecord::Base
   
   def has_posts?
     self.posts_count > (self.page ? 0 : 1)
-  end
-  
-  def last_post_id
-    if lid = read_attribute(:last_post_id)
-      lid
-    elsif has_posts?
-      posts.last.id
-    end
   end
   
   def refresh_reply_data(post=nil)
