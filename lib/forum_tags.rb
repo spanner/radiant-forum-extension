@@ -260,8 +260,6 @@ module ForumTags
     results
   end
 
-
-
 private
 
   # copied from forum_helper
