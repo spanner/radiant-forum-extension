@@ -75,14 +75,14 @@ class Topic < ActiveRecord::Base
   end
   
   def has_posts?
-    self.posts_count > (self.page ? 0 : 1)
+    posts_count > (page ? 0 : 1)
   end
   
   def refresh_reply_data(post=nil)
-    if !post && self.posts.empty?     # ie. the post has just been deleted and there are no others
+    if !post && posts.empty?     # ie. the post has just been deleted and there are no others
       self.destroy
-    elsif self.posts.count > 1
-      post ||= self.posts.last
+    elsif has_posts?
+      post ||= posts.last
       self.last_post = post
       self.replied_by = post.reader
       self.replied_at = post.created_at
@@ -90,6 +90,16 @@ class Topic < ActiveRecord::Base
     end
   end
   
+  def last_post_with_fetch
+    if lp = last_post_without_fetch
+      lp
+    elsif has_posts? && lp = posts.last
+      update_attribute(:last_post_id, lp.id)
+      lp
+    end
+  end
+  alias_method_chain :last_post, :fetch
+
   def dom_id
     "topic_#{self.id}"
   end
