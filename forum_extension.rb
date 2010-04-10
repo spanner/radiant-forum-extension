@@ -58,7 +58,9 @@ class ForumExtension < Radiant::Extension
     
     ApplicationHelper.send :include, ForumHelper
 
-    admin.tabs['Readers'].add_link('forum admin', '/admin/readers/forums')
+    tab("Readers") do
+      add_item 'forum', '/admin/readers/forums'
+    end
   end
   
   def deactivate
