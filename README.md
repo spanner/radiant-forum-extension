@@ -46,9 +46,7 @@ We also require [will_paginate](http://github.com/mislav/will_paginate/) and [pa
 	
 should get everything you need. 
 
-**Please note that the github / gemcutter changes may mean that you have to rerun `rake gems:install` to reinstall `will_paginate`, which is no longer namespaced.**
-
-The forum is compatible with multi_site but you have to use [our fork](https://github.com/spanner/radiant-multi-site-extension) if you want forums and readers site-scoped.
+The forum is compatible with multi_site but you have to use [sites](https://github.com/spanner/radiant-sites-extension) instead if you want forums and readers site-scoped.
 
 ## Installation
 

@@ -1,0 +1,4 @@
+= render :partial => 'setting', :locals => {:key => 'forum.layout', :label => "Forum layout", :notes => "The radiant layout that will be used to present forum topics and posts"}
+= render :partial => 'setting', :locals => {:key => 'forum.editable_period', :label => "Editable interval", :notes => "The period (in minutes) for which forum messages remain editable by their author"}
+= render :partial => 'setting', :locals => {:key => 'forum.public?', :label => "Forum visible to the public"}
+= render :partial => 'setting', :locals => {:key => 'forum.allow_page_comments?', :label => "Page comments enabled", :notes => "Has no effect unless the comment mechanism is invoked by the layout."}
