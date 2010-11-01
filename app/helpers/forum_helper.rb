@@ -11,7 +11,7 @@ module ForumHelper
   end
 
   def feed_link(url)
-    link_to image_tag('/images/forum/feed_14.png', :class => 'feedicon', :alt => t('rss_feed'), :size => '14x20'), url
+    link_to image_tag('/images/furniture/feed_14.png', :class => 'feedicon', :alt => t('rss_feed'), :size => '14x20'), url
   end
 
   def clean_textilize(text) # adding smilies to the default reader method
