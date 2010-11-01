@@ -14,6 +14,17 @@
     %ul.main
       = render :partial => 'topics/topic', :collection => @topics, :locals => {:with_context => true}
 
+- content_for :sidebar do
+  %h2
+    = t('forums')
+  %ul
+    - Forum.all.each do |forum|
+      %li
+        = link_to forum.name, forum_url(forum)
+        %br
+        = forum.topics.count
+        = t('topics')
+
 - content_for :new_topic do
   .newmessage
     = link_to t('new_topic'), new_topic_url

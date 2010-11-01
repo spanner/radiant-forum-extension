@@ -7,7 +7,7 @@
 - content_for :preamble do
   %p
     = t('forums_introduction')
-    = link_to t('latest_topics'), topics_url in any category.
+    = link_to t('latest_topics'), topics_url
 
 - content_for :new_topic do
   .newmessage
@@ -20,6 +20,9 @@
   - else
     %ul.main
       = render :partial => 'forums/forum', :collection => @forums
+
+- content_for :sidebar do
+  = render :partial => "topics/latest"
 
 - content_for :pagination do
   = pagination_and_summary_for(@forums, t('forum'))

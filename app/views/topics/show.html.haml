@@ -4,6 +4,9 @@
 - content_for :messages do
   = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false }
 
+- content_for :sidebar do
+  = render :partial => "latest"
+
 - content_for :new_topic do
   .newmessage
     = link_to t('new_topic_here'), new_forum_topic_url(@forum)

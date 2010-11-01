@@ -16,6 +16,9 @@
     %ul.main
       = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true}
 
+- content_for :sidebar do
+  = render :partial => "topics/latest"
+
 - content_for :new_topic do
   .newmessage
     = link_to t('new_topic'), new_topic_url

@@ -20,6 +20,9 @@
     %ul.main
       = render :partial => 'topics/topic', :collection => @topics, :locals => { :with_context => false }
 
+- content_for :sidebar do
+  = render :partial => "topics/latest"
+
 - content_for :pagination do
   = pagination_and_summary_for @topics, 'topics'
 
