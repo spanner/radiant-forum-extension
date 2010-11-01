@@ -1,20 +1,24 @@
-= render :partial => 'readers/flasher'
+- content_for :signals do
+  = render :partial => 'readers/flasher'
 
-#forum
-  - if @posts.previous_page
-    = paginate_and_summarise @posts, 'comments'
+- content_for :messages do
+  = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false }
 
-  = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false, :first_post => @topic.posts.first }
+- content_for :new_topic do
+  .newmessage
+    = link_to t('new_topic_here'), new_forum_topic_url(@forum)
 
-  - if @posts.next_page
-    = paginate_and_summarise @posts, 'comments'
-  - else
+- content_for :reply_form do
+  - unless @posts.next_page
     - if @topic.page
       = link_to "Post a reply", new_topic_post_url(@topic), :class => 'inviting remote_content'
     - else
       = render :partial => 'posts/reply'
 
-- content_for :pagetitle do
+- content_for :pagination do
+  = pagination_and_summary_for(@posts, t('post'))
+
+- content_for :title do
   = @topic.name
 
 - content_for :credits do
@@ -35,7 +39,9 @@
   = render :partial => 'readers/controls'
 
 - content_for :breadhead do
-  = link_to @forum.name, forum_url(@forum), :class => 'breadhead'
+  = link_to t('forum'), forum_home_url
+  = t('separator')
+  = link_to @forum.name, forum_url(@forum)
 
 - content_for :breadcrumbs do
   = link_to 'Forum', topics_url
@@ -43,3 +49,12 @@
   = link_to @forum.name, forum_url(@forum) 
   \&gt;
   = @topic.name
+
+#forum
+  = yield :pagination if @posts.previous_page
+  = yield :messages
+  = yield :pagination if @posts.next_page
+  = yield :reply_form
+
+
+

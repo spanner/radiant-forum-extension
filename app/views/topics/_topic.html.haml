@@ -7,29 +7,28 @@
   %li{:id => topic.dom_id, :class => cssclass.join(' ')}
     %span.context
       - if with_context
-        = link_to(topic.forum.name, forum_url(topic.forum)) + ':'
+        = link_to topic.forum.name, forum_url(topic.forum)
     %span.subject
       %a{:href => forum_topic_url(topic.forum, topic), :class => 'main'}
-        = gravatar_for(topic.reader, {:size => 40}, {:alt => topic.reader.name, :class => 'gravatar'})
+        - if topic.reader
+          = gravatar_for(topic.reader, {:size => 40}, {:alt => topic.reader.name, :class => 'gravatar'})
         = topic.name
     %span.context
-      from
-      - if topic.posts.count > 1
-        = link_to topic.reader.name + '.', reader_url(topic.reader)
-        = topic.posts.count
-        = pluralize(topic.posts.count, 'comment') + ','
-        most recently from
+      = t('posted_by')
+      = link_to topic.reader.name + '.', reader_url(topic.reader)
+      = t('post_count_from', :count => topic.posts.count - 1)
+      - if topic.has_posts?
         = link_to topic.replied_by.name, reader_url(topic.replied_by)
         = friendly_date(topic.replied_at)
       - else 
-        = link_to topic.reader.name, reader_url(topic.reader)
         = friendly_date(topic.created_at)
         
-    %div.preview
+    .post_wrapper
       - if topic.page
         = truncate_words(topic.page.render_part(:body), 50)
       - elsif topic.first_post
         = truncate_and_textilize(topic.first_post.body, 50)
       - else
-        %p Topic empty!
+        %p 
+          = t('topic_empty')
     

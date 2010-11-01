@@ -1,6 +1,8 @@
 class PostsController < ReaderActionController
+  include Radiant::Pagination::Controller
+  helper :forum
 
-  before_filter :set_site_title
+  before_filter :private_forum
   before_filter :require_activated_reader, :except => [:index, :show, :search]
   before_filter :find_topic_or_page, :except => [:index, :search]
   before_filter :require_unlocked_topic_and_page, :only => [:new, :create]
@@ -8,7 +10,7 @@ class PostsController < ReaderActionController
   before_filter :build_post, :only => [:new]
   before_filter :require_authority, :only => [:edit, :update, :destroy]
 
-  radiant_layout { |controller| controller.layout_for(:forum) }
+  radiant_layout { |controller| Radiant::Config['forum.layout'] || Radiant::Config['reader.layout'] }
 
   @@default_query_options = { 
     :page => 1,
@@ -18,7 +20,7 @@ class PostsController < ReaderActionController
   }
   
   def index
-    @posts = Post.visible.paginate(:all, @@default_query_options.merge(:page => params[:page], :per_page => params[:per_page]))
+    @posts = Post.visible.paginate(:all, @@default_query_options.merge(pagination_parameters))
     render_page_or_feed
   end
 
@@ -163,6 +165,10 @@ class PostsController < ReaderActionController
   end
 
 protected
+
+  def private_forum
+    return false unless Radiant::Config['forum.public?'] || require_reader && require_activated_reader
+  end
 
   def require_authority
     (current_user && current_user.admin?) || @post.editable_by?(current_reader)      # includes an editable-interval check

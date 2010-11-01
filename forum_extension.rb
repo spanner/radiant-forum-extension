@@ -1,9 +1,13 @@
 require_dependency 'application_controller'
 
 class ForumExtension < Radiant::Extension
-  version "0.6.1"
+  version "0.7.0"
   description "Nice clean forums and page comments for inclusion in your radiant site. Derived long ago from beast. Requires the reader extension and share_layouts."
   url "http://spanner.org/radiant/forum"
+
+  extension_config do |config|
+    config.gem "paperclip"
+  end
 
   def activate
     Reader.send :include, ForumReader
@@ -18,12 +22,14 @@ class ForumExtension < Radiant::Extension
     unless defined? admin.forum # UI is a singleton
       Radiant::AdminUI.send :include, ForumAdminUI
       admin.forum = Radiant::AdminUI.load_default_forum_regions
-      # admin.pages.edit.add :parts_bottom, "edit_commentability", :after => "edit_layout_and_type"
-      admin.reader_configuration.show.add :settings, "forum", :after => "sender"
-      admin.reader_configuration.edit.add :form, "edit_forum", :after => "edit_sender"
-      if defined? Site && admin.sites
-        Site.send :include, ForumSite
-      end
+    end
+    
+    # admin.pages.edit.add :parts_bottom, "edit_commentability", :after => "edit_layout_and_type"
+    admin.reader_configuration.show.add :settings, "forum", :after => "sender"
+    admin.reader_configuration.edit.add :form, "edit_forum", :after => "edit_sender"
+    
+    if defined? Site && admin.sites
+      Site.send :include, ForumSite
     end
     
     if defined? RedCloth::DEFAULT_RULES     # identifies redcloth 3
@@ -32,11 +38,12 @@ class ForumExtension < Radiant::Extension
     else
       RedCloth::TextileDoc.send :include, ForumRedCloth4
     end
-    
-    ApplicationHelper.send :include, ForumHelper
 
-    tab("Readers") do
-      add_item 'Forum', '/admin/readers/forums', :before => 'Settings'
+    tab("Forum") do
+      add_item 'Categories', '/admin/forum/forums'
+      add_item 'Topics', '/admin/forum/topics'
+      add_item 'Posts', '/admin/forum/posts'
+      add_item 'Settings', '/admin/forum/settings'
     end
   end
   

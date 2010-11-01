@@ -1,24 +1,32 @@
-= render :partial => 'readers/flasher'
+- content_for :signals do
+  = render :partial => 'readers/flasher'
 
-#forum
+- content_for :title do
+  = t('latest_posts')
+
+- content_for :preamble do
+  %p
+    = t('posts_introduction')
+  
+- content_for :messages do
   - if @posts.empty?
-    %p No talk here yet.
+    %p 
+      = t('no_posts')
   - else
-    - if @posts.previous_page
-      = paginate_and_summarise @posts, 'posts'
-
     %ul.main
       = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true}
 
-    = paginate_and_summarise @posts, 'posts'
+- content_for :new_topic do
+  .newmessage
+    = link_to t('new_topic'), new_topic_url
+
+- content_for :pagination do
+  = pagination_and_summary_for(@posts, t('post'))
 
 - content_for :breadcrumbs do
   = link_to 'Forum', topics_url
   \&gt;
   = @title
-
-- content_for :pagetitle do
-  Posts
 
 - content_for :breadhead do
   = link_to "Forum", topics_url, :class => 'breadhead'
@@ -31,3 +39,11 @@
 
 - content_for :help do
   = render :partial => 'topics/help'
+
+
+#forum
+  = yield :new_topic
+  = yield :preamble
+  = yield :pagination if @posts.previous_page
+  = yield :messages
+  = yield :pagination if @posts.next_page

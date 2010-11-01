@@ -1,35 +1,34 @@
-= render :partial => 'readers/flasher'
+- content_for :signals do
+  = render :partial => 'readers/flasher'
 
-#forum
-  #forum_preamble
-    %p
-      This is a list of all the discussions going on here, with the most recently updated first. 
-      You can also see a more organised list of 
-      = link_to("discussions by category", forums_url) + '.'
-    
-    %p
-      = link_to "Start a new discussion", new_topic_url, :class => 'newmessage'
+- content_for :preamble do
+  %p
+    = t('topics_introduction')
+    = link_to( t('categories'), forums_url) + '.'
 
+- content_for :messages do
   - if @topics.empty?
-    %p No talk here yet.
-
+    %p 
+      = t('no_topics')
   - else
-    - if @topics.previous_page
-      = paginate_and_summarise @topics, 'topics'
-      
     %ul.main
       = render :partial => 'topics/topic', :collection => @topics, :locals => {:with_context => true}
 
-    = paginate_and_summarise @topics, 'topics'
+- content_for :new_topic do
+  .newmessage
+    = link_to t('new_topic'), new_topic_url
+
+- content_for :pagination do
+  = pagination_and_summary_for(@topics, t('topics'))
 
 - content_for :breadhead do
-  = home_page_link(:class => 'breadhead')
+  = home_page_link
 
 - content_for :breadcrumbs do
-  Forum
+  = t('forum').titlecase
 
-- content_for :pagetitle do
-  Latest discussion
+- content_for :title do
+  = t('latest_discussion')
 
 - content_for :feed do
   = feed_link(topics_path(:format => :rss))
@@ -37,5 +36,12 @@
 - content_for :controls do
   = render :partial => 'readers/controls'
 
-- content_for :help do
-  = render :partial => 'topics/help'
+#forum
+  = yield :new_topic
+  = yield :preamble
+  = yield :pagination if @topics.previous_page
+  = yield :messages
+  = yield :pagination if @topics.next_page
+
+
+

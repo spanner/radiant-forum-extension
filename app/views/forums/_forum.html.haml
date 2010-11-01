@@ -1,7 +1,6 @@
 %li.forum{:id => forum.dom_id}
   %span.subject
-    %a{:href => forum_url(forum), :class => 'main'}
-      = forum.name
+    = link_to forum.name, forum_url(forum), :class => 'main'
   - if topic = forum.recent_topics.first
     %span.context
       = forum.topics.count

@@ -1,0 +1,247 @@
+@import reader.sass
+
+div#forum
+  h1, h2
+    margin-bottom: 24px
+    line-height: 1.2
+  a.floating
+    float: right
+    margin: 0 0 10px 20px
+  a.feedlink
+    background: url(/images/furniture/feed_14.png) no-repeat 0 4px
+    padding-left: 18px
+    color: #f58822
+  div.reply, div.first_post
+    margin-left: 0
+  div.post_header a.replied
+    color: #cacac8
+  div.newmessage
+    float: right
+    margin: 0 0 12px 16px
+    +border-radius
+    &:hover
+      +box-shadow(#333, 1px, 2px)
+      background: white url(/images/admin/buttons_background.png) repeat-x top left
+    &:active
+      +box-shadow(#666,1px, 1px)
+      background-position: bottom left
+    a
+      display: block
+      overflow: hidden
+      margin: 6px
+      +functionalfonts
+      color: $dark
+      line-height: 1.1
+      background: transparent url(/images/furniture/post.png) no-repeat 0 4px
+      padding-left: 14px
+  div.post
+    position: relative
+    clear: left
+    margin: 10px 0 50px 0
+  div.first_post
+    margin-top: 30px
+    clear: both
+  div.post_header h2
+    margin: 0
+    line-height: 1.1
+    a.speaker
+      font-weight: bold
+  div.post_body
+    position: relative
+    p
+      margin-top: .25em
+    div.post blockquote
+      color: #cacac8
+      border-left-width: 5px
+      border-left-style: solid
+      border-left-color: #cacac8
+      margin: 0
+      padding-left: 20px
+  div.over
+    background-color: #e2e1dc
+  div.post_control
+    font-size: 85%
+    color: #cacac8
+    p
+      margin: 0
+    p.post_admin
+      float: right
+      a, a:visited
+        font-family: helvetica,arial,sans-serif
+        font-size: 0.8em
+        line-height: 1
+        padding: 4px
+        color: white
+        background-color: #e2e1dd
+        +border-radius
+        &.edit_post:hover
+          background-color: #1c8064
+        &.delete_post:hover
+          background-color: #c00
+    a
+      color: #1bb68b
+      &.edit_post
+        color: #d1005d
+      &.delete_post
+        padding-left: 5px
+        color: #d1005d
+      &:hover
+        color: #1bb68b
+      &.waiting
+        color: #cacac8
+        padding-left: 18px
+        background: transparent url(/images/furniture/wait_16_grey.gif) no-repeat left top
+  p.waiting
+    color: #cacac8
+    padding-left: 18px
+    background: transparent url(/images/furniture/wait_16_grey.gif) no-repeat left top
+  div.post_wrapper
+    position: relative
+    overflow: hidden
+    div.post_form
+      margin: 0 0 20px 0
+      padding: 0
+      background: white url(/images/furniture/wait_16_grey.gif) no-repeat center center
+      form
+        background-color: #ffffff
+        margin: 0
+        label
+          display: none
+        textarea
+          left: 0
+          right: 0
+          color: #559dc4
+          border-color: #cacac8
+          font-size: normal
+          font-size: 1em
+        p
+          margin: 0
+
+img.smiley
+  margin: 3px 3px 0 3px
+
+div.upload_stack, div.post_attachments
+  margin: 0 0 30px 0
+  border-left-width: 5px
+  border-left-style: solid
+  border-left-color: #cacac8
+  padding-left: 20px
+  h4
+    margin: 0
+    font-family: helvetica,arial,sans-serif
+    font-size: 0.8em
+    line-height: 1.4
+    color: #cacac8
+    margin: -3px 0 2px -10px
+  ul
+    margin: 0
+    list-style: none
+    padding: 0
+  li
+    clear: none
+    margin: 0
+  a.attachment
+    background: url(/images/furniture/attachment_link.png) no-repeat 0 2px
+    padding-left: 18px
+  a.attachment:hover
+    background-image: url(/images/furniture/attachment_over.png)
+  a.remove
+    font-family: helvetica,arial,sans-serif
+    font-size: 60%
+    color: #d1005d
+    padding: 3px
+  a.thumbnail
+    img
+      background-color: white
+      padding: 4px
+      margin: 4px
+      +box-shadow
+
+a.cancel:hover, a.remove:hover
+  background-color: #d1005d
+  color: #ffffff
+
+div.upload_stack
+  ul.attachments input, ul.uploads input
+    display: none
+  ul li a
+    color: #4d4e53
+  div.selector
+    position: relative
+    cursor: pointer
+    input.filefield
+      position: relative
+      z-index: 100
+      opacity: 0
+    div.addfile
+      position: absolute
+      z-index: 99
+      top: 0
+      a
+        background: url(/images/furniture/attachment_link.png) no-repeat 0 2px
+        padding-left: 18px
+
+div#forum_search
+  margin: 40px 0 0 0
+  h2, p
+    margin: 0
+  input
+    &.standard
+      width: 80%
+    &.button
+      font-size: 1.2em
+      line-height: 1
+      color: #4d4e53
+      padding: 5px
+      margin: 0 0 0 6px
+
+p.administrative
+  font-family: helvetica,arial,sans-serif
+  color: #cacac8
+
+img.feedicon
+  margin: 8px 0
+
+div.activation_required
+  color: #d1005d
+
+ul.main
+  list-style: none
+  margin: 20px 0 50px 0
+  padding: 0
+  li
+    clear: left
+    margin: 30px 0
+    .subject a
+      font-family: helvetica,arial,sans-serif
+      font-size: 160%
+      font-weight: bold
+      line-height: 1
+      &:visited
+        font-family: helvetica,arial,sans-serif
+        font-size: 160%
+        font-weight: bold
+        line-height: 1
+    div.preview
+      font-size: 85%
+      color: #4d4e53
+      p
+        margin-top: 5px
+    &.sticky .subject a
+      color: #d1005d
+      &:visited
+        color: #d1005d
+    &.locked .subject a
+      color: #4d4e53
+      &:visited
+        color: #4d4e53
+
+.context, .updatenote
+  display: block
+  font-family: helvetica,arial,sans-serif
+  font-size: 0.8em
+  line-height: 1.4
+  color: $mid
+  margin: 0
+  .still_editable
+    color: $dark

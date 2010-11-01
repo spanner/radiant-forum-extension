@@ -1,44 +1,46 @@
-= render :partial => 'readers/flasher'
+- content_for :signals do
+  = render :partial => 'readers/flasher'
 
-#forum
-  #forum_preamble
-    %p
-      These are the broad filing areas we use to organise the forum. 
-      You can also see a list of 
-      = link_to "all the most recent discussion", topics_url
-      in any category.
+- content_for :title do
+  = t('forums')
 
-    %p
-      = link_to "start a new discussion", new_topic_url, :class => 'newmessage'
+- content_for :preamble do
+  %p
+    = t('forums_introduction')
+    = link_to t('latest_topics'), topics_url in any category.
 
+- content_for :new_topic do
+  .newmessage
+    = link_to t('new_topic'), new_topic_url
+
+- content_for :messages do
   - if @forums.empty?
-    %p No categories defined here yet.
-
+    %p 
+      = t('no_forums')
   - else
-    - if @forums.previous_page
-      = paginate_and_summarise @forums, 'forums'
-
     %ul.main
       = render :partial => 'forums/forum', :collection => @forums
 
-    = paginate_and_summarise @forums, 'forums'
-
-- content_for :pagetitle do
-  Discussion Categories
+- content_for :pagination do
+  = pagination_and_summary_for(@forums, t('forum'))
 
 - content_for :feed do
-  = feed_link(formatted_forums_path(:rss))
+  = feed_link(forums_path(:format => :rss))
 
 - content_for :controls do
   = render :partial => 'readers/controls'
   
 - content_for :breadhead do
-  = link_to "Forum", topics_url, :class => 'breadhead'
+  = link_to t("forum"), forum_home_url
 
 - content_for :breadcrumbs do
   = link_to 'Forum', topics_url
   \&gt;
-  Categories
-
-- content_for :help do
-  = render :partial => 'topics/help'
+  = t('forums')
+  
+#forum
+  = yield :new_topic
+  = yield :preamble
+  = yield :pagination if @forums.previous_page
+  = yield :messages
+  = yield :pagination if @forums.next_page

@@ -6,11 +6,11 @@ ActionController::Routing::Routes.draw do |map|
     forum.resources :pages, :has_many => [:posts], :has_one => [:topic]
   end
   
-  # forum admin is nested under readers to save interface clutter
-  # some time soon I'll add proper moderation of topics and posts
-  map.namespace :admin, :member => { :remove => :get }, :path_prefix => 'admin/readers' do |admin|
+  map.namespace :admin, :member => { :remove => :get }, :path_prefix => 'admin/forum' do |admin|
     admin.resources :forums
-    # admin.resources :topics
-    # admin.resources :posts
+    admin.resources :topics
+    admin.resources :posts
   end
+  
+  map.forum_home "/forum.:format", :controller => 'topics', :action => 'index'
 end

@@ -1,13 +1,16 @@
 class TopicsController < ReaderActionController
+  include Radiant::Pagination::Controller
+  helper :forum
   
+  before_filter :private_forum
   before_filter :find_forum_and_topic, :except => :index
   before_filter :require_activated_reader, :except => [:index, :show]
 
-  radiant_layout { |controller| controller.layout_for(:forum) }
+  radiant_layout { |controller| Radiant::Config['forum.layout'] || Radiant::Config['reader.layout'] }
 
   def index
     params[:per_page] ||= 20
-    @topics = Topic.visible.paginate(:all, :order => "topics.sticky desc, topics.replied_at desc", :page => params[:page] || 1, :per_page => params[:per_page], :include => [:forum, :reader])
+    @topics = Topic.visible.paginate(:all, pagination_parameters.merge(:order => "topics.sticky desc, topics.replied_at desc", :include => [:forum, :reader]))
     render_page_or_feed
   end
 
@@ -67,7 +70,11 @@ class TopicsController < ReaderActionController
   end
   
   protected
-
+    
+    def private_forum
+      return false unless Radiant::Config['forum.public?'] || require_reader && require_activated_reader
+    end
+    
     def find_forum_and_topic
       @topic = Topic.find(params[:id]) if params[:id]
       @page = @topic.page if @topic

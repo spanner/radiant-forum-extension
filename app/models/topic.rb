@@ -79,7 +79,7 @@ class Topic < ActiveRecord::Base
   end
   
   def refresh_reply_data(post=nil)
-    if !post && posts.empty?     # ie. the post has just been deleted and there are no others
+    if !post && posts.empty?
       self.destroy
     elsif has_posts?
       post ||= posts.last

@@ -1,40 +1,45 @@
-= render :partial => 'readers/flasher'
+- content_for :signals do
+  = render :partial => 'readers/flasher'
 
-#forum
-  #new_topic
-    - form_for :topic, :url  => @forum ? forum_topics_path(@forum) : topics_path, :html => {:class => 'friendly', :multipart => true} do |f|
-      = render :partial => "form", :object => f
-      %p.buttons
-        = submit_tag 'Start Discussion' 
-        or 
-        - if @forum
-          = link_to('cancel', forum_path(@forum))
-        - else
-          = link_to('cancel', :back)
+- content_for :form do
+  - form_for :topic, :url  => @forum ? forum_topics_path(@forum) : topics_path, :html => {:class => 'friendly', :multipart => true} do |f|
+    = render :partial => "form", :object => f
+    %p.buttons
+      = submit_tag t('new_topic_button')
+      or 
+      - if @forum
+        = link_to t('cancel'), forum_path(@forum)
+      - else
+        = link_to t('cancel'), :back
 
-- content_for :pagetitle do
-  Start a new discussion
+- content_for :title do
+  = t('new_topic_heading')
 
 - content_for :breadhead do
+  = link_to t('forum'), forum_home_url
+  = t('separator')
   - if @forum
-    = link_to @forum.name, forum_url(@forum), :class => 'breadhead'
-  - else
-    = link_to "Forum", topics_url, :class => 'breadhead'
+    = link_to @forum.name, forum_url(@forum)
   
 - content_for :controls do
   = render :partial => 'readers/controls'
 
 - content_for :credits do
-  %p.context
-    You are logged in as 
-    = link_to "#{current_reader.name}.", reader_url(current_reader)
-    If that's not you, please 
-    = link_to "log out.", reader_logout_url
+  %p
+    = t('logged_in_as', :name => current_reader.name)
+    = t('if_not_you')
+    = link_to t('log_out'), reader_logout_url
 
 - content_for :breadcrumbs do
-  = link_to 'Forum', topics_url
-  \&gt;
+  = link_to t('forum'), topics_url
+  = t('separator')
   - if @forum
     = link_to @forum.name, forum_url(@forum)
-    \&gt;
-  New Discussion
+    = t('separator')
+  = t('new_topic')
+
+
+#forum
+  = yield :credits
+  = yield :form
+

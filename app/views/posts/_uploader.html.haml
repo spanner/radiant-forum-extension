@@ -1,14 +1,13 @@
 - post ||= @post
 
-.upload_handler
+.upload_stack
   %ul.attachments
     = hidden_field_tag "post[attachment_ids][]", ""
     - post.attachments.each do |attachment|
       %li.attachment
         = check_box_tag "post[attachment_ids][]", attachment.id, true, {:id => "post_attachment_#{attachment.id}", :class => 'choose_attachment'}
         = link_to attachment.filename, attachment.file.url, :class => "attachment #{attachment.extension}"
-        = link_to 'remove', '#', :class => 'remove', :id => "remove_attachment_#{attachment.id}" 
-  .uploads
+  %ul.uploads
   .selector
     = file_field_tag "files[]", :class => "filefield"
     .addfile

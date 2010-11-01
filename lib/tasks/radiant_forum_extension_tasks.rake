@@ -28,15 +28,25 @@ namespace :radiant do
         desc "Quick and dirty import from Vanilla."
         task :vanilla => :environment do
           require 'dbi'
-        
+
+          clear = ENV['clear'] || false
+          if clear == 'true'
+            p "*** deleting all forum data"
+            Forum.delete_all
+            Topic.delete_all
+            Post.delete_all
+          end
+          
           database = ENV['database'] || 'vanilla'
           user = ENV['user'] || 'forum'
           password = ENV['password'] || ''
+          host = ENV['host'] || '127.0.0.1'
           Page.current_site = Site.find_by_id(ENV['site']) if ENV['site'] && defined? Site
         
-          dbh = DBI.connect("DBI:Mysql:#{database}", user, password)
+          p "*** connecting to #{database} database at #{host}"
+          dbh = DBI.connect("DBI:Mysql:#{database}:#{host}", user, password)
         
-          dbh.select_all('select * from LUM_User') do | row |
+          dbh.select_all('select * from LUM_User') do |row|
             begin
               reader = Reader.find_or_create_by_email(row['Email'])
               if reader.new_record?
@@ -72,62 +82,75 @@ namespace :radiant do
                 :description => row['Description'],
                 :position => row['Priority']
               )
-              p "Imported forum #{forum.name}"
+              p "Imported category #{forum.name}"
             end
           end
         
           posts = {}
           topic_posts = {}
-          dbh.select_all('select * from LUM_Comment ORDER BY DateCreated ASC') do | row |
-            posts[row['CommentID']] = row
-            topic_posts[row['DiscussionID']] ||= []
-            topic_posts[row['DiscussionID']].push(row)
+          
+          dbh.select_all('select * from LUM_Comment ORDER BY DateCreated ASC') do |row|
+            hash = row.to_h
+            posts[row['CommentID'].to_i] = hash
+            topic_posts[row['DiscussionID'].to_i] ||= []
+            topic_posts[row['DiscussionID'].to_i].push(hash)
           end
           
           p "*** importing topics"
-          
-          dbh.select_all('select * from LUM_Discussion') do | row |
-            first_post = posts[row['FirstCommentID']] || topic_posts[row['DiscussionID']].shift
-            forum = Forum.find_by_old_id(row['CategoryID'])
-            raise "no forum for old id #{row['CategoryID']}. Go fix." unless forum
+          dbh.select_all('select * from LUM_Discussion ORDER BY DiscussionID ASC') do |row|
+            old_id = row['DiscussionID'].to_i
+            cat_id = row['CategoryID'].to_i
+            fp_id = row['FirstCommentID'].to_i
+            
+            unless first_post = posts[fp_id]
+              if topic_posts[old_id]
+                first_post = topic_posts[old_id].shift
+                p "! first post missing: shifted #{first_post['CommentID']} from stack."
+              end
+            end
+            forum = Forum.find_by_old_id(cat_id)
+            raise RuntimeError, "no forum for category id #{cat_id}. Go fix." unless forum
+                        
             if forum && first_post
               topic = forum.topics.build(
-                :reader => Reader.find_by_old_id(row['AuthUserID']),
+                :reader => Reader.find_by_old_id(row['AuthUserID'].to_i),
                 :name => row['Name'],
                 :body => first_post['Body'],
                 :created_at => row['DateCreated'],
-                :replied_at => topic_posts[row['DiscussionID']].last['DateCreated'],
                 :sticky => row['Sticky'],
                 :locked => row['Closed'],
-                :replied_by => Reader.find_by_old_id(row['LastUserID']),
                 :old_id => row['DiscussionID']
               )
                           
               begin
                 if topic.save!
-                  p "Imported topic #{topic.name}"
-          
-                  topic_posts[row['DiscussionID']].each do |post|
-                    unless post['CommentID'] == row['FirstCommentID']          # first post is created in a pre-validation filter, so we can't check for its old_id
-                      post = topic.posts.build(
-                        :forum => forum,
-                        :reader => Reader.find_by_old_id(post['AuthUserID']),
-                        :created_at => post['DateCreated'],
-                        :updated_at => post['DateEdited'],
-                        :body => post['Body'],
-                        :old_id => post['CommentID']
-                      )
-                      post.save
+                  p "Imported topic #{old_id}: #{topic.name}. posts to import: #{topic_posts[old_id].length}"
+                  topic_posts[old_id].each do |post|
+                    begin
+                      unless post['CommentID'] == row['FirstCommentID']          # first_post is created in a pre-validation filter, so we can't check for its old_id
+                        topic.posts.build(
+                          :forum => forum,
+                          :reader => Reader.find_by_old_id(post['AuthUserID'].to_i),
+                          :created_at => post['DateCreated'],
+                          :updated_at => post['DateEdited'],
+                          :body => post['Body'],
+                          :old_id => post['CommentID']
+                        ).save!
+                      end
+                    rescue ActiveRecord::RecordInvalid => e
+                      p "!!! failed to import post #{post['CommentID']}: #{e.inspect}"
                     end
                   end
                   p "... with #{topic.posts.count} post" + (topic.posts.count == 1 ? '' : 's')
                 end
               rescue ActiveRecord::RecordInvalid => e
-                p "!!! failed to import topic #{row['DiscussionID']}: #{e.inspect}"
+                p "!!! failed to import topic #{old_id}: #{e.inspect}"
+                p "    (reader is #{topic.reader.inspect})"
+                p "    (body is #{topic.body.inspect})"
               end
               
             else
-              p "skipping topic #{row['Name']}: no post"
+              p "skipping topic #{row['Name']} (#{old_id}): no post"
             end
           end
         end

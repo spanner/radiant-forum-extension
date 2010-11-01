@@ -2,6 +2,7 @@ module ForumReadersController
 
   def self.included(base)
     base.class_eval do
+      helper :forum
       alias_method_chain :show, :forum 
     end
   end

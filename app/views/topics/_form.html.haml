@@ -1,4 +1,4 @@
-- with_error_report(@topic.errors.on(:name)) do
+%p.title
   = form.label :name, 'Discussion title', :class => 'required'
   %br
   = form.text_field :name, :class => 'titular'
@@ -10,7 +10,7 @@
       = form.check_box :locked
       %label{:for => 'topic_locked', :class => 'admin'} Locked
 
-- with_error_report(@topic.errors.on(:body)) do
+%p.body
   = form.label :name, 'Opening message'
   %br
   = form.text_area :body, :class=> 'standard', :rows => 12
@@ -19,7 +19,7 @@
   = render :partial => 'posts/uploader', :locals => {:post => @topic.first_post}
 
 - if @topic.new_record? || admin?
-  - with_error_report(@topic.errors.on(:forum)) do
+  %p.forum
     = form.label :forum_id, 'File in category:'
     %br
     = form.select :forum_id, Forum.visible.collect {|f| [ f.name, f.id ] }, :class=> 'standard'

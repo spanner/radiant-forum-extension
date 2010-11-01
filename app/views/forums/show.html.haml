@@ -1,38 +1,50 @@
-= render :partial => 'readers/flasher'
+- content_for :signals do
+  = render :partial => 'readers/flasher'
 
-#forum
-  #forum_preamble
-    = clean_textilize(@forum.description)
+- content_for :title do
+  = @forum.name
 
+- content_for :preamble do
+  = clean_textilize(@forum.description)
+
+- content_for :new_topic do
   - unless @forum.for_comments?
-    %p
-      = link_to "start a new discussion here", new_forum_topic_url(@forum), :class => 'newmessage'
+    .newmessage
+      = link_to t('new_topic_here'), new_forum_topic_url(@forum)
 
+- content_for :messages do
   - if @topics.empty?
-    %p No talk here yet.
-
+    %p 
+      = t('no_topics')
   - else
-    - unless @topics.current_page == 1
-      = paginate_and_summarise @topics, 'topics'
-
     %ul.main
       = render :partial => 'topics/topic', :collection => @topics, :locals => { :with_context => false }
 
-    = paginate_and_summarise @topics, 'topics'
-
-- content_for :pagetitle do
-  = @forum.name
+- content_for :pagination do
+  = pagination_and_summary_for @topics, 'topics'
 
 - content_for :feed do
-  = feed_link(formatted_forum_path(@forum, :rss))
+  = feed_link(forum_path(@forum, :format => :rss))
 
 - content_for :breadhead do
-  = link_to 'Categories', forums_url, :class => 'breadhead'
+  = link_to t("forum"), forum_home_url
+  = t('separator')
+  = link_to t('forums'), forums_url
 
 - content_for :breadcrumbs do
-  = link_to 'Discussion Categories', forums_url
-  \&gt;
+  = link_to t("forum"), forum_home_url
+  = t('separator')
+  = link_to t('categories'), forums_url
+  = t('separator')
   = link_to @forum.name, forum_url(@forum) 
 
 - content_for :controls do
   = render :partial => 'readers/controls'
+
+
+#forum
+  = yield :new_topic
+  = yield :preamble
+  = yield :pagination if @topics.previous_page
+  = yield :messages
+  = yield :pagination if @topics.next_page

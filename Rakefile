@@ -9,8 +9,6 @@ begin
     gem.authors = ["spanner"]
     gem.add_dependency "radiant", ">= 0.9.0"
     gem.add_dependency 'radiant-reader-extension'
-    gem.add_dependency 'paperclip'
-    gem.add_dependency 'will_paginate'
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. This is only required if you plan to package forum as a gem."

@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{radiant-forum-extension}
-  s.version = "0.6.0"
+  s.version = "0.6.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["spanner"]
-  s.date = %q{2010-10-04}
+  s.date = %q{2010-10-19}
   s.description = %q{Nice clean forums and page comments for inclusion in your radiant site. Derived long ago from beast. Requires the reader extension and share_layouts.}
   s.email = %q{will@spanner.org}
   s.extra_rdoc_files = [
@@ -35,7 +35,8 @@ Gem::Specification.new do |s|
      "app/views/admin/forums/new.html.haml",
      "app/views/admin/forums/remove.html.haml",
      "app/views/admin/pages/_edit_commentability.html.haml",
-     "app/views/admin/reader_settings/_forum.html.haml",
+     "app/views/admin/reader_configuration/_edit_forum.html.haml",
+     "app/views/admin/reader_configuration/_forum.html.haml",
      "app/views/admin/sites/_choose_forum_layout.html.haml",
      "app/views/forums/_forum.html.haml",
      "app/views/forums/index.html.haml",
@@ -100,7 +101,6 @@ Gem::Specification.new do |s|
      "lib/forum_site.rb",
      "lib/forum_tags.rb",
      "lib/tasks/radiant_forum_extension_tasks.rake",
-     "pkg/radiant-forum-extension-0.5.0.gem",
      "public/images/admin/forum.png",
      "public/images/admin/new-forum.png",
      "public/images/admin/nominus.png",
