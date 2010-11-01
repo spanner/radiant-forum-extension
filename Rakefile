@@ -8,7 +8,7 @@ begin
     gem.homepage = "http://github.com/spanner/radiant-forum-extension"
     gem.authors = ["spanner"]
     gem.add_dependency "radiant", ">= 0.9.0"
-    gem.add_dependency 'radiant-reader-extension'
+    gem.add_dependency 'radiant-reader-extension', "~> 1.1.0"
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. This is only required if you plan to package forum as a gem."

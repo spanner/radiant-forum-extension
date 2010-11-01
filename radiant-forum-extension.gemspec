@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{radiant-forum-extension}
-  s.version = "0.6.1"
+  s.version = "0.7.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["spanner"]
-  s.date = %q{2010-10-19}
+  s.date = %q{2010-11-01}
   s.description = %q{Nice clean forums and page comments for inclusion in your radiant site. Derived long ago from beast. Requires the reader extension and share_layouts.}
   s.email = %q{will@spanner.org}
   s.extra_rdoc_files = [
@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
      "app/controllers/forums_controller.rb",
      "app/controllers/posts_controller.rb",
      "app/controllers/topics_controller.rb",
+     "app/helpers/forum_helper.rb",
      "app/models/forum.rb",
      "app/models/moderatorship.rb",
      "app/models/post.rb",
@@ -79,6 +80,7 @@ Gem::Specification.new do |s|
      "app/views/topics/new.html.haml",
      "app/views/topics/show.html.haml",
      "app/views/topics/show.rss.builder",
+     "config/locales/en.yml",
      "config/routes.rb",
      "db/migrate/001_create_forum_tables.rb",
      "db/migrate/002_pages_commentable.rb",
@@ -91,7 +93,6 @@ Gem::Specification.new do |s|
      "db/migrate/20090824111005_import_helpers.rb",
      "forum_extension.rb",
      "lib/forum_admin_ui.rb",
-     "lib/forum_helper.rb",
      "lib/forum_page.rb",
      "lib/forum_reader.rb",
      "lib/forum_reader_notifier.rb",
@@ -119,22 +120,20 @@ Gem::Specification.new do |s|
      "public/images/emoticons/surprised.gif",
      "public/images/emoticons/tongue.gif",
      "public/images/emoticons/wink.gif",
-     "public/images/forum/attachment.png",
-     "public/images/forum/attachment_link.png",
-     "public/images/forum/attachment_over.png",
-     "public/images/forum/chk_off.png",
-     "public/images/forum/chk_on.png",
-     "public/images/forum/feed_14.png",
-     "public/images/forum/feed_28.png",
-     "public/images/forum/post_14.png",
-     "public/images/forum/post_14_over.png",
-     "public/images/forum/rdo_off.png",
-     "public/images/forum/rdo_on.png",
-     "public/images/forum/wait_16_grey.gif",
-     "public/javascripts/platform/forum.js",
-     "public/javascripts/platform/remotecontent.js",
-     "public/stylesheets/admin/forum.css",
-     "public/stylesheets/platform/forum.css",
+     "public/images/furniture/attachment.png",
+     "public/images/furniture/attachment_link.png",
+     "public/images/furniture/attachment_over.png",
+     "public/images/furniture/chk_off.png",
+     "public/images/furniture/chk_on.png",
+     "public/images/furniture/feed_14.png",
+     "public/images/furniture/feed_28.png",
+     "public/images/furniture/post.png",
+     "public/images/furniture/post_over.png",
+     "public/images/furniture/rdo_off.png",
+     "public/images/furniture/rdo_on.png",
+     "public/images/furniture/wait_16_grey.gif",
+     "public/javascripts/forum.js",
+     "public/stylesheets/sass/forum.sass",
      "radiant-forum-extension.gemspec",
      "spec/controllers/admin/forums_controller_spec.rb",
      "spec/controllers/forums_controller_spec.rb",
@@ -196,20 +195,14 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<radiant>, [">= 0.9.0"])
-      s.add_runtime_dependency(%q<radiant-reader-extension>, [">= 0"])
-      s.add_runtime_dependency(%q<paperclip>, [">= 0"])
-      s.add_runtime_dependency(%q<will_paginate>, [">= 0"])
+      s.add_runtime_dependency(%q<radiant-reader-extension>, ["~> 0.7.0"])
     else
       s.add_dependency(%q<radiant>, [">= 0.9.0"])
-      s.add_dependency(%q<radiant-reader-extension>, [">= 0"])
-      s.add_dependency(%q<paperclip>, [">= 0"])
-      s.add_dependency(%q<will_paginate>, [">= 0"])
+      s.add_dependency(%q<radiant-reader-extension>, ["~> 0.7.0"])
     end
   else
     s.add_dependency(%q<radiant>, [">= 0.9.0"])
-    s.add_dependency(%q<radiant-reader-extension>, [">= 0"])
-    s.add_dependency(%q<paperclip>, [">= 0"])
-    s.add_dependency(%q<will_paginate>, [">= 0"])
+    s.add_dependency(%q<radiant-reader-extension>, ["~> 0.7.0"])
   end
 end
 
