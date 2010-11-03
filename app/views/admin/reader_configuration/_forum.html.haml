@@ -1,14 +1,19 @@
-%p.ruled
-  = show_config 'forum.layout'
-%p.ruled
-  = show_config 'forum.editable_period'
-%p.ruled
-  = show_config 'forum.public?'
-%p.ruled
-  = show_config 'forum.allow_page_comments?'
-%p.ruled
-  = show_config 'forum.comments_have_attachments?'
-%p.ruled
-  = show_config 'forum.attachment_content_types'
-%p.ruled
-  = show_config 'forum.max_attachment_size'
+#forum_settings.box
+  %h3
+    .actions
+      = button_to t("edit"), edit_admin_reader_configuration_url, :method => :get
+    =t("forum_configuration")
+  %p.ruled
+    = show_config 'forum.layout'
+  %p.ruled
+    = show_config 'forum.editable_period'
+  %p.ruled
+    = show_config 'forum.public?'
+  %p.ruled
+    = show_config 'forum.allow_page_comments?'
+  %p.ruled
+    = show_config 'forum.allow_attachments?'
+  %p.ruled
+    = show_config 'forum.attachment.content_types'
+  %p.ruled
+    = show_config 'forum.attachment.max_size'

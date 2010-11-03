@@ -4,6 +4,9 @@
 - content_for :title do
   = @forum.name
 
+- content_for :thing_title do
+  = @forum.name
+
 - content_for :preamble do
   = clean_textilize(@forum.description)
 
@@ -29,6 +32,9 @@
 - content_for :feed do
   = feed_link(forum_path(@forum, :format => :rss))
 
+- content_for :parent do
+  = link_to t('forum') + ':', forum_home_url
+
 - content_for :breadhead do
   = link_to t("forum"), forum_home_url
   = t('separator')
@@ -46,8 +52,6 @@
 
 
 #forum
-  = yield :new_topic
-  = yield :preamble
   = yield :pagination if @topics.previous_page
   = yield :messages
   = yield :pagination if @topics.next_page

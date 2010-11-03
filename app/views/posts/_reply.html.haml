@@ -12,23 +12,24 @@
       - @post ||= @topic.posts.build
 
       %div.reply#replyform
-        - form_for :post, :url => formurl, :html => {:id => 'reply_form', :multipart => true, :class => 'friendly inline'} do |f|
+        %div.speaker
+          %a{:href => reader_url(current_reader), :class => 'main'}
+            = gravatar_for(current_reader, {:size => 40}, {:alt => current_reader.name, :class => 'gravatar', :width => '40', :height => '40'})
+        .post_wrapper
           .post_header
             %h2
-              %a{:href => reader_url(current_reader), :class => 'main'}
-                = gravatar_for(current_reader, {:size => 40}, {:alt => current_reader.name, :class => 'gravatar', :width => '40', :height => '40'})
-              Add a 
-              = message_type
-        
+              = t('add_message', :message_type => message_type)
             %p.context
               You are currently logged in as 
               = link_to(current_reader.name, reader_url(current_reader)) + '.'
               If that's not you, please 
               = link_to("log out", reader_logout_url) + '.'
 
-          = render :partial => 'posts/form', :object => f
-          %p.buttons
-            = f.submit "Post #{message_type}"
+          - form_for :post, :url => formurl, :html => {:id => 'reply_form', :multipart => true, :class => 'friendly inline'} do |f|
+            = render :partial => 'posts/form', :object => f
+            %p.buttons
+              = f.submit "Post #{message_type}"
+
     - else
       = render :partial => 'reader_activations/activation_required', :locals => {:purpose => purpose}
       

@@ -25,8 +25,8 @@ class ForumExtension < Radiant::Extension
     end
     
     # admin.pages.edit.add :parts_bottom, "edit_commentability", :after => "edit_layout_and_type"
-    admin.reader_configuration.show.add :settings, "forum", :after => "sender"
-    admin.reader_configuration.edit.add :form, "edit_forum", :after => "edit_sender"
+    admin.reader_configuration.show.add :settings, "forum", :after => "administration"
+    admin.reader_configuration.edit.add :form, "edit_forum", :after => "administration"
     
     if defined? Site && admin.sites
       Site.send :include, ForumSite

@@ -26,6 +26,11 @@ class Post < ActiveRecord::Base
       :limit => count
     }
   }
+  named_scope :except, lambda { |post|
+    {
+      :conditions => ["NOT posts.id = ?", post.id]
+    }
+  }
 
   def topic_page
     self.topic.page_for(self)

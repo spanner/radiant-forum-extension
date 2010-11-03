@@ -45,8 +45,6 @@
 
 
 #forum
-  = yield :new_topic
-  = yield :preamble
   = yield :pagination if @posts.previous_page
   = yield :messages
   = yield :pagination if @posts.next_page

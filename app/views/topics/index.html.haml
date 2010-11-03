@@ -11,8 +11,7 @@
     %p 
       = t('no_topics')
   - else
-    %ul.main
-      = render :partial => 'topics/topic', :collection => @topics, :locals => {:with_context => true}
+    = render :partial => 'topics/topic', :collection => @topics, :locals => {:with_context => true}
 
 - content_for :sidebar do
   %h2
@@ -48,8 +47,6 @@
   = render :partial => 'readers/controls'
 
 #forum
-  = yield :new_topic
-  = yield :preamble
   = yield :pagination if @topics.previous_page
   = yield :messages
   = yield :pagination if @topics.next_page

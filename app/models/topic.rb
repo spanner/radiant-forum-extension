@@ -35,6 +35,10 @@ class Topic < ActiveRecord::Base
       :limit => count
     }
   }
+  
+  def replies
+    page ? posts : posts.except(first_post)
+  end
 
   def voice_count
     posts.count(:select => "DISTINCT reader_id")
@@ -43,6 +47,10 @@ class Topic < ActiveRecord::Base
   def voices
     # TODO - move into sql
     posts.map { |p| p.reader }.uniq
+  end
+  
+  def other_voices
+    replies.map { |p| p.reader }.uniq
   end
     
   def hit!
@@ -75,14 +83,13 @@ class Topic < ActiveRecord::Base
   end
   
   def has_posts?
-    posts_count > (page ? 0 : 1)
+    replies.any?
   end
   
   def refresh_reply_data(post=nil)
     if !post && posts.empty?
       self.destroy
-    elsif has_posts?
-      post ||= posts.last
+    elsif post ||= posts.last
       self.last_post = post
       self.replied_by = post.reader
       self.replied_at = post.created_at

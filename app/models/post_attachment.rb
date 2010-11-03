@@ -25,21 +25,21 @@ class PostAttachment < ActiveRecord::Base
   belongs_to :reader
   acts_as_list :scope => :post_id
   has_attached_file :file,
-                    :styles => lambda { |attachment| 
-                      if image_content_types.include? attachment.instance_read(:content_type)
-                        thumbnail_sizes
-                      else
-                        {}
-                      end
-                    },
-                    :whiny_thumbnails => false,
-                    :url => "/:class/:id/:basename:no_original_style.:extension",
-                    :path => ":rails_root/public/:class/:id/:basename:no_original_style.:extension"
+    :styles => lambda { |attachment| 
+      if image_content_types.include? attachment.instance_read(:content_type)
+        thumbnail_sizes
+      else
+        {}
+      end
+    },
+    :whiny_thumbnails => false,
+    :url => "/:class/:id/:basename:no_original_style.:extension",
+    :path => ":rails_root/public/:class/:id/:basename:no_original_style.:extension"
 
   attr_protected :file_file_name, :file_content_type, :file_file_size
-  validates_attachment_presence :file, :message => "You must choose a file to upload!"
-  validates_attachment_content_type :file, :content_type => Radiant::Config["forum.attachment_content_types"].split(', ') if Radiant::Config.table_exists? && Radiant::Config["forum.attachment_content_types"]
-  validates_attachment_size :file, :less_than => Radiant::Config["forum.max_attachment_size"].to_i.megabytes if Radiant::Config.table_exists? && Radiant::Config["forum.max_attachment_size"]
+  validates_attachment_presence :file, :message => t('no_file')
+  validates_attachment_content_type :file, :content_type => Radiant::Config["forum.attachment.content_types"].split(', ') if Radiant::Config.table_exists? && Radiant::Config["forum.attachment.content_types"]
+  validates_attachment_size :file, :less_than => Radiant::Config["forum.attachment.max_size"].to_i.megabytes if Radiant::Config.table_exists? && Radiant::Config["forum.attachment.max_size"]
 
   named_scope :images, :conditions => ["file_content_type IN (#{image_content_types.map{'?'}.join(',')})", *image_content_types]
   named_scope :non_images, :conditions => ["file_content_type NOT IN (#{image_content_types.map{'?'}.join(',')})", *image_content_types]

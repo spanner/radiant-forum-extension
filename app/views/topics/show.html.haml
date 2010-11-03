@@ -2,10 +2,8 @@
   = render :partial => 'readers/flasher'
 
 - content_for :messages do
-  = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false }
-
-- content_for :sidebar do
-  = render :partial => "latest"
+  = render :partial => 'posts/post', :object => @first_post, :locals => { :with_context => false, :first => true}
+  = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false, :first => false }
 
 - content_for :new_topic do
   .newmessage
@@ -24,6 +22,13 @@
 - content_for :title do
   = @topic.name
 
+- content_for :thing_title do
+  = @topic.name
+
+- content_for :speaker do
+  .speaker
+    = gravatar_for(@topic.reader, {:size => 40}, {:alt => @topic.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
+  
 - content_for :credits do
   %p.context
     posted by
@@ -32,14 +37,14 @@
     in
     = link_to @topic.forum.name + '.', forum_url(@topic.forum), {:class => 'breadhead'}
 
-- content_for :mugshot do
-  = gravatar_for(@topic.reader, {:size => 42}, {:alt => @topic.reader.name, :class => 'gravatar'})
-
 - content_for :feed do
   = feed_link(topic_path(@topic, :format => :rss))
 
 - content_for :controls do
   = render :partial => 'readers/controls'
+
+- content_for :parent do
+  = link_to @topic.forum.name + ':', forum_url(@topic.forum)
 
 - content_for :breadhead do
   = link_to t('forum'), forum_home_url
@@ -57,7 +62,7 @@
   = yield :pagination if @posts.previous_page
   = yield :messages
   = yield :pagination if @posts.next_page
-  = yield :reply_form
+  = yield :reply_form unless @posts.next_page
 
 
 

@@ -6,8 +6,6 @@
       %li.topic
         %span.subject
           %a{:href => forum_topic_url(topic.forum, topic)}
-            - if topic.reader
-              = gravatar_for(topic.reader, {:size => 40}, {:alt => topic.reader.name, :class => 'gravatar'})
             = topic.name
         %span.context
           = t('posted_by')

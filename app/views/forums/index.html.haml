@@ -42,8 +42,6 @@
   = t('forums')
   
 #forum
-  = yield :new_topic
-  = yield :preamble
   = yield :pagination if @forums.previous_page
   = yield :messages
   = yield :pagination if @forums.next_page

@@ -62,7 +62,7 @@ module ForumHelper
       elsif (date.to_datetime == Date.yesterday)
         format = t('time_yesterday')
       elsif (date.to_datetime > 6.days.ago)
-        format = t('time_recently')
+        format = t('date_recently')
       elsif (date.year == Date.today.year)
         format = t('date_this_year')
       else

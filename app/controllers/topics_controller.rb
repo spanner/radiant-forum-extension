@@ -27,11 +27,8 @@ class TopicsController < ReaderActionController
     end
     @topic.hit! unless current_reader and @topic.reader == current_reader
     store_location((request.format == 'text/html') ? request.request_uri : request.referer)
-    
-    params[:per_page] ||= 20
-    params[:page] = 1 if params[:page] == 'first'
-    params[:page] = (@topic.posts.count.to_f / params[:per_page].to_f).ceil if params[:page] == 'last'
-    @posts = Post.paginate_by_topic_id(@topic.id, :page => params[:page], :per_page => params[:per_page], :include => :reader, :order => 'posts.created_at asc')
+    @first_post = @topic.first_post
+    @posts = @topic.replies.paginate(pagination_parameters.merge(:include => :reader, :order => 'posts.created_at asc'))
     render_page_or_feed(@page ? 'comments' : 'show')
   end
   
