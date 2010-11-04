@@ -1,54 +1,63 @@
-= render :partial => 'readers/flasher'
+- content_for :signals do
+  = render :partial => 'readers/flasher'
 
-#forum
-  #search
+- content_for :messages do
+  = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true, :hide_author => false, :preview => true}
 
-  - if @searching
-    - if @posts.empty?
-      %p No messages found.
-
-    - else
-      %p
-        We found
-        = @posts.total_entries
-        = @description + ':'
-
-      - if @posts.previous_page
-        = paginate_and_summarise @posts, 'posts'
-
-      %ul.main
-        = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true, :hide_author => false, :preview => true}
-
-      = paginate_and_summarise @posts, 'posts'
-
-  - else
-    = render :partial => 'posts/search'
+- content_for :pagination do
+  = pagination_and_summary_for @posts, t('post')
 
 - content_for :breadcrumbs do
-  = link_to 'Forum', topics_url
-  - if @searching
-    \&gt;
-    = link_to "Posts", posts_url
-    \&gt;
-    = @title
-  - else
-    \&gt;
-    Search
+  = link_to t('forum').titlecase, '/forum'
+  = t('separator')
+  = link_to t('posts').titlecase, '/forum/posts'
 
 - content_for :breadhead do
+  = link_to t("Posts"), posts_url, :class => 'breadhead'
+
+- if @searching
+  - content_for :title do
+    = t('search_results')
+    
+  - content_for :thing_title do
+    = t('search_results')
+      
+  - content_for :introduction do
+    - if @posts.empty?
+      %p 
+        =t('no_posts_found')
+    - else
+      %p
+        = t('posts_found', :count => @posts.total_entries)
+        - unless params[:q].blank?
+          = t('matching')
+          %strong
+            = params[:q]
+        - if @reader
+          = t('from_reader', :name => @reader.name)
+        - if @topic
+          = t('filed_in', :name => @topic.name)
+        - elsif @forum
+          = t('filed_in', :name => @forum.name)
+          
+  - content_for :feed do
+    = feed_link(search_posts_url(params.merge(:format => :rss)))
+
+- else
+  - content_for :title do
+    = t('search')
+  - content_for :introduction do
+    = t('search_introduction')
+
+- content_for :search do
+  = render :partial => 'search'
+
+
+
+#forum
   - if @searching
-    = link_to "Posts", posts_url, :class => 'breadhead'
-  - else
-    = link_to "Posts", topics_url, :class => 'breadhead'
-
-- content_for :pagetitle do
-  - if @searching
-    = @title || 'Search results'
-  - else
-    Search
-
-- content_for :feed do
-  = feed_link(search_posts_url(params.merge(:format => :rss))) if @searching
-
-- content_for :controls do
-  = render :partial => 'readers/controls'
+    = yield :pagination if @posts.previous_page
+    = yield :messages
+    = yield :pagination if @posts.next_page
+  #search
+    = yield :search

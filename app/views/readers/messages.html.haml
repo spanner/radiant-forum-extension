@@ -1,0 +1,48 @@
+- content_for :signals do
+  = render :partial => 'flasher'
+
+- content_for :introduction do
+  - if @reader.description.blank?
+    - if @reader == current_reader
+      %p
+        = t('invite_description', :url => edit_reader_url(current_reader))
+    - else
+      %p 
+        = t('no_description_provided')
+  - else
+    = clean_textilize @reader.description
+
+- content_for :messages do
+  - if @posts
+    = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => true, :without_author => false, :preview => true }
+  - else
+    %p 
+      = t('no_messages_yet')
+
+- content_for :pagination do
+  = pagination_and_summary_for @posts, t('post')
+
+- content_for :breadcrumbs do
+  = link_to t('home').titlecase, '/'
+  = t('separator')
+  = link_to t('people').titlecase, '/readers'
+  = t('separator')
+  = @reader.name
+
+- content_for :title do
+  = @reader.name
+
+- content_for :speaker do
+  .speaker
+    = gravatar_for(@reader, {:size => 42}, {:alt => @reader.name, :class => 'gravatar'})
+  
+- content_for :breadhead do
+  = link_to t('people').titlecase, '/readers'
+
+#reader
+  = yield :introduction
+  
+#forum
+  = yield :pagination if @posts.previous_page
+  = yield :messages
+  = yield :pagination if @posts.next_page

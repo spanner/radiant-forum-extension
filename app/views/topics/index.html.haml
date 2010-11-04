@@ -1,7 +1,7 @@
 - content_for :signals do
   = render :partial => 'readers/flasher'
 
-- content_for :preamble do
+- content_for :introduction do
   %p
     = t('topics_introduction')
     = link_to( t('categories'), forums_url) + '.'

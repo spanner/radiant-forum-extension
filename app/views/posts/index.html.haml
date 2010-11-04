@@ -4,7 +4,7 @@
 - content_for :title do
   = t('latest_posts')
 
-- content_for :preamble do
+- content_for :introduction do
   %p
     = t('posts_introduction')
   
@@ -13,8 +13,7 @@
     %p 
       = t('no_posts')
   - else
-    %ul.main
-      = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true}
+    = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true}
 
 - content_for :sidebar do
   = render :partial => "topics/latest"

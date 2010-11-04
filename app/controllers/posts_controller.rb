@@ -42,19 +42,7 @@ class PostsController < ReaderActionController
     @forums = @posts.collect(&:forum).uniq
     @topics = @posts.collect(&:topic).uniq
     @readers = @posts.collect(&:reader).uniq
-    
-    if @searching
-      @title = "Search Results"
-      @description = "Posts"
-      @description << " matching '#{params[:q]}'" unless params[:q].blank?
-      @description << " from #{@reader.name}" if @reader
-      if @topic
-        @description << " under #{@topic.name}"
-      elsif @forum
-        @description << " in #{@forum.name}"
-      end
-    end
-    
+
     render_page_or_feed
   end
 

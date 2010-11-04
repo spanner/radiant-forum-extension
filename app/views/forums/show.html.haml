@@ -7,7 +7,7 @@
 - content_for :thing_title do
   = @forum.name
 
-- content_for :preamble do
+- content_for :introduction do
   = clean_textilize(@forum.description)
 
 - content_for :new_topic do

@@ -12,7 +12,6 @@ class ForumExtension < Radiant::Extension
   def activate
     Reader.send :include, ForumReader
     ReaderNotifier.send :include, ForumReaderNotifier
-    ReadersController.send :include, ForumReadersController
     Page.send :include, ForumPage
     UserActionObserver.instance.send :add_observer!, Forum
     UserActionObserver.instance.send :add_observer!, Topic
