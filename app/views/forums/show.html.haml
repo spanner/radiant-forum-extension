@@ -32,9 +32,6 @@
 - content_for :feed do
   = feed_link(forum_path(@forum, :format => :rss))
 
-- content_for :parent do
-  = link_to t('forum') + ':', forum_home_url
-
 - content_for :breadhead do
   = link_to t("forum"), forum_home_url
   = t('separator')

@@ -7,68 +7,71 @@
       %tr
         - render_region :thead do |thead|
           - thead.title_header do
-            %th.forum Forum
+            %th.forum 
+              =t('forum').titlecase
+          - thead.description_header do
+            %th.description
+              =t('description').titlecase
           - thead.latest_header do
-            %th.forum_latest Latest activity
+            %th.forum_latest 
+              =t('latest_activity').titlecase
           - thead.modify_header do
-            %th.action Action
+            %th.action
     %tbody
       - @forums.each do |forum|
-        %tr.node.level-1
+        %tr
           - render_region :tbody do |tbody|
-
             - tbody.title_cell do
-              %td.forum
-                %h3
-                  = link_to forum.name, edit_admin_forum_url(:id => forum)
+              %td.name
+                = link_to forum.name, edit_admin_forum_url(:id => forum)
                 -if forum.for_comments
                   %p.context
-                    (comments forum)
+                    = t('for_comments')
+                    
+            - tbody.description_cell do
+              %td.forum_description
                 = textilize(forum.description)
-                %p
-                  - if forum.respond_to?(:site)
-                    = link_to "&rarr; browse discussions", 'http://' + forum.site.base_domain + forum_path(forum)
-                  - else
-                    = link_to "&rarr; browse discussions", forum_path(forum)
 
             - tbody.latest_cell do
               %td.forum_latest
                 - if forum.posts_count > 0
                   %ul.latest
-                    - forum.recent_topics.latest.each do |topic|
+                    - forum.topics.latest(1).each do |topic|
                       %li.topic
+                        = friendly_date(topic.replied_at) + ":"
                         - if topic.page
+                          - t('comment_on')
                           = link_to topic.page.title, "#{topic.page.url}", {:class => 'topic'}
-                        - else
-                          = link_to topic.name, forum_topic_url(topic.forum, topic, :page => 'last'), {:class => 'topic'}
-                        %br
-                        %span.context
-                          from
-                          - if topic.posts.count > 1
-                            = link_to topic.reader.name + '.', reader_url(topic.reader)
-                            = topic.posts.count
-                            = pluralize(topic.posts.count, 'comment') + ','
-                            most recently from
-                            = link_to topic.replied_by.name, reader_url(topic.replied_by)
-                            = friendly_date(topic.replied_at)
-                          - else 
-                            = link_to topic.reader.name, reader_url(topic.reader)
-                            = friendly_date(topic.created_at)
+                          = t('from_reader', :name => topic.replied_by.name)
+                        - elsif topic.replied_by
+                          = t('new_reply_to')
+                          = link_to topic.name, forum_topic_url(topic.forum, topic), {:class => 'topic'}
+                          = t('from_reader', :name => topic.replied_by.name)
+                        - else 
+                          = t('new_topic')
+                          = link_to topic.name, forum_topic_url(topic.forum, topic), {:class => 'topic'}
+                          = t('from_reader', :name => topic.reader.name)
                 -else
                   %p
-                    No topics yet.
+                    = t('no_topics')
+
             - tbody.modify_cell do
-              %td.remove
+              %td.actions
                 -if forum.for_comments
-                  = image('noremove', :alt => 'Remove Forum')
+                  %span.action.disabled
+                    = image('minus_disabled')
+                    = " " + t('remove')
                 -else
                   - if admin?
-                    = link_to image('remove', :alt => 'Remove Forum'), remove_admin_forum_url(:id => forum) 
+                    = link_to image('minus') + ' ' + t('remove'), remove_admin_forum_url(:id => forum) , :class => 'action'
                   - else
-                    = image('noremove', :alt => 'only admin can remove forums')
+                    %span.action.disabled
+                      = image('minus_disabled')
+                      = " " + t('remove')
 
 - render_region :bottom do |bottom|
-  - bottom.new_button do
-    - if admin?
-      %p
-        = link_to image('new-forum', :alt => 'New Forum'), new_admin_forum_url
+  - bottom.buttons do
+    #actions
+      = pagination_for @forums
+      %ul
+        %li= link_to image('plus') + " " + t("new_forum"), new_admin_forum_url

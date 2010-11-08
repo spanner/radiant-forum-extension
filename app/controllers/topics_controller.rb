@@ -10,13 +10,12 @@ class TopicsController < ReaderActionController
 
   def index
     params[:per_page] ||= 20
-    @topics = Topic.visible.paginate(:all, pagination_parameters.merge(:order => "topics.sticky desc, topics.replied_at desc", :include => [:forum, :reader]))
+    @topics = Topic.paginate(:all, pagination_parameters.merge(:order => "topics.sticky desc, topics.replied_at desc", :include => [:forum, :reader]))
     render_page_or_feed
   end
 
   def new
     @topic = Topic.new
-    @topic.first_post = @topic.posts.build
     @topic.forum = @forum || Forum.find_by_name(Radiant::Config['forum.default_forum'])
   end
   
@@ -33,24 +32,14 @@ class TopicsController < ReaderActionController
   end
   
   def create
-    # post creation is handled by a before_create in the topic model
-    # and then calls back to set initial reply data in the topic
     @forum = Forum.find(params[:topic][:forum_id]) if params[:topic][:forum_id]
     @topic = @forum.topics.create!(params[:topic])
-    @topic.first_post.save_attachments(params[:files]) unless @topic.page && !Radiant::Config['forum.comments_have_attachments']
-    
     respond_to do |format|
       format.html { redirect_to forum_topic_path(@forum, @topic) }
-    end
-  rescue ActiveRecord::RecordInvalid => invalid
-    flash[:error] = "Sorry: #{invalid}. Please check the form"
-    respond_to do |format|
-      format.html { render :action => 'new' }
     end
   end
   
   def update
-    # post update is handled by a before_update in the topic model
     @topic.attributes = params[:topic]
     @topic.save!
     respond_to do |format|

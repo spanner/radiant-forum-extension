@@ -1,5 +1,6 @@
 #forum
-  %h2 Comments
+  %h2 
+    =t('comments').titlecase
 
   = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false }
   = render :partial => 'posts/reply'

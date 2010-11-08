@@ -6,7 +6,7 @@ class PostsController < ReaderActionController
   before_filter :require_activated_reader, :except => [:index, :show, :search]
   before_filter :find_topic_or_page, :except => [:index, :search]
   before_filter :require_unlocked_topic_and_page, :only => [:new, :create]
-  before_filter :find_post, :except => [:index, :search]
+  before_filter :find_post, :except => [:index, :search, :new, :create]
   before_filter :build_post, :only => [:new]
   before_filter :require_authority, :only => [:edit, :update, :destroy]
 
@@ -76,28 +76,16 @@ class PostsController < ReaderActionController
   def create
     if @topic.new_record?
       # only happens if it's a page comment and the topic has just been built
-      # in that case we can let the topic-creation routines do the post work
-      @topic.body = params[:post][:body]
       @topic.reader = current_reader
       @topic.save!
-      @post = @topic.first_post
-    else
-      @post = @topic.posts.create!(params[:post])
     end
+    @post = @topic.posts.create!(params[:post])
 
-    @post.save_attachments(params[:files]) unless @page && !Radiant::Config['forum.comments_have_attachments']
     Radiant::Cache.clear if @page
 
     respond_to do |format|
       format.html { redirect_to_page_or_topic }
       format.js { render :action => 'show', :layout => false }
-    end
-    
-  rescue ActiveRecord::RecordInvalid
-    flash[:error] = 'Problem!'
-    respond_to do |format|
-      format.html { render :action => 'new' }
-      format.js { render :action => 'new', :layout => false }
     end
   end
 

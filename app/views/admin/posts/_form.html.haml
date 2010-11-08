@@ -1,0 +1,25 @@
+- form_for [:admin, @post] do |f|
+  = hidden_field 'forum', 'lock_version'
+  = render_region :form_top
+  .form-area
+    - render_region :form do |form|
+      - form.show_name do
+        %p.title
+          %label
+            = t('topic_name') + ":"
+          = @post.topic.name
+
+      - form.edit_body do
+        %p.content
+          = f.label :body, t('post_body')
+          = f.text_area :body, :class => "textarea", :style => "width: 100%"
+  
+  - render_region :form_bottom do |form_bottom|
+    - form_bottom.edit_timestamp do
+      = updated_stamp @post  
+    - form_bottom.edit_buttons do
+      %p.buttons
+        = save_model_button(@post)
+        = save_model_and_continue_editing_button(@post)
+        or
+        = link_to 'Cancel', admin_posts_url

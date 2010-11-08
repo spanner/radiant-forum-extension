@@ -1,26 +1,30 @@
 %p.title
-  = form.label :name, 'Discussion title', :class => 'required'
+  = form.label :name, t('label.topic_name'), :class => 'required'
   %br
   = form.text_field :name, :class => 'titular'
   - if admin?
     %br
     %span.quiet
       = form.check_box :sticky
-      %label{:for => 'topic_sticky', :class => 'admin'} Sticky
+      %label{:for => 'topic_sticky', :class => 'admin'}
+        = t('sticky')
       = form.check_box :locked
-      %label{:for => 'topic_locked', :class => 'admin'} Locked
+      %label{:for => 'topic_locked', :class => 'admin'} 
+        = t('locked')
 
-%p.body
-  = form.label :name, 'Opening message'
-  %br
-  = form.text_area :body, :class=> 'standard', :rows => 12
-
-- unless @topic.page && !Radiant::Config['forum.comments_have_attachments']
-  = render :partial => 'posts/uploader', :locals => {:post => @topic.first_post}
+- @topic.first_post ||= @topic.posts.build
+- form.fields_for :first_post, @topic.first_post do |fp|
+  %p.body
+    = fp.label :body, t('label.topic_body')
+    %br
+    = fp.text_area :body, :class=> 'standard', :rows => 12
+    
+  - unless @topic.page && !Radiant::Config['forum.comments_have_attachments']
+    = render :partial => 'posts/uploader', :locals => {:f => fp}
 
 - if @topic.new_record? || admin?
   %p.forum
-    = form.label :forum_id, 'File in category:'
+    = form.label :forum_id, t('label.topic_category')
     %br
     = form.select :forum_id, Forum.visible.collect {|f| [ f.name, f.id ] }, :class=> 'standard'
   

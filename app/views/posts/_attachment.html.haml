@@ -1,5 +1,9 @@
+- af ||= false
 %li
   - if attachment.image?
     = link_to image_tag(attachment.thumbnail), attachment.file.url
   - else
     = link_to attachment.filename, attachment.file.url, :class => "attachment #{attachment.extension}"
+  - if af
+    = af.check_box :_destroy, :class => 'checkbox'
+    

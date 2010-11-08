@@ -55,9 +55,9 @@
 
 
 #forum
+  #search
+    = yield :search
   - if @searching
     = yield :pagination if @posts.previous_page
     = yield :messages
     = yield :pagination if @posts.next_page
-  #search
-    = yield :search

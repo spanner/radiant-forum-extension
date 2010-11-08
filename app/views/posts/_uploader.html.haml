@@ -1,16 +1,15 @@
-- if Radiant::Config['forum.allow_attachments?']
-  - post ||= @post
-
+- if Radiant::Config['forum.allow_attachments?'] && f
+  - post ||= f.object
+  
   .upload_stack
     %ul.attachments
-      = hidden_field_tag "post[attachment_ids][]", ""
-      - post.attachments.each do |attachment|
-        %li.attachment
-          = check_box_tag "post[attachment_ids][]", attachment.id, true, {:id => "post_attachment_#{attachment.id}", :class => 'choose_attachment'}
-          = link_to attachment.filename, attachment.file.url, :class => "attachment #{attachment.extension}"
+      - post.attachments.each do |att|
+        - f.fields_for :attachments, att do |af|
+          = render :partial => 'posts/attachment', :object => att, :locals => {:af => af}
     %ul.uploads
     .selector
-      = file_field_tag "files[]", :class => "filefield"
+      - new_attachment = post.attachments.build
+      - f.fields_for :attachments, new_attachment do |uf|
+        = render :partial => 'posts/upload', :object => new_attachment, :locals => {:uf => uf}
       .addfile
-        = link_to "attach a file", '#'
-      
+        = link_to t('attach_file'), "#"

@@ -3,22 +3,21 @@ class Post < ActiveRecord::Base
   
   is_site_scoped if defined? ActiveRecord::SiteNotFound
   
-  belongs_to :forum, :counter_cache => true
   belongs_to :reader,  :counter_cache => true
   belongs_to :topic, :counter_cache => true
   belongs_to :created_by, :class_name => 'User'
   belongs_to :updated_by, :class_name => 'User'
   has_many :attachments, :class_name => 'PostAttachment', :order => :position, :dependent => :destroy
-  
-  attr_writer :name
+  accepts_nested_attributes_for :attachments, :allow_destroy => true
 
   before_validation :set_reader
-  before_create :set_forum
   after_create :update_topic_reply_data
   after_destroy :revert_topic_reply_data
   
-  validates_presence_of :reader, :topic, :body
+  validates_presence_of :reader, :body
+  # validates_presence_of :topic
 
+  default_scope :order => "created_at DESC"
   named_scope :visible, {}
   named_scope :latest, lambda { |count|
     {
@@ -117,11 +116,11 @@ protected
   end
   
   def update_topic_reply_data
-    self.topic.refresh_reply_data(self)
+    self.topic.refresh_reply_data if self.topic   # topic association not set during initial topic creation because of nested create
   end
 
   def revert_topic_reply_data
-    self.topic.refresh_reply_data
+    self.topic.refresh_reply_data if self.topic   # topic association not set during initial topic creation because of nested create
   end
   
 end

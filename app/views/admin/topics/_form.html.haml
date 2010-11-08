@@ -1,0 +1,24 @@
+- form_for [:admin, @topic] do |f|
+  = render_region :form_top
+  .form-area
+    - render_region :form do |form|
+      - form.edit_name do
+        %p.title
+          = f.label :name, t('topic_name')
+          = f.text_field :name, :class => 'textbox', :maxlength => 100
+
+      - form.edit_body do
+        - f.fields_for :posts, @topic.first_post do |pf|
+          %p.body
+            = pf.label :body, t('topic_body')
+            = pf.text_area :body, :class => "textarea", :style => "width: 100%"
+  
+  - render_region :form_bottom do |form_bottom|
+    - form_bottom.edit_timestamp do
+      = updated_stamp @topic  
+    - form_bottom.edit_buttons do
+      %p.buttons
+        = save_model_button(@topic)
+        = save_model_and_continue_editing_button(@topic)
+        or
+        = link_to 'Cancel', admin_topics_url

@@ -2,18 +2,35 @@
   = render :partial => 'readers/flasher'
 
 - content_for :form do
-  - form_for :topic, :url  => @forum ? forum_topics_path(@forum) : topics_path, :html => {:class => 'friendly', :multipart => true} do |f|
-    = render :partial => "form", :object => f
-    %p.buttons
-      = submit_tag t('new_topic_button')
-      or 
-      - if @forum
-        = link_to t('cancel'), forum_path(@forum)
-      - else
-        = link_to t('cancel'), :back
+  .post_wrapper
+    .post_header
+      %h2
+        = t('new_topic_heading')
+      %p.context
+        = t('logged_in_as', :name => current_reader.name)
+        = t('if_not_you')
+        = link_to(t('log_out'), reader_logout_url) + '.'
+
+    - form_for :topic, @topic, :url  => @forum ? forum_topics_path(@forum) : topics_path, :html => {:class => 'friendly', :multipart => true} do |f|
+      = render :partial => "form", :object => f
+      %p.buttons
+        = submit_tag t('new_topic_button')
+        = t('or')
+        - if @forum
+          = link_to t('cancel'), forum_path(@forum)
+        - else
+          = link_to t('cancel'), :back
+
+- content_for :speaker do
+  %div.speaker
+    %a{:href => reader_url(current_reader), :class => 'main'}
+      = gravatar_for(current_reader, {:size => 40}, {:alt => current_reader.name, :class => 'gravatar', :width => '40', :height => '40'})
 
 - content_for :title do
   = t('new_topic_heading')
+
+- content_for :introduction do
+  = t('new_topic_introduction')
 
 - content_for :breadhead do
   = link_to t('forum'), forum_home_url
@@ -24,12 +41,6 @@
 - content_for :controls do
   = render :partial => 'readers/controls'
 
-- content_for :credits do
-  %p
-    = t('logged_in_as', :name => current_reader.name)
-    = t('if_not_you')
-    = link_to t('log_out'), reader_logout_url
-
 - content_for :breadcrumbs do
   = link_to t('forum'), topics_url
   = t('separator')
@@ -38,8 +49,8 @@
     = t('separator')
   = t('new_topic')
 
-
 #forum
-  = yield :credits
-  = yield :form
+  .post.first
+    = yield :speaker
+    = yield :form
 

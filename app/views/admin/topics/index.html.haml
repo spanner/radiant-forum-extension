@@ -1,0 +1,49 @@
+- include_stylesheet('admin/forum')
+= render_region :top 
+
+#topics_table.outset
+  %table#topics.index{:cellspacing=>"0", :border=>"0", :cellpadding=>"0"}
+    %thead
+      %tr
+        - render_region :thead do |thead|
+          - thead.title_header do
+            %th.topic 
+              = t('topic')
+          - thead.date_header do
+            %th.date 
+          - thead.author_header do
+            %th.author 
+              = t('author')
+          - thead.body_header do
+            %th.body
+              = t('body')
+          - thead.modify_header do
+            %th.action
+    %tbody
+      - @topics.each do |topic|
+        %tr
+          - render_region :tbody do |tbody|
+            - tbody.title_cell do
+              %td.name
+                = link_to topic.name, edit_admin_topic_url(:id => topic)
+
+            - tbody.date_cell do
+              %td.topic_date
+                = friendly_date(topic.created_at)
+
+            - tbody.author_cell do
+              %td.topic_author
+                = link_to topic.reader.name, admin_reader_url(topic.reader)
+                    
+            - tbody.body_cell do
+              %td.topic_body
+                = truncate(topic.first_post.body, :length => 64)
+
+            - tbody.modify_cell do
+              %td.actions
+                = link_to image('minus') + ' ' + t('remove'), remove_admin_topic_url(:id => topic) , :class => 'action'
+
+- render_region :bottom do |bottom|
+  - bottom.buttons do
+    #actions
+      = pagination_for @topics

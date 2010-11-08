@@ -1,7 +1,4 @@
 %form.friendly{:action => search_posts_url}
-  %h2 
-    = t('forum_search')
-
   %p
     %label{:for => "q"}
       = t('search_form.query_label')
@@ -23,5 +20,5 @@
         =t('anyone')
       = options_from_collection_for_select(Reader.find(:all), "id", "name", params[:reader_id].to_i)
 
-  %p
+  %p.buttons
     = submit_tag t("search")

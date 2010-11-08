@@ -25,17 +25,12 @@
 - content_for :thing_title do
   = @topic.name
 
+- content_for :introduction do
+  = t('topic_show_introduction')
+
 - content_for :speaker do
   .speaker
     = gravatar_for(@topic.reader, {:size => 40}, {:alt => @topic.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
-  
-- content_for :credits do
-  %p.context
-    posted by
-    = link_to @topic.reader.name, reader_url(@topic.reader)
-    = friendly_date(@topic.created_at)
-    in
-    = link_to @topic.forum.name + '.', forum_url(@topic.forum), {:class => 'breadhead'}
 
 - content_for :feed do
   = feed_link(topic_path(@topic, :format => :rss))

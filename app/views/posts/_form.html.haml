@@ -1,4 +1,2 @@
 = form.text_area :body, :rows => 10
-
-- if Radiant::Config['forum.comments_have_attachments?'] && !@topic.page
-  = render :partial => 'posts/uploader'
+= render :partial => 'posts/uploader', :locals => {:post => @post, :f => form}

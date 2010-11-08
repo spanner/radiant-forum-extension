@@ -1,5 +1,4 @@
-- message_type = @page ? 'comment' : 'reply'
-- purpose = @page ? 'To add a comment' : 'To reply'
+- message_type = @page ? 'comment' : 'post'
 
 - if @topic.locked?
   %p.administrative
@@ -18,20 +17,19 @@
         .post_wrapper
           .post_header
             %h2
-              = t('add_message', :message_type => message_type)
+              = t('add_post', :message_type => message_type)
             %p.context
-              You are currently logged in as 
-              = link_to(current_reader.name, reader_url(current_reader)) + '.'
-              If that's not you, please 
-              = link_to("log out", reader_logout_url) + '.'
+              = t('logged_in_as', :name => current_reader.name)
+              = t('if_not_you')
+              = link_to(t('log_out'), reader_logout_url) + '.'
 
           - form_for :post, :url => formurl, :html => {:id => 'reply_form', :multipart => true, :class => 'friendly inline'} do |f|
             = render :partial => 'posts/form', :object => f
             %p.buttons
-              = f.submit "Post #{message_type}"
+              = f.submit t('post_post', :message_type => message_type)
 
     - else
-      = render :partial => 'reader_activations/activation_required', :locals => {:purpose => purpose}
+      = render :partial => 'reader_activations/activation_required', :locals => {:purpose => t('to_add_post', :message_type => message_type)}
       
   - else
-    = render :partial => 'reader_sessions/login_form', :locals => {:purpose => purpose}
+    = render :partial => 'reader_sessions/login_form', :locals => {:purpose => t('to_add_post', :message_type => message_type)}

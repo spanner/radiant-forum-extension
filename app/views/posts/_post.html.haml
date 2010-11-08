@@ -12,23 +12,29 @@
 
   .post_wrapper
     .post_header
-
       %p.context
         - if with_context
           - if post.first?
             = t('new_topic')
             = link_to post.topic.name, forum_topic_url(post.topic.forum, post.topic)
             = t('started_on', :date => friendly_date(post.created_at))
-            = t('in_category')
+            = t('in')
             = link_to post.topic.forum.name, forum_url(post.topic.forum)
+            = t('by')
+            = link_to post.reader.name, search_posts_url(:reader_id => post.reader.id), :class => 'person'
           - else
             = t('a_reply_to')
             = link_to post.topic.name, forum_topic_url(post.topic.forum, post.topic)
             = t('posted_on', :date => friendly_date(post.created_at))
-          
-        - unless without_author
+            = t('by')
+            = link_to post.reader.name, search_posts_url(:reader_id => post.reader.id), :class => 'person'
+        - else
+          - if post.first?
+            = t('started_on', :date => friendly_date(post.created_at))
+          - else
+            = t('posted_on', :date => friendly_date(post.created_at))
           = t('by')
-          = link_to post.reader.name, reader_url(post.reader), :class => 'person'
+          = link_to post.reader.name, search_posts_url(:reader_id => post.reader.id), :class => 'person'
         
         - if post.editable_by?(current_reader)
           %br
@@ -49,7 +55,7 @@
       - else
         = clean_textilize(post.body)
 
-      - if Radiant::Config['forum.allow_attachments?'] &&  post.attachments.any?
+      - if Radiant::Config['forum.allow_attachments?'] && post.attachments.any?
         .post_attachments
           %h4 
             = t('attached') + ':'
