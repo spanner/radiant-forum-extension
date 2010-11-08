@@ -1,5 +1,5 @@
 class Forum < ActiveRecord::Base
-  is_site_scoped if defined? ActiveRecord::SiteNotFound
+  has_site if respond_to? :has_site
   default_scope :order => 'name ASC'
   belongs_to :created_by, :class_name => 'User'
   belongs_to :updated_by, :class_name => 'User'

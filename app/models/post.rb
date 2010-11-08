@@ -1,7 +1,6 @@
 require 'sanitize'
 class Post < ActiveRecord::Base
-  
-  is_site_scoped if defined? ActiveRecord::SiteNotFound
+  has_site if respond_to? :has_site
   
   belongs_to :reader,  :counter_cache => true
   belongs_to :topic, :counter_cache => true

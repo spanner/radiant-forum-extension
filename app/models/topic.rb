@@ -1,5 +1,5 @@
 class Topic < ActiveRecord::Base
-  is_site_scoped if defined? ActiveRecord::SiteNotFound
+  has_site if respond_to? :has_site
 
   belongs_to :forum, :counter_cache => true
   belongs_to :page
@@ -12,7 +12,7 @@ class Topic < ActiveRecord::Base
                                                                                                                     
   belongs_to :last_post, :class_name => 'Post', :include => :reader
   belongs_to :replied_by, :class_name => 'Reader'
-  has_many :posts, :order => 'posts.created_at DESC', :include => :reader, :dependent => :destroy do
+  has_many :posts, :order => 'posts.created_at ASC', :include => :reader, :dependent => :destroy do
     def last
       @last_post ||= find(:last)
     end
