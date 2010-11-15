@@ -19,7 +19,7 @@
             %h2
               = t('add_post', :message_type => message_type)
             %p.context
-              = t('logged_in_as', :name => current_reader.name)
+              = t('reader_logged_in_as', :name => current_reader.name)
               = t('if_not_you')
               = link_to(t('log_out'), reader_logout_url) + '.'
 

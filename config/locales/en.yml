@@ -51,7 +51,6 @@ en:
   latest_posts: "Latest comments"
   latest_topics: "all the latest topics"
   locked: "locked"
-  logged_in_as: "You are logged in as %{name}."
   matching: "matching"
   new_forum: "New forum"
   new_reply_to: "New reply to"

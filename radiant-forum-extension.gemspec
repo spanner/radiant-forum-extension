@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{radiant-forum-extension}
-  s.version = "1.1.1"
+  s.version = "1.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["spanner"]
-  s.date = %q{2010-11-01}
+  s.date = %q{2010-11-08}
   s.description = %q{Nice clean forums and page comments for inclusion in your radiant site. Derived long ago from beast. Requires the reader extension and share_layouts.}
   s.email = %q{will@spanner.org}
   s.extra_rdoc_files = [
@@ -20,6 +20,8 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "app/controllers/admin/forums_controller.rb",
+     "app/controllers/admin/posts_controller.rb",
+     "app/controllers/admin/topics_controller.rb",
      "app/controllers/forums_controller.rb",
      "app/controllers/posts_controller.rb",
      "app/controllers/topics_controller.rb",
@@ -36,9 +38,15 @@ Gem::Specification.new do |s|
      "app/views/admin/forums/new.html.haml",
      "app/views/admin/forums/remove.html.haml",
      "app/views/admin/pages/_edit_commentability.html.haml",
+     "app/views/admin/posts/_form.html.haml",
+     "app/views/admin/posts/edit.html.haml",
+     "app/views/admin/posts/index.html.haml",
      "app/views/admin/reader_configuration/_edit_forum.html.haml",
      "app/views/admin/reader_configuration/_forum.html.haml",
      "app/views/admin/sites/_choose_forum_layout.html.haml",
+     "app/views/admin/topics/_form.html.haml",
+     "app/views/admin/topics/edit.html.haml",
+     "app/views/admin/topics/index.html.haml",
      "app/views/forums/_forum.html.haml",
      "app/views/forums/index.html.haml",
      "app/views/forums/show.html.haml",
@@ -56,6 +64,7 @@ Gem::Specification.new do |s|
      "app/views/posts/_post.rss.builder",
      "app/views/posts/_reply.html.haml",
      "app/views/posts/_search.html.haml",
+     "app/views/posts/_upload.html.haml",
      "app/views/posts/_uploader.html.haml",
      "app/views/posts/edit.html.haml",
      "app/views/posts/index.html.haml",
@@ -66,10 +75,9 @@ Gem::Specification.new do |s|
      "app/views/posts/search.rss.builder",
      "app/views/posts/show.html.haml",
      "app/views/reader_notifier/post.rhtml",
-     "app/views/readers/_extra_controls.html.haml",
-     "app/views/readers/show_with_posts.html.haml",
      "app/views/topics/_form.html.haml",
      "app/views/topics/_help.html.haml",
+     "app/views/topics/_latest.html.haml",
      "app/views/topics/_locked.html.haml",
      "app/views/topics/_topic.html.haml",
      "app/views/topics/_topic.rss.builder",
@@ -80,6 +88,7 @@ Gem::Specification.new do |s|
      "app/views/topics/new.html.haml",
      "app/views/topics/show.html.haml",
      "app/views/topics/show.rss.builder",
+     "config/initializers/radiant_config.rb",
      "config/locales/en.yml",
      "config/routes.rb",
      "db/migrate/001_create_forum_tables.rb",
