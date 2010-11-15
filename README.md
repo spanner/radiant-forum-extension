@@ -23,30 +23,32 @@ There's a lot going on here and plenty of places for me to hide bugs, but the te
 
 ## Latest
 
-* Quite a lot of tidying up and trimming of the interface
-* sample javascripts and layout updated
-* Updated for 0.8.1 with gem and extension dependencies, and many small fixes to keep up with the `reader` and `group_forum` extensions.
+* Everything updated for 0.9.x and latest changes to reader
+* Public interface internationalized
+* Scripting all moved over to jquery (mootools too niche, sadly)
+* Uses the new radiant configuration interface
+* Basic admin interface as well as readerland administration
+* Lots of simplifications
+* Editable interval for messages
 
 ## Still to do
 
-* Moderators among readership
-* Reinstate message preview
-* Reinstate email-monitoring
+* Revisit the page-comments mechanism
+* Allow moderation by selected readers
 * Message-problem button
-* Admin pages that are less crappy
-* Anonymous page-comment option
+* Admin dashboard
 
 ## Requirements
 
-Radiant 0.8.1 (we're using the new config machinery) with the [reader](http://github.com/spanner/radiant-reader-extension) extension. Reader has a few requirements of its own so it's best to install that one first, make sure it's testing clean and then install the forum.
+Radiant 0.9.2 (we're using the new configuration interface) with the [reader](http://github.com/spanner/radiant-reader-extension) extension. Reader has a few requirements of its own so it's best to install that one first, make sure it's testing clean and then install the forum.
 
-We also require [will_paginate](http://github.com/mislav/will_paginate/) and [paperclip](http://github.com/thoughtbot/paperclip/) as gems. The latter is for post attachments, and if you're using [paperclipped](http://github.com/kbingman/paperclipped) (which vendors paperclip) then you can probably skip it. Otherwise:
+We also require [will_paginate](http://github.com/mislav/will_paginate/) and [paperclip](http://github.com/thoughtbot/paperclip/) as gems.
 
 	sudo rake gems:install
 	
 should get everything you need. 
 
-The forum is compatible with multi_site but you have to use [sites](https://github.com/spanner/radiant-sites-extension) instead if you want forums and readers site-scoped.
+The forum is compatible with multi_site but you should use [sites](https://github.com/spanner/radiant-sites-extension) instead if you want forums and readers site-scoped.
 
 ## Installation
 
@@ -54,7 +56,7 @@ The usual:
 
 	git submodule add git://github.com/spanner/radiant-forum-extension.git vendor/extensions/forum
 
-Check the extension loading order in environment.rb (you will need `share_layouts`, `reader` and perhaps `multi_site` to load before this one) and then:
+Check the extension loading order in environment.rb (you will need `layouts`, `reader` and perhaps `sites` to load before this one) and then:
 
 	rake radiant:extensions:forum:migrate
 	rake radiant:extensions:forum:update
@@ -71,15 +73,11 @@ The forum is easy to use and almost entirely separate from your page hierarchy. 
 
 ## Configuration
 
-A few config options can be set:
-
-* `forum.layout` should be the name of the layout you want to use for reader-facing forum pages. See below for more detail.
-* `forum.default_forum` is the name of the forum that will be selected by default in the new-message form
-* `forum.editable_period` is the number of minutes for which posts remain editable by their authors once they have been submitted
+There is now a configuration panel for the forum and you shouldn't have to do any console-tinkering.
 
 ## Layouts
 
-We use `share_layouts` to present your forum pages inside the radiant layout of your choice. Set the config option 'forum.layout' to the name of the layout you want to use (or see below for multi_site instructions). Your layout can work in the usual way: all we do is define page parts for you to include with `<r:content part="something" />`. These are the parts available:
+We use `share_layouts` (or, now, `layouts`) to present your forum pages inside the radiant layout of your choice. Set the config option 'forum.layout' to the name of the layout you want to use (or see below for multi_site instructions). Your layout can work in the usual way: all we do is define page parts for you to include with `<r:content part="something" />`. These are the parts available:
 
 * the main page content (that you get with a bare `<r:content />`) gives you the main list, object or form.
 * 'pagetitle' will be the main page heading (eg the name of the topic): `<r:content part="pagetitle" />`
