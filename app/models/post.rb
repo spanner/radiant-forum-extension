@@ -2,62 +2,66 @@ require 'sanitize'
 class Post < ActiveRecord::Base
   has_site if respond_to? :has_site
   
-  belongs_to :reader,  :counter_cache => true
-  belongs_to :topic, :counter_cache => true
-  belongs_to :created_by, :class_name => 'User'
-  belongs_to :updated_by, :class_name => 'User'
+  belongs_to :reader
+  belongs_to :topic
+  belongs_to :page
   has_many :attachments, :class_name => 'PostAttachment', :order => :position, :dependent => :destroy
+
+  accepts_nested_attributes_for :topic
   accepts_nested_attributes_for :attachments, :allow_destroy => true
-
-  before_validation :set_reader
-  after_create :update_topic_reply_data
-  after_destroy :revert_topic_reply_data
-  
   validates_presence_of :reader, :body
-  # validates_presence_of :topic
 
+  after_create :update_reply_data
+  after_destroy :update_reply_data
+  
   default_scope :order => "created_at DESC"
-  named_scope :visible, {}
-  named_scope :latest, lambda { |count|
-    {
-      :order => 'created_at DESC',
-      :limit => count
-    }
-  }
-  named_scope :except, lambda { |post|
-    {
-      :conditions => ["NOT posts.id = ?", post.id]
+  
+  named_scope :comments, :conditions => "page_id IS NOT NULL"
+  named_scope :non_comments, :conditions => "page_id IS NULL"
+  named_scope :in_topic, lambda { |topic| { :conditions => ["topic_id = ?", topic.id] }}
+  named_scope :in_topics, lambda { |topics| { :conditions => ["topic_id IN (#{topics.map("?").join(',')})", topics.map(&:id)] }}
+  named_scope :in_forum, lambda { |forum| in_topics(forum.topics) }
+  named_scope :from, lambda { |reader| { :conditions => ["reader_id = ?", reader.id] }}
+  named_scope :latest, lambda { |count| { :order => 'created_at DESC', :limit => count }}
+  named_scope :except, lambda { |post| { :conditions => ["NOT posts.id = ?", post.id] }}
+  named_scope :distinct_readers, :select => "DISTINCT posts.reader_id" do
+    def count
+      self.length    # replacing some bad sugar
+    end
+  end
+  named_scope :containing, lambda { |term|
+    { 
+      :conditions => "posts.body LIKE :term OR topics.name LIKE :term", :term => "%#{term}%",
+      :joins => "LEFT OUTER JOIN topics on posts.topic_id = topics.id"
     }
   }
 
-  def topic_page
-    self.topic.page_for(self)
+  def holder
+    page || topic
+  end
+    
+  def comment?
+    !!page
   end
   
-  def to_xml(options = {})
-    options[:except] ||= []
-    options[:except] << :topic_title << :forum_name
-    super
+  def page_when_paginated
+    holder.page_for(self)
   end
   
-  def dom_id
-    "post_#{self.id}"
+  def forum
+    topic.forum unless comment?
   end
   
   def first?
-    self.topic.first_post == self
+    !holder || holder.posts.first == self
+  end
+
+  def locked?
+    holder && holder.locked?
   end
   
   def has_replies?
-    self.topic.last_post != self
-  end
-  
-  def is_comment?
-    !self.topic.page.nil?
-  end
-  
-  def page
-    return self.topic.page if is_comment?
+    holder.posts.last != self
   end
   
   def editable_interval
@@ -80,13 +84,12 @@ class Post < ActiveRecord::Base
     return false unless reader
     still_editable? && reader && (reader.id == reader_id)
   end
-  
-  def visible_to?(reader=nil)
-    topic.forum.visible_to?(reader)
-  end
 
-  # we shouldn't have formatting in here, but page comments need to be rendered from a radius tag
+  def visible_to?(reader=nil)
+    return true if reader || Radiant::Config['forum.public?']
+  end
   
+  # so that page comments can be rendered from a radius tag
   def body_html
     if body
       html = RedCloth.new(body, [ :hard_breaks, :filter_html ]).to_html(:textile, :smilies)
@@ -103,23 +106,13 @@ class Post < ActiveRecord::Base
   def save_attachments(files=nil)
     files.collect {|file| self.attachments.create(:file => file) unless file.blank? } if files
   end
-  
-protected
 
-  def set_reader
-    self.reader ||= Reader.current
+  def update_reply_data
+    topic.refresh_reply_data if topic
   end
 
-  def set_forum
-    self.forum ||= self.topic.forum
-  end
-  
-  def update_topic_reply_data
-    self.topic.refresh_reply_data if self.topic   # topic association not set during initial topic creation because of nested create
+  def dom_id
+    "post_#{self.id}"
   end
 
-  def revert_topic_reply_data
-    self.topic.refresh_reply_data if self.topic   # topic association not set during initial topic creation because of nested create
-  end
-  
 end

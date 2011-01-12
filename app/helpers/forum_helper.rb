@@ -2,7 +2,7 @@ require 'sanitize'
 module ForumHelper
 
   def home_page_link(options={})
-    home_page = (defined? Site && Site.current) ? Site.current.home_page : Page.find_by_parent_id(nil)
+    home_page = Page.find_by_parent_id(nil)
     link_to home_page.title, home_page.url, options
   end
   

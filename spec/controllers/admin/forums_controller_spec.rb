@@ -34,7 +34,7 @@ describe Admin::ForumsController do
       it "should deny you access to #{action} action if you are not an admin" do
         lambda { 
           send(method, action, :id => forum_id(:public)) 
-        }.should restrict_access(:deny => [users(:developer), users(:existing)],
+        }.should restrict_access(:deny => [users(:designer), users(:existing)],
                                  :url => '/admin/page')
       end
     end
@@ -47,7 +47,7 @@ describe Admin::ForumsController do
       it "should allow you to access to #{action} action even if you are not an admin" do
         lambda { 
           send(method, action, :id => forum_id(:public)) 
-        }.should restrict_access(:allow => [users(:developer), users(:admin), users(:existing)], :url => '/admin/pages')
+        }.should restrict_access(:allow => [users(:designer), users(:admin), users(:existing)], :url => '/admin/pages')
       end
     end
   end

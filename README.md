@@ -23,6 +23,7 @@ There's a lot going on here and plenty of places for me to hide bugs, but the te
 
 ## Latest
 
+* page comments data structure simplified: page comments are just posts that have a page but no topic. Migration required.
 * Everything updated for 0.9.x and latest changes to reader
 * Public interface internationalized
 * Scripting all moved over to jquery (mootools too niche, sadly)
@@ -33,7 +34,6 @@ There's a lot going on here and plenty of places for me to hide bugs, but the te
 
 ## Still to do
 
-* Revisit the page-comments mechanism
 * Allow moderation by selected readers
 * Message-problem button
 * Admin dashboard
@@ -42,7 +42,7 @@ There's a lot going on here and plenty of places for me to hide bugs, but the te
 
 Radiant 0.9.2 (we're using the new configuration interface) with the [reader](http://github.com/spanner/radiant-reader-extension) extension. Reader has a few requirements of its own so it's best to install that one first, make sure it's testing clean and then install the forum.
 
-We also require [will_paginate](http://github.com/mislav/will_paginate/) and [paperclip](http://github.com/thoughtbot/paperclip/) as gems.
+We also require [will_paginate](http://github.com/mislav/will_paginate/) and [paperclip](http://github.com/thoughtbot/paperclip/) as gems but you will already have those.
 
 	sudo rake gems:install
 	

@@ -1,2 +1,47 @@
-= form.text_area :body, :rows => 10
-= render :partial => 'posts/uploader', :locals => {:post => @post, :f => form}
+.post_wrapper
+  .post_speaker
+    %a{:href => reader_url(current_reader), :class => 'main'}
+      = gravatar_for(current_reader, {:size => 40}, {:alt => current_reader.name, :class => 'gravatar', :width => '40', :height => '40'})
+    %h2
+      - if @post.comment?
+        = t('add_comment')
+      - if @post.first?
+        = t('start_topic')
+      - else
+        = t('add_reply')
+    %p.context
+      = t('reader_logged_in_as', :name => current_reader.name)
+      = t('if_not_you')
+      = link_to(t('log_out'), reader_logout_url) + '.'
+
+  - form_for @post, :html => {:multipart => true, :id => "post_form_#{@post.id}", :class => 'friendly'} do |f|
+    - if @post.first?
+      .post_topic
+        - f.fields_for :topic do |tf|
+          %p
+            = tf.label :name, t('label.topic.name'), :class => 'required'
+            %br
+            = tf.text_field :name, :class => 'titular'
+            - if admin?
+              %br
+              %span.quiet
+                = tf.check_box :sticky
+                = tf.label :sticky, t('label.topic.sticky')
+                = tf.check_box :locked
+                = tf.label :locked, t('label.topic.locked')
+          %p
+            = tf.label :forum_id, t('label.topic.forum')
+            %br
+            = tf.select :forum_id, Forum.all.collect {|f| [ f.name, f.id ] }, :class=> 'standard'
+            
+      .post_body
+        %p
+          = f.label :body, t('label.post.body'), :class => 'required'
+          = f.text_area :body, :rows => 10
+
+      = render :partial => 'posts/uploader', :locals => {:post => @post, :f => f}
+
+      %p.buttons
+        = f.submit t('save_post')
+
+

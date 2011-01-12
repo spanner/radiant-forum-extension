@@ -2,19 +2,23 @@
   = render :partial => 'readers/flasher'
 
 - content_for :title do
-  = t('forums')
+  = t('forums_heading')
 
-- content_for :new_topic do
+- content_for :introduction do
+  = t('forums_introduction')
+
+- content_for :newtopic do
   .newmessage
-    = link_to t('new_topic'), new_topic_url
+    = link_to t('new_topic'), new_post_url
 
 - content_for :messages do
   - if @forums.empty?
     %p 
       = t('no_forums')
   - else
-    %ul.main
-      = render :partial => 'forums/forum', :collection => @forums
+    = yield :pagination if @forums.previous_page
+    = render :partial => 'forums/forum', :collection => @forums
+    = yield :pagination if @forums.next_page
 
 - content_for :sidebar do
   = render :partial => "topics/latest"
@@ -22,21 +26,22 @@
 - content_for :pagination do
   = pagination_and_summary_for(@forums, t('forum'))
 
-- content_for :feed do
+- content_for :feedlink do
   = feed_link(forums_path(:format => :rss))
 
 - content_for :controls do
   = render :partial => 'readers/controls'
-  
+
 - content_for :breadhead do
-  = link_to t("forum"), forum_home_url
+  = home_page_link
+  = t('separator')
+  = link_to t('forum').titlecase, topics_url
 
 - content_for :breadcrumbs do
-  = link_to 'Forum', topics_url
-  \&gt;
-  = t('forums')
+  = yield :breadhead
+  = t('separator')
+  = yield :title
   
 #forum
-  = yield :pagination if @forums.previous_page
   = yield :messages
-  = yield :pagination if @forums.next_page
+  = yield :newtopic

@@ -1,14 +1,23 @@
-- message_type = @page ? 'comment' : 'reply'
+- content_for :form do
+  = render :partial => 'form'
 
-#forum
-  = render :partial => 'posts/reply'
+- content_for :pagetitle do
+  - if @page
+    = t('new_comment')
+  - elsif @topic 
+    = t('new_reply')
+  - else
+    = t('new_topic')
 
 - content_for :breadhead do
   - if @page
     = link_to @page.title, @page.url, :class => 'breadhead'
-  - else 
+  - elsif @topic 
     = link_to @topic.name, forum_topic_url(@topic.forum, @topic), :class => 'breadhead'
+  - else
+    = link_to @forum.name, forum_url(@topic.forum), :class => 'breadhead'
 
-- content_for :pagetitle do
-  Add a
-  = message_type
+
+
+#forum
+  = yield :form

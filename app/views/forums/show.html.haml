@@ -4,24 +4,12 @@
 - content_for :title do
   = @forum.name
 
-- content_for :thing_title do
-  = @forum.name
-
 - content_for :introduction do
   = clean_textilize(@forum.description)
 
-- content_for :new_topic do
-  - unless @forum.for_comments?
-    .newmessage
-      = link_to t('new_topic_here'), new_forum_topic_url(@forum)
-
-- content_for :messages do
-  - if @topics.empty?
-    %p 
-      = t('no_topics')
-  - else
-    %ul.main
-      = render :partial => 'topics/topic', :collection => @topics, :locals => { :with_context => false }
+- content_for :newtopic do
+  .newmessage
+    = link_to t('new_topic_here'), new_post_url(:forum_id => @forum.id)
 
 - content_for :sidebar do
   = render :partial => "topics/latest"
@@ -29,26 +17,38 @@
 - content_for :pagination do
   = pagination_and_summary_for @topics, 'topics'
 
-- content_for :feed do
+- content_for :feedlink do
   = feed_link(forum_path(@forum, :format => :rss))
 
-- content_for :breadhead do
-  = link_to t("forum"), forum_home_url
-  = t('separator')
+- content_for :parent do
   = link_to t('forums'), forums_url
 
+- content_for :breadhead do
+  = home_page_link
+  = t('separator')
+  = link_to t('forum').titlecase, topics_url
+  = t('separator')
+  = yield :parent
+
 - content_for :breadcrumbs do
-  = link_to t("forum"), forum_home_url
+  = yield :breadhead
   = t('separator')
-  = link_to t('categories'), forums_url
-  = t('separator')
-  = link_to @forum.name, forum_url(@forum) 
+  = yield :title
 
 - content_for :controls do
   = render :partial => 'readers/controls'
 
+- content_for :messages do
+  - if @topics.empty?
+    %p 
+      = t('no_topics')
+  - else
+    = yield :pagination if @topics.previous_page
+    = render :partial => 'topics/topic', :collection => @topics, :locals => { :with_context => false }
+    = yield :pagination if @topics.next_page
+
+
 
 #forum
-  = yield :pagination if @topics.previous_page
   = yield :messages
-  = yield :pagination if @topics.next_page
+  = yield :newtopic

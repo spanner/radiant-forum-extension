@@ -1,8 +1,6 @@
 require File.dirname(__FILE__) + '/../spec_helper'
-Radiant::Config['reader.layout'] = 'Main'
 
 describe ForumsController do
-  dataset :forum_readers
   dataset :forums
 
   before do
@@ -33,10 +31,9 @@ describe ForumsController do
   end
   
   [:new, :edit, :update, :create, :destroy].each do |action|
-    it "should redirect #{action} requests to admin login" do
-      get action, :id => forum_id(:public)
-      response.should be_redirect
-      response.should redirect_to(admin_forums_url)
+    it "should fail #{action} requests" do
+      lambda { get action, :id => forum_id(:public) }.should raise_error ActionController::RoutingError
     end
   end
+
 end

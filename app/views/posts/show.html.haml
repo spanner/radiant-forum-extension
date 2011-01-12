@@ -1,5 +1,5 @@
 - content_for :messages do
-  = render :partial => 'post', :object => @post, :locals => {:with_context => true}
+  = render :partial => 'post', :object => @post
 
 - content_for :parent do
   = link_to @post.topic.name, forum_topic_url(@post.topic, @post.topic.forum)
@@ -10,9 +10,13 @@
 - content_for :speaker do
   = gravatar_for(@post.reader, {:size => 42}, {:alt => @post.reader.name, :class => 'gravatar'})
 
-- content_for :thing_title do
-  = t('reply_to')
-  = @post.topic.name
+- content_for :title do
+  -if @post.page
+    = t('comment_on') + @post.page.title
+  - elsif @post.first?
+    = @post.topic.name
+  - else
+    = t('reply_to') + @post.topic.name
 
 #forum
   = yield :messages

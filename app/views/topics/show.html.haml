@@ -1,20 +1,23 @@
 - content_for :signals do
   = render :partial => 'readers/flasher'
 
-- content_for :messages do
-  = render :partial => 'posts/post', :object => @first_post, :locals => { :with_context => false, :first => true}
-  = render :partial => 'posts/post', :collection => @posts, :locals => { :with_context => false, :first => false }
-
-- content_for :new_topic do
+- content_for :newtopic do
   .newmessage
-    = link_to t('new_topic_here'), new_forum_topic_url(@forum)
+    = link_to t('new_topic_here'), new_post_url(:forum_id => @forum.id)
 
 - content_for :reply_form do
-  - unless @posts.next_page
-    - if @topic.page
-      = link_to "Post a reply", new_topic_post_url(@topic), :class => 'inviting remote_content'
+  - if @topic.locked?
+    %p.administrative
+      = t("topic_locked")
+  - else
+    - if current_reader
+      - if current_reader.activated?
+        - @post = @topic.posts.build
+        = render :partial => 'posts/form'
+      - else
+        = render :partial => 'reader_activations/activation_required', :locals => {:purpose => t('to_reply')}
     - else
-      = render :partial => 'posts/reply'
+      = render :partial => 'reader_sessions/login_form', :locals => {:purpose => t('to_reply')}
 
 - content_for :pagination do
   = pagination_and_summary_for(@posts, t('post'))
@@ -22,17 +25,18 @@
 - content_for :title do
   = @topic.name
 
-- content_for :thing_title do
-  = @topic.name
-
-- content_for :introduction do
-  = t('topic_show_introduction')
-
 - content_for :speaker do
   .speaker
-    = gravatar_for(@topic.reader, {:size => 40}, {:alt => @topic.reader.name, :class => 'gravatar', :width => '40', :height => '40'})
+    - reader = @topic.reader
+    - gravatar = gravatar_for(reader, {:size => 40, :default => "/images/furniture/no_gravatar.png"}, {:alt => reader.name, :class => 'gravatar offset', :width => '40', :height => '40'})
+    = link_to gravatar, reader_url(reader)
 
-- content_for :feed do
+- content_for :introduction do
+  %p.context
+    = render :partial => "topics/context", :locals => {:topic => @topic}
+  = clean_textilize(@topic.body)
+
+- content_for :feedlink do
   = feed_link(topic_path(@topic, :format => :rss))
 
 - content_for :controls do
@@ -42,22 +46,24 @@
   = link_to @topic.forum.name + ':', forum_url(@topic.forum)
 
 - content_for :breadhead do
-  = link_to t('forum'), forum_home_url
+  = home_page_link
   = t('separator')
-  = link_to @forum.name, forum_url(@forum)
+  = link_to t('forum').titlecase, topics_url
+  = t('separator')
+  = yield :parent
 
 - content_for :breadcrumbs do
-  = link_to 'Forum', topics_url
-  \&gt;
-  = link_to @forum.name, forum_url(@forum) 
-  \&gt;
-  = @topic.name
+  = yield :breadhead
+  = t('separator')
+  = yield :title
+
+- content_for :messages do
+  = yield :pagination if @posts.previous_page
+  = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => false}
+  = yield :pagination if @posts.next_page
+
+
 
 #forum
-  = yield :pagination if @posts.previous_page
   = yield :messages
-  = yield :pagination if @posts.next_page
   = yield :reply_form unless @posts.next_page
-
-
-

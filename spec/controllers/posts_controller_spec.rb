@@ -1,9 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
-Radiant::Config['reader.layout'] = 'Main'
 
 describe PostsController do
-  dataset :layouts
-  dataset :posts
+  dataset :forums
   
   before do
     Page.current_site = sites(:test) if defined? Site
@@ -24,17 +22,6 @@ describe PostsController do
       response.should render_template("index")
     end  
   end
-
-  describe "on get to search" do
-    before do
-      get :search
-    end
-
-    it "should redirect to login" do
-      response.should be_redirect
-      response.should redirect_to(reader_login_url)
-    end  
-  end
     
   describe "on get to show" do
     
@@ -42,7 +29,7 @@ describe PostsController do
       before do
         @comment = posts(:comment)
         @page = pages(:commentable)
-        get :show, :id => post_id(:comment), :topic_id => topic_id(:comments), :forum_id => forum_id(:comments)
+        get :show, :id => post_id(:comment)
       end
       it "should redirect to the page address and post anchor" do
         response.should be_redirect
@@ -52,11 +39,11 @@ describe PostsController do
     
     describe "for a normal post" do
       before do
-        get :show, :id => @post.id, :topic_id => @topic.id, :forum_id => @forum.id
+        get :show, :id => @post.id
       end
       it "should redirect to the topic address, post page and post anchor" do
         response.should be_redirect
-        response.should redirect_to(forum_topic_url(@topic.forum, @topic, {:page => @post.topic_page, :anchor => "post_#{@post.id}"}))
+        response.should redirect_to(forum_topic_url(@topic.forum, @topic, {:page => @post.page_when_paginated, :anchor => "post_#{@post.id}"}))
       end
     end
   end
@@ -82,12 +69,12 @@ describe PostsController do
         end
       end
       
-      describe "by xmlhttprequest" do
+      describe "over xmlhttp" do
         before do
           xhr :get, :new, {:topic_id => topic_id(:older), :forum_id => forum_id(:public)}
         end
 
-        it "should render a bare login form for inclusion in the page" do
+        it "should render a bare login form" do
           response.should be_success
           response.should render_template('reader_sessions/_login_form')
           response.layout.should be_nil
@@ -125,19 +112,19 @@ describe PostsController do
 
         it "should render the new post form in the normal way" do
           response.should be_success
-          response.should render_template("new")
+          response.should render_template("posts/new")
           response.layout.should == 'layouts/radiant'
         end
       end
 
-      describe "by xmlhttprequest" do
+      describe "over xmlhttp" do
         before do
           xhr :get, :new, :topic_id => @topic.id, :forum_id => forum_id(:public)
         end
 
-        it "should render a bare comment form for inclusion in the page" do
+        it "should render a bare post form" do
           response.should be_success
-          response.should render_template('posts/_reply')
+          response.should render_template('posts/_form')
           response.layout.should be_nil
         end
       end
@@ -182,12 +169,12 @@ describe PostsController do
             flash[:error].should =~ /locked/
           end
         end
-        describe "by xmlhttprequest" do
+        describe "over xmlhttp" do
           before do
             xhr :post, :create, :post => {:body => 'otherwise complete'}, :topic_id => @topic.id, :forum_id => forum_id(:public)
           end
 
-          it "should render a bare 'locked' template for inclusion in the page" do
+          it "should render a bare 'locked' template" do
             response.should be_success
             response.should render_template('topics/_locked')
             response.layout.should be_nil
@@ -232,17 +219,33 @@ describe PostsController do
         login_as_reader(:normal)
       end
 
-      it "should create the post" do
-        post :create, :post => {:body => 'test post body'}, :topic_id => @topic.id, :forum_id => forum_id(:public)
-        topic = Topic.find(@topic.id)
-        topic.should_not be_nil
-        topic.posts[-1].body.should == 'test post body'
+      describe "over normal http" do
+        before do
+          alphabet = ("a".."z").to_a
+          @body = Array.new(64, '').collect{alphabet[rand(alphabet.size)]}.join
+          post :create, :post => {:body => @body}, :topic_id => @topic.id, :forum_id => forum_id(:public)
+          @post = Post.find_by_body(@body)
+        end
+
+        it "should create the post" do
+          @post.should_not be_nil
+        end
+
+        it "should associate the post with its topic" do
+          @post.topic.should == @topic
+        end
+
+        it "should redirect to the right topic and page" do
+          response.should be_redirect
+          response.should redirect_to(forum_topic_url(@forum, @topic, {:page => @post.page_when_paginated, :anchor => "post_#{@post.id}"}))
+        end
       end
-      
+
       describe "over xmlhttp" do
         before do
           xhr :post, :create, :post => {:body => 'test post body'}, :topic_id => @topic.id, :forum_id => forum_id(:public)
         end
+
         it "should return the formatted message for inclusion in the page" do
           response.should be_success
           response.should render_template('show')
@@ -250,39 +253,23 @@ describe PostsController do
         end
       end
 
-      describe "over normal http" do
-        before do
-          alphabet = ("a".."z").to_a
-          body = Array.new(64, '').collect{alphabet[rand(alphabet.size)]}.join
-          post :create, :post => {:body => body}, :topic_id => @topic.id, :forum_id => forum_id(:public)
-          @post = Post.find_by_body(body)
-        end
-
-        it "should redirect to the right topic and page" do
-          response.should be_redirect
-          response.should redirect_to(forum_topic_url(@forum, @topic, {:page => @post.topic_page, :anchor => "post_#{@post.id}"}))
-        end
-      end
-
       describe "to attach a comment to a page" do
         before do
           login_as_reader(:normal)
-          post :create, :post => {:body => "I ain't getting in no plane."}, :page_id => page_id(:commentable)
-          @topic = pages(:commentable).topic
+          post :create, :post => {:body => "I ain't getting in no plane.", :page_id => page_id(:commentable)}
           @post = Post.find_by_body("I ain't getting in no plane.")
         end
         
-        it "should create a page topic" do
-          @topic.should_not be_nil
-        end
-        
-        it "should reuse the page topic if it already exists" do
-          post :create, :post => {:body => 'barbecue'}, :page_id => page_id(:commentable)
-          Post.find_by_body('barbecue').topic.should == @topic
+        it "should create the post" do
+          @post.should_not be_nil
         end
 
         it "should attach the post to the page" do
           @post.page.should == pages(:commentable)
+        end
+
+        it "should not associate the post with a topic" do
+          @post.topic.should be_nil
         end
         
         it "should clear the cache" do
@@ -305,6 +292,21 @@ describe PostsController do
         end
       end
       
+      describe "to start a new topic" do
+        before do
+          login_as_reader(:normal)
+          post :create, :post => {:body => "Madam, I would drink it.", :topic_attributes => {:name => "Winston, I would poison your tea.", :forum_id => forum_id(:public)}}
+          @topic = Topic.find_by_name("Winston, I would poison your tea.")
+          @post = Post.find_by_body("Madam, I would drink it.")
+        end
+        
+        it "should create the joined topic and post" do
+          @topic.should_not be_nil
+          @post.should_not be_nil
+          @post.topic.should == @topic
+          @topic.posts.first.should == @post
+        end
+      end
     end
   end
 end

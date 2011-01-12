@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Forum do
-  dataset :topics
+  dataset :forums
   
   before do
     @site = Page.current_site = sites(:test) if defined? Site
@@ -16,33 +16,39 @@ describe Forum do
   end
   
   it "should list its topics in date order" do
-    @forum.topics.first.should == topics(:newer)
+    forums(:public).topics.first.should == topics(:newer)
   end
   
   it "should list its topics with the sticky first" do
     forums(:private).topics.first.should == topics(:sticky)
   end
   
-  it "should report itself visible" do
-    forums(:public).visible_to?(@reader).should be_true
-    forums(:public).visible_to?(nil).should be_true
-  end
-
-  describe ".find_or_create_comments_forum" do
-    
-    it "should return the existing comments forum when there is one" do
-      @forum = Forum.find_or_create_comments_forum
-      @forum.should == forums(:comments)
+  describe "when the forum is public" do
+    before do
+      Radiant::Config['forum.public?'] = true
     end
 
-    it "should create a comments forum if there is none" do
-      forums(:comments).delete
-      Forum.should_receive(:find_by_for_comments)
-      @forum = Forum.find_or_create_comments_forum
-      @forum.for_comments.should be_true
-      @forum.name.should == 'Page Comments'
-      @forum.created_at.should be_close(Time.now, 5.seconds)
+    it "should be visible to a reader" do
+      forums(:public).visible_to?(@reader).should be_true
     end
     
+    it "should be visible when there is no reader" do
+      forums(:public).visible_to?(nil).should be_true
+    end
   end
+
+  describe "when the forum is private" do
+    before do
+      Radiant::Config['forum.public?'] = false
+    end
+
+    it "should be visible to a reader" do
+      forums(:public).visible_to?(@reader).should be_true
+    end
+    
+    it "should not be visible when there is no reader" do
+      forums(:public).visible_to?(nil).should be_false
+    end
+  end
+
 end

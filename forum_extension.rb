@@ -1,21 +1,21 @@
 require_dependency 'application_controller'
 
 class ForumExtension < Radiant::Extension
-  version "1.2.2"
+  version "2.0.0"
   description "Nice clean forums and page comments for inclusion in your radiant site. Derived long ago from beast. Requires the reader extension and share_layouts."
   url "http://spanner.org/radiant/forum"
 
   extension_config do |config|
-    config.gem "paperclip"
+    config.gem "paperclip", "~> 2.3"
   end
 
   def activate
     Reader.send :include, ForumReader                                          # has topics and posts
     ReaderNotifier.send :include, ForumReaderNotifier                          # sets up post-notification email
     Page.send :include, ForumPage                                              # topic association and comment support
-    UserActionObserver.instance.send :add_observer!, Forum                     # hook up the usual ownership and datestamp mechanism
-    UserActionObserver.instance.send :add_observer!, Topic
-    UserActionObserver.instance.send :add_observer!, Post
+    # UserActionObserver.instance.send :add_observer!, Forum                     # hook up the usual ownership and datestamp mechanism
+    # UserActionObserver.instance.send :add_observer!, Topic
+    # UserActionObserver.instance.send :add_observer!, Post
     Page.send :include, ForumTags                                              # radius tags for highlighting forum content on other pages
     
     unless defined? admin.forum # UI is a singleton

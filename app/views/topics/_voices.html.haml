@@ -1,0 +1,4 @@
+- topic ||= @topic
+
+- topic.other_voices.each do |reader|
+  = gravatar_for(reader, {:size => 16}, {:alt => reader.name, :class => 'gravatar tiny', :width => '16', :height => '16'})

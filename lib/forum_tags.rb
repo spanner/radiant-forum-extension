@@ -222,7 +222,7 @@ module ForumTags
     compact = true unless tag.attr['by_forum'] == 'true' || tag.attr['by_reader'] == 'true' 
     q_label = tag.attr['label']
     q_label = "Look for this text" if q_label.blank? && !compact
-    results << %{<form class="friendly" action="#{search_posts_url}">}
+    results << %{<form class="friendly" action="#{posts_url}">}
     results << %{<h2>Forum Search</h2>} unless tag.attr['with_title'] == 'false'
     results << %{<p>}
     results << %{<label for="q">#{q_label}</label><br />} unless q_label.blank?

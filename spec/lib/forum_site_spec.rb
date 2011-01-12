@@ -1,10 +1,9 @@
 require File.dirname(__FILE__) + "/../spec_helper"
 
 if defined? Site
-  Radiant::Config['reader.layout'] = 'This one'
-
   describe 'Forum site' do
-    dataset :forum_layouts, :forum_sites
+    dataset :forums, :forum_sites
+    # Radiant::Config['reader.layout'] = 'Reader'
     
     it "should have a forums association" do
       Site.reflect_on_association(:forums).should_not be_nil

@@ -7,6 +7,7 @@ class ForumReadersDataset < Dataset::Base
   def load
     create_reader "Normal"
     create_reader "Idle"
+    create_reader "Notable"
     create_reader "Activated"
     create_reader "User", :user_id => user_id(:existing)
     create_reader "Admin", :user_id => user_id(:admin)

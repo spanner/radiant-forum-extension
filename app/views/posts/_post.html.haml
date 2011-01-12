@@ -1,59 +1,20 @@
 - post ||= @post
-- first ||= false
-- with_topic ||= false
-- with_context ||= false
-- without_author ||= false
-- with_conversation ||= false
-- preview ||= false
-
-%div{:id => post.dom_id, :class => first ? 'post first' : 'post reply'} 
+  
+%div{:id => post.dom_id} 
   .speaker
-    = link_to gravatar_for(post.reader, {:size => 40}, {:alt => post.reader.name, :class => 'gravatar offset', :width => '40', :height => '40'}), forum_topic_url(post.topic.forum, post.topic, :anchor => "post_#{post.id}")
+    - gravatar = gravatar_for(post.reader, {:size => 40, :default => "/images/furniture/no_gravatar.png"}, {:alt => post.reader.name, :class => 'gravatar offset', :width => '40', :height => '40'})
+    = link_to(gravatar, reader_url(post.reader))
 
   .post_wrapper
     .post_header
+      %h2
+        = post.reader.name
       %p.context
-        - if with_context
-          - if post.first?
-            = t('new_topic')
-            = link_to post.topic.name, forum_topic_url(post.topic.forum, post.topic)
-            = t('started_on', :date => friendly_date(post.created_at))
-            = t('in')
-            = link_to post.topic.forum.name, forum_url(post.topic.forum)
-            = t('by')
-            = link_to post.reader.name, search_posts_url(:reader_id => post.reader.id), :class => 'person'
-          - else
-            = t('a_reply_to')
-            = link_to post.topic.name, forum_topic_url(post.topic.forum, post.topic)
-            = t('posted_on', :date => friendly_date(post.created_at))
-            = t('by')
-            = link_to post.reader.name, search_posts_url(:reader_id => post.reader.id), :class => 'person'
-        - else
-          - if post.first?
-            = t('started_on', :date => friendly_date(post.created_at))
-          - else
-            = t('posted_on', :date => friendly_date(post.created_at))
-          = t('by')
-          = link_to post.reader.name, search_posts_url(:reader_id => post.reader.id), :class => 'person'
-        
-        - if post.editable_by?(current_reader)
-          %br
-          %span.still_editable
-            - if post.editable_interval
-              = t('time_remaining_to_edit', :time => distance_of_time_in_words(post.still_editable_for))
-            = link_to t('edit_your_post'), edit_topic_post_url(post.topic, post), :class => 'edit_post', :id => "revise_post_#{post.id}"
-        - elsif admin?
-          = link_to t("edit_minimal"), edit_topic_post_url(post.topic, post), :class => 'edit_post', :id => "revise_post_#{post.id}"
-          = link_to t("remove_minimal"), topic_post_url(post.topic, post), :method => 'delete', :class => 'delete_post', :id => "delete_post_#{post.id}", :title => "remove post", :confirm => "Are you sure you want to delete this message?"
-    
+        = friendly_date(post.created_at)
+        = render :partial => 'posts/edit_links', :locals => {:post => post}
+
     .post_body
-      - if post.frozen?
-        %p 
-          = t('post_removed')
-      - elsif preview
-        = truncate_and_textilize(post.body, 100)
-      - else
-        = clean_textilize(post.body)
+      = clean_textilize(post.body)
 
       - if Radiant::Config['forum.allow_attachments?'] && post.attachments.any?
         .post_attachments
@@ -66,4 +27,3 @@
               - post.attachments.non_images.each do |att|
                 %li
                   = link_to att.filename, att.file.url, :class => "attachment #{att.extension}"
-

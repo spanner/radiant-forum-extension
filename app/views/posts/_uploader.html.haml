@@ -9,7 +9,7 @@
     %ul.uploads
     .selector
       - new_attachment = post.attachments.build
-      - f.fields_for :attachments, new_attachment do |uf|
-        = render :partial => 'posts/upload', :object => new_attachment, :locals => {:uf => uf}
+      - f.fields_for :attachments, new_attachment do |naf|
+        = render :partial => 'posts/new_attachment', :object => new_attachment, :locals => {:naf => naf}
       .addfile
         = link_to t('attach_file'), "#"

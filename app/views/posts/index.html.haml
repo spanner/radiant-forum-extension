@@ -2,44 +2,48 @@
   = render :partial => 'readers/flasher'
 
 - content_for :title do
-  = t('latest_posts')
-  
-- content_for :messages do
-  - if @posts.empty?
-    %p 
-      = t('no_posts')
-  - else
-    = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true}
+  = t('posts_heading')
 
+- content_for :introduction do
+  = t('posts_introduction')
+  
 - content_for :sidebar do
   = render :partial => "topics/latest"
 
-- content_for :new_topic do
+- content_for :newtopic do
   .newmessage
-    = link_to t('new_topic'), new_topic_url
+    = link_to t('new_topic'), new_post_url
 
 - content_for :pagination do
   = pagination_and_summary_for(@posts, t('post'))
 
-- content_for :breadcrumbs do
-  = link_to 'Forum', topics_url
-  \&gt;
-  = @title
-
 - content_for :breadhead do
-  = link_to "Forum", topics_url, :class => 'breadhead'
+  = home_page_link
+  = t('separator')
+  = link_to t('forum').titlecase, topics_url
 
-- content_for :feed do
+- content_for :breadcrumbs do
+  = yield :breadhead
+  = t('separator')
+  = yield :title
+
+- content_for :feedlink do
   = feed_link(posts_path(:format => :rss))
 
 - content_for :controls do
   = render :partial => 'readers/controls'
 
-- content_for :help do
-  = render :partial => 'topics/help'
+- content_for :search do
+  = render :partial => 'posts/search_form'
 
+- content_for :messages do
+  - if @posts.empty?
+    %p 
+      = t('no_posts')
+  - else
+    = yield :pagination if @posts.previous_page
+    = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true}
+    = yield :pagination if @posts.next_page
 
 #forum
-  = yield :pagination if @posts.previous_page
   = yield :messages
-  = yield :pagination if @posts.next_page

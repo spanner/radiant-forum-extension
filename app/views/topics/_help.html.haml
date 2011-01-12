@@ -1,8 +1,0 @@
-- if helpforum = Forum.find_by_name('Help')
-  #marginalia
-    %h3
-      Help!
-    %ul.helplist
-      - helpforum.topics.find(:all, :limit => 10).each do |topic|
-        %li
-          = link_to topic.name, forum_topic_url(topic.forum, topic)          
