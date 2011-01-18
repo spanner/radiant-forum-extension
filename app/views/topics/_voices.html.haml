@@ -1,4 +1,4 @@
 - topic ||= @topic
-
 - topic.other_voices.each do |reader|
-  = gravatar_for(reader, {:size => 16}, {:alt => reader.name, :class => 'gravatar tiny', :width => '16', :height => '16'})
+  - gravatar = gravatar_for(reader, {:size => 16, :default => "#{request.protocol}#{request.host_with_port}/images/furniture/no_gravatar.png"}, {:alt => reader.name, :class => 'gravatar tiny', :width => '16', :height => '16'})
+  = link_to gravatar, reader_url(reader)

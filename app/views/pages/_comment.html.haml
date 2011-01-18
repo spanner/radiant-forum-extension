@@ -2,7 +2,7 @@
   %div.post_header
     %h2
       %a{:href => "/readers/#{post.reader.id}", :class => 'main'}
-        %img{:src => post.reader.gravatar_url(:size => 40), :class => 'gravatar'}
+        = gravatar_for(post.reader, {:size => 40}, {:class => 'gravatar'}}
         = post.reader.name
     %p.context
       = post.created_at

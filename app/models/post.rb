@@ -53,7 +53,7 @@ class Post < ActiveRecord::Base
   end
   
   def first?
-    !holder || holder.posts.first == self
+    !holder || holder.new_record? || holder.posts.first == self
   end
 
   def locked?

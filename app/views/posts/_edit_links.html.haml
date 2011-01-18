@@ -1,10 +1,9 @@
 - post ||= @post
 - if post.editable_by?(current_reader)
-  %br
   %span.still_editable
     - if post.editable_interval
       = t('time_remaining_to_edit', :time => distance_of_time_in_words(post.still_editable_for))
-    = link_to t('edit_your_post'), edit_topic_post_url(post.topic, post), :class => 'edit_post', :id => "revise_post_#{post.id}"
+    = link_to t('edit_your_post'), edit_topic_post_url(post.topic, post), :class => 'edit_post remote', :id => "revise_post_#{post.id}"
 - elsif admin?
-  = link_to t("edit_minimal"), edit_topic_post_url(post.topic, post), :class => 'edit_post', :id => "revise_post_#{post.id}"
-  = link_to t("remove_minimal"), topic_post_url(post.topic, post), :method => 'delete', :class => 'delete_post', :id => "delete_post_#{post.id}", :title => "remove post", :confirm => "Are you sure you want to delete this message?"
+  = link_to t("edit_minimal"), edit_topic_post_url(post.topic, post), :class => 'edit_post remote', :id => "revise_post_#{post.id}", :title => "edit post"
+  = link_to t("remove_minimal"), remove_post_url(post), :class => 'delete_post remote', :id => "delete_post_#{post.id}", :title => "remove post"

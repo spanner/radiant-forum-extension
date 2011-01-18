@@ -1,0 +1,13 @@
+- if Radiant::Config['forum.allow_attachments?'] && post.attachments.any?
+  .post_attachments
+    %h4 
+      = t('attached') + ':'
+    - post.attachments.images.each do |att|
+      - display_size = Radiant::Config['forum.image_zoom_size'] || :original
+      = link_to image_tag(att.thumbnail), att.file.url(display_size), :class => :thumbnail
+    - if post.attachments.non_images.any?
+      %ul.attachments
+        - post.attachments.non_images.each do |att|
+          %li
+            = link_to att.filename, att.file.url, :class => "attachment #{att.extension}"
+

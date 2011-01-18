@@ -2,7 +2,7 @@ ActionController::Routing::Routes.draw do |map|
   map.with_options :path_prefix => '/forum' do |forum|
     forum.resources :forums, :only => [:index, :show], :has_many => [:topics]
     forum.resources :topics, :only => [:index, :show], :has_many => [:posts]
-    forum.resources :posts
+    forum.resources :posts, :member => { :remove => :get }
   end
   
   map.namespace :admin, :member => { :remove => :get }, :path_prefix => 'admin/forum' do |admin|

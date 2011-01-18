@@ -1,0 +1,10 @@
+- post ||= @post
+.post_removal
+  %p.warning
+    = t('confirm_removal_of', :author => post.reader.name)
+  %p.buttons
+    - form_for post, :html => {:method => 'delete', :class => 'friendly'} do |f|
+      = f.submit t('definitely_remove_post')
+      = t('or')
+      = link_to t('cancel'), paginated_post_url(post), :class => 'cancel'
+  

@@ -1,11 +1,11 @@
-- content_for :signals do
-  = render :partial => 'readers/flasher'
+= render :partial => 'forums/standard_parts'
 
 - content_for :title do
   = t('forums_heading')
 
 - content_for :introduction do
-  = t('forums_introduction')
+  %p
+    = t('forums_introduction')
 
 - content_for :newtopic do
   .newmessage
@@ -29,19 +29,13 @@
 - content_for :feedlink do
   = feed_link(forums_path(:format => :rss))
 
-- content_for :controls do
-  = render :partial => 'readers/controls'
-
-- content_for :breadhead do
-  = home_page_link
-  = t('separator')
-  = link_to t('forum').titlecase, topics_url
-
 - content_for :breadcrumbs do
-  = yield :breadhead
+  = link_to t('forum').titlecase, topics_url
   = t('separator')
   = yield :title
-  
+
+
+
 #forum
   = yield :messages
   = yield :newtopic

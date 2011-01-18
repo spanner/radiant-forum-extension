@@ -1,7 +1,7 @@
 = render :partial => 'forums/standard_parts'
 
 - content_for :messages do
-  = render :partial => 'post', :object => @post
+  = render :partial => 'confirm_delete', :locals => {:post => @post}
 
 - content_for :parent do
   = link_to @post.topic.name, forum_topic_url(@post.topic, @post.topic.forum)
@@ -15,14 +15,13 @@
   = standard_gravatar_for(@post.reader)
 
 - content_for :title do
-  -if @post.page
-    = t('comment_on') + @post.page.title
+  - if @post.page
+    = t('confirm_remove_comment')
   - elsif @post.first?
-    = @post.topic.name
+    = t('confirm_remove_topic')
   - else
-    = t('reply_to') + @post.topic.name
+    = t('confirm_remove_post')
 
-
-
+  
 #forum
   = yield :messages

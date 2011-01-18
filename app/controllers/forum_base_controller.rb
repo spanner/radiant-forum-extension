@@ -22,6 +22,8 @@ protected
   def redirect_to_post
     if (@post.page)
       redirect_to "#{@post.page.url}##{@post.dom_id}"
+    elsif @post.first?
+      redirect_to forum_topic_path(@post.topic.forum, @post.topic)
     else
       post_location = @post ? {WillPaginate::ViewHelpers.pagination_options[:param_name] => @post.page_when_paginated, :anchor => @post.dom_id} : {}
       redirect_to forum_topic_url(@post.topic.forum, @post.topic, post_location)

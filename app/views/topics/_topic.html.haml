@@ -1,9 +1,8 @@
 - post = topic.posts.first
 
-%div{:id => topic.dom_id} 
+%div{:id => topic.dom_id}
   .speaker
-    - gravatar = gravatar_for(post.reader, {:size => 40, :default => "/images/furniture/no_gravatar.png"}, {:alt => post.reader.name, :class => 'gravatar offset', :width => '40', :height => '40'})
-    = link_to gravatar, forum_topic_url(topic.forum, topic)
+    = standard_gravatar_for(post.reader, forum_topic_url(topic.forum, topic))
 
   .post_wrapper
     .post_header
@@ -16,18 +15,7 @@
 
     .post_body
       = truncate_and_textilize(post.body, 100)
-
-      - if Radiant::Config['forum.allow_attachments?'] && post.attachments.any?
-        .post_attachments
-          %h4 
-            = t('attached') + ':'
-          - post.attachments.images.each do |att|
-            = link_to image_tag(att.thumbnail), att.file.url, :class => :thumbnail
-          - if post.attachments.non_images.any?
-            %ul.attachments
-              - post.attachments.non_images.each do |att|
-                %li
-                  = link_to att.filename, att.file.url, :class => "attachment #{att.extension}"
+      = render :partial => 'posts/attachments', :locals => {:post => post}
 
     - if topic.has_replies?
       .post_replies

@@ -1,5 +1,4 @@
-- content_for :signals do
-  = render :partial => 'readers/flasher'
+= render :partial => 'forums/standard_parts'
 
 - content_for :title do
   = t('posts_heading')
@@ -17,24 +16,13 @@
 - content_for :pagination do
   = pagination_and_summary_for(@posts, t('post'))
 
-- content_for :breadhead do
-  = home_page_link
-  = t('separator')
-  = link_to t('forum').titlecase, topics_url
-
 - content_for :breadcrumbs do
-  = yield :breadhead
+  = link_to t('forum').titlecase, topics_url
   = t('separator')
   = yield :title
 
 - content_for :feedlink do
   = feed_link(posts_path(:format => :rss))
-
-- content_for :controls do
-  = render :partial => 'readers/controls'
-
-- content_for :search do
-  = render :partial => 'posts/search_form'
 
 - content_for :messages do
   - if @posts.empty?

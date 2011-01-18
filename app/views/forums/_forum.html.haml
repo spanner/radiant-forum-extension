@@ -1,14 +1,15 @@
 - if forum.visible_to?(current_reader)
-  .forum_wrapper{:id => forum.dom_id}
-    .forum_header
-      %h2
-        = link_to forum.name, forum_url(forum), :class => 'main'
-      %p.context
-        = t("topic_count", :count => forum.topics.count)
-        - if topic = forum.topics.first
-          = link_to topic.name, forum_topic_url(forum, topic)
-          = time_ago_in_words(topic.replied_at || topic.created_at)
-          = t('ago')
-    .forum_description
-      = truncate_and_textilize(forum.description, 40)
+  .forum
+    .forum_wrapper{:id => forum.dom_id}
+      .forum_header
+        %h2
+          = link_to forum.name, forum_url(forum), :class => 'main'
+        %p.context
+          = t("topic_count", :count => forum.topics.count)
+          - if topic = forum.topics.first
+            = link_to topic.name, forum_topic_url(forum, topic)
+            = time_ago_in_words(topic.replied_at || topic.created_at)
+            = t('ago')
+      .forum_description
+        = truncate_and_textilize(forum.description, 40)
     

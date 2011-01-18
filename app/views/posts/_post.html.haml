@@ -1,29 +1,24 @@
 - post ||= @post
+- headless ||= false
+- first ||= false
   
-%div{:id => post.dom_id} 
-  .speaker
-    - gravatar = gravatar_for(post.reader, {:size => 40, :default => "/images/furniture/no_gravatar.png"}, {:alt => post.reader.name, :class => 'gravatar offset', :width => '40', :height => '40'})
-    = link_to(gravatar, reader_url(post.reader))
-
-  .post_wrapper
-    .post_header
-      %h2
-        = post.reader.name
-      %p.context
-        = friendly_date(post.created_at)
-        = render :partial => 'posts/edit_links', :locals => {:post => post}
-
-    .post_body
-      = clean_textilize(post.body)
-
-      - if Radiant::Config['forum.allow_attachments?'] && post.attachments.any?
-        .post_attachments
-          %h4 
-            = t('attached') + ':'
-          - post.attachments.images.each do |att|
-            = link_to image_tag(att.thumbnail), att.file.url, :class => :thumbnail
-          - if post.attachments.non_images.any?
-            %ul.attachments
-              - post.attachments.non_images.each do |att|
-                %li
-                  = link_to att.filename, att.file.url, :class => "attachment #{att.extension}"
+.post{:id => post.dom_id}
+  - if post.frozen?
+    .post_removal
+      %p.confirmation
+        = t("post_removed")
+  - else
+    .post_wrapper{:class => post.first? ? "first" : "reply"}
+      - unless headless
+        .speaker
+          = standard_gravatar_for(post.reader)
+      .post_header
+        - unless headless
+          %h2
+            = post.reader.name
+        %p.context
+          = friendly_date(post.created_at)
+          = render :partial => 'posts/edit_links', :locals => {:post => post}
+      .post_body
+        = clean_textilize(post.body)
+        = render :partial => 'posts/attachments', :locals => {:post => post}

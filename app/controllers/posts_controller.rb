@@ -1,7 +1,7 @@
 class PostsController < ForumBaseController
   
   before_filter :require_activated_reader, :except => [:index, :show]
-  before_filter :find_post, :only => [:show, :edit, :update]
+  before_filter :find_post, :only => [:show, :edit, :update, :remove, :destroy]
   before_filter :require_unlocked_topic_and_page, :only => [:new, :create]
   before_filter :build_post, :only => [:new, :create]
   before_filter :require_authority, :only => [:edit, :update, :destroy]
@@ -45,32 +45,43 @@ class PostsController < ForumBaseController
     Radiant::Cache.clear if @post.page
     respond_to do |format|
       format.html { redirect_to_post }
-      format.js { render :action => 'show', :layout => false }
+      format.js { render :partial => 'post' }
     end
   rescue ActiveRecord::RecordInvalid
     flash[:error] = t("validation_failure")
     respond_to do |format|
       format.html { render :action => 'new' }
-      format.js { render :action => 'new', :layout => false }
+      format.js { render :partial => 'posts/form' }
     end
   end
 
   def edit
     respond_to do |format| 
       format.html { }
-      format.js { render :layout => false }
+      format.js { render :partial => 'posts/form' }
     end
   end
   
   def update
     @post.attributes = params[:post]
     @post.save!
-    Radiant::Cache.clear if @post.topic.page
+    Radiant::Cache.clear if @post.page
+    respond_to do |format|
+      format.html { redirect_to_post }
+      format.js { render :partial => 'post' }
+    end
   rescue ActiveRecord::RecordInvalid
     flash[:error] = t("validation_failure")
     respond_to do |format|
       format.html { render :action => 'edit' }
-      format.js { render :action => 'edit', :layout => false }
+      format.js { render :partial => 'posts/form' }
+    end
+  end
+
+  def remove
+    respond_to do |format|
+      format.html {}
+      format.js { render :partial => 'confirm_delete' }
     end
   end
 
@@ -80,14 +91,14 @@ class PostsController < ForumBaseController
       flash[:notice] = t("topic_removed")
       respond_to do |format|
         format.html { redirect_to_forum }
-        format.js { render :partial => 'post', :layout => false }
+        format.js { render :partial => 'post' }
       end
     else
       @post.destroy
       flash[:notice] = t("post_removed")
       respond_to do |format|
         format.html { redirect_to_page_or_topic }
-        format.js { render :partial => 'post', :layout => false }
+        format.js { render :partial => 'post' }
       end
     end
   end

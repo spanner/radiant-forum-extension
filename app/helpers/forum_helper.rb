@@ -1,6 +1,13 @@
 require 'sanitize'
 module ForumHelper
 
+  def standard_gravatar_for(reader, url=nil)
+    size = Radiant::Config['forum.gravatar_size'] || 40
+    url ||= reader_url(reader)
+    gravatar = gravatar_for(reader, {:size => size, :default => "#{request.protocol}#{request.host_with_port}/images/furniture/no_gravatar.png"}, {:alt => reader.name, :class => 'gravatar offset', :width => size, :height => size})
+    link_to gravatar, url
+  end
+
   def home_page_link(options={})
     home_page = Page.find_by_parent_id(nil)
     link_to home_page.title, home_page.url, options
@@ -38,11 +45,14 @@ module ForumHelper
     end
   end
 
-  def paged_post_url(post)
-    if post.first?
-      topic_post_url(post.topic, post, :page => post.topic_page, :anchor => post.dom_id)
+  def paginated_post_url(post)
+    param_name = WillPaginate::ViewHelpers.pagination_options[:param_name]
+    if post.page
+      "post.page.url?#{param_name}=#{post.page_when_paginated}##{post.dom_id}"
+    elsif post.first?
+      topic_post_url(post.topic, post)
     else
-      topic_post_url(post.topic, post, :page => post.topic_page, :anchor => post.dom_id)
+      topic_post_url(post.topic, post, {param_name => post.page_when_paginated, :anchor => post.dom_id})
     end
   end
 

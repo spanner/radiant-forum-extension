@@ -14,107 +14,138 @@
     }
   });
   
+  // general-purpose event blocker
+  function squash(e) {
+    if(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.target) e.target.blur();
+    } 
+  }
+  
+  function RemoteAction (url, holder) {
+    var self = this;
+		$.extend(self, {
+		  url: url,
+		  holder: holder,
+		  container: null,
+		  form: null,
+
+		  getForm: function () {
+		    if (self.showing()) self.hide();
+        else if (self.form) self.show();
+        else {
+          self.wait();
+          self.container.load(self.url, self.captureForm);
+        }
+      },
+      captureForm: function () {
+        self.form = self.container.find('form');
+        self.form.submit(self.submitForm);
+        self.form.find('div.upload_stack').upload_stack();
+        self.form.find('a.cancel').click(self.cancel);
+        self.unwait();
+        self.show();
+      },
+      submitForm: function (event) {
+        self.form.find('p.buttons').hide();
+        self.wait();
+        var ajaxable = true;
+        self.container.find('input:file').each(function () {
+          var file = $(this).val();
+          if (file && file != "") ajaxable = false;
+        });
+        if (ajaxable) {
+          squash(event);
+          $.post(self.form.attr('action'), self.form.serialize(), self.finish);  
+        } else {
+          return true;  // allow event through so that uploads are sent by normal HTTP POST
+        }
+      },
+      cancel: function (event) {
+        squash(event);
+        self.unwait();
+        self.hide();
+      },
+      finish: function (results) {
+        self.unwait();
+        var newpost = holder.replaceWith(results);
+        newpost.blush();
+      },
+      show: function () {
+        self.unwait();
+        self.holder.hide();
+        self.container.show();
+      },
+      hide: function () {
+        self.container.hide();
+        self.holder.show();
+      },
+      showing: function () {
+        return self.container.is(':visible');
+      },
+      wait: function () {
+        holder.wait();
+        if (self.form) self.form.append('<p class="waiting">Please wait</p>');
+      },
+      unwait: function () {
+        holder.unwait();
+        self.container.find('p.waiting').remove();
+      }
+		});
+		
+		self.container = $('<div class="post_form" />').hide();
+		self.holder.append(self.container);
+  }
+  
+  
 	function EditablePost(container, conf) {   
     var self = this;
 		$.extend(self, {
 		  container: container,
-      edit_links: $(container.find('a.edit_post')),
-      edit_url: null,
-      form: null,
-			stumbit: null,
-			textarea: null,
-      showing: false,
-			header: null,
-      wrapper: null,
-      body_holder: null,
-      form_holder: null,
-      form_waiter: null,
-      uploader: null,
-      
-			initEdit: function(event) {
-			  squash(event);
-        self.edit_links.addClass('waiting');
-        if (self.showing) self.cancelEdit();            // toggle form off again
-        else if (self.form_holder) self.showForm();     // show previously-loaded form
-        else {                                          // load form
-          self.header = $(container.find('.post_header'));
-          self.wrapper = $(container.find('.post_wrapper'));
-          self.body_holder = $(container.find('.post_body'));
-          self.edit_links = $(container.find('a.edit_post'));
-          self.getForm();
-        } 
-			},
-			
-			getForm: function () {
-        if (self.edit_url) self.reusableFormHolder().load(self.edit_url, self.captureForm);
+		  wrapper: container.find('.post_wrapper'),
+		  body: container.find('.post_body'),
+		  actions: {},
+      addAction: function (url) {
+        if (!self.actions[url]) self.actions[url] = new RemoteAction(url, self);
+        return self.actions[url];
       },
-      
-      // lazy-load a container div that is then held in memory instead of 
-      // going back to the server for another edit form
-      reusableFormHolder: function () {
-        if (self.form_holder) return self.form_holder;
-        self.form_holder = $('<div class="post_form" />');
-        self.wrapper.prepend(self.form_holder);
-        return self.form_holder;
+      showAction: function (url) {
+        $.each(self.actions, function (key, action) { action.hide(); });
+        self.actions[url].getForm();
       },
-
-			captureForm: function () {
-        self.form = self.form_holder.find('form');
-        self.textarea = self.form.find('textarea');
-        self.form_holder.find('a.cancel').click(self.cancelEdit);
-        self.uploader = new UploadStack(self.form_holder.find('div.upload_stack'));
-        self.stumbit = self.form_holder.find('div.buttons');
-        self.form.submit(self.sendForm);
-        self.showForm();
+      append: function (el) {
+        return self.wrapper.append(el);
       },
-            
-      showForm: function () {
-        self.edit_links.removeClass('waiting');
-        self.body_holder.hide();
-        self.reusableFormHolder().show();
-        self.showing = true;
+      replaceWith: function (post) {
+        self.container.replaceWith(post);
+        return $(post).editable_post();
       },
-      
-      hideForm: function () {
-        self.reusableFormHolder().hide();
-        self.body_holder.show();
-        self.showing = false;
+      show: function () {
+        self.body.show();
       },
-
-      sendForm: function (event) {
-        self.form_waiter = $('<p class="waiting">Please wait</p>');
-        self.stumbit.hide();
-        self.form_waiter.after(self.stumbit);
-        
-        console.log("uploader:", self.uploader, self.uploader.hasUploads());
-        
-        if (self.uploader && self.uploader.hasUploads()) {
-          console.log("yes uploads");
-          return true;  // can't send uploads over xmlhttp so we allow the event to pass through
-        } else {
-          console.log("no uploads");
-          squash(event);
-          $.post(self.form.attr('action'), self.form.serialize(), self.finishEdit);
-        }
+      hide: function () {
+        self.body.hide();
       },
-
-      cancelEdit: function (event) {
-        squash(event);
-        self.edit_links.removeClass('waiting');
-        self.hideForm();
+      wait: function () {
+        self.container.addClass('waiting');
       },
-      
-      finishEdit: function (results) {
-        self.form_holder.remove();
-        self.form_holder = null;
-        self.container.html(results);
-        self.body_holder.animate( { backgroundColor: 'pink' }, 200).animate( { backgroundColor: 'white' }, 1000);
-        self.container.editable_post();
+      unwait: function () {
+        self.container.removeClass('waiting');
+        self.container.find('a').removeClass('waiting');
       }
 		});
-
-    self.edit_url = self.edit_links.attr('href');
-    self.edit_links.click(self.initEdit);
+		
+		container.find('a.remote').each(function () {
+		  var a = $(this);
+		  var href = a.attr('href');
+      self.addAction(href);
+      a.click(function (event) {
+        squash(event);
+        a.addClass('waiting');
+        self.showAction(href);
+      });
+		});
 	}
 	
 	$.tools.post = {
@@ -126,7 +157,7 @@
 	$.fn.editable_post = function(conf) { 
 		conf = $.extend({}, $.tools.post.conf, conf); 
 		this.each(function() {			
-			el = new EditablePost($(this), conf);
+			new EditablePost($(this), conf);
 		});
 		return this;
 	};
@@ -143,7 +174,10 @@
 			addUpload: function(event) {
         squash(event);
         var upload_field = self.file_field.clone();
+        var nest_id = self.uploadCount() + 1;
         var container = $('<li class="attachment">' + upload_field.val() + '</li>');
+        upload_field.attr("id", upload_field.attr('id').replace(/\d+/, nest_id));
+        upload_field.attr("name", upload_field.attr('name').replace(/\d+/, nest_id));
         container.append(upload_field);
         container.add_remover();
         container.appendTo(self.uploads_list).slideDown('slow');
@@ -151,12 +185,20 @@
         self.selector.find('a').text = 'attach another file';
       },
       
+      attachmentCount: function () {
+        return self.attachments_list.find('li').length;
+      },
+
       hasAttachments: function () {
         return self.attachments_list.find('li').length > 0;
       },
       
+      uploadCount: function () {
+        return self.uploads_list.find('li').length;
+      },
+      
       hasUploads: function () {
-        return self.uploads_list.find('li').length > 0;
+        return self.uploadCount() > 0;
       }
     });
     self.attachments_list.find('li').add_remover();
@@ -183,12 +225,168 @@
       var remover = $('<a href="#" class="remove">remove</a>');
       remover.click(function (event) { 
         squash(event);
-        self.slideUp('500', function() { self.remove(); }); 
+        self.slideUp('500', function() { 
+          self.find('input.checkbox').attr('checked', true);
+          self.find('input.filefield').remove();
+        }); 
       });
       self.append(remover);
 	  });
 		return self;
 	};
+
+	function Smiley(a) {   
+    var self = this;
+		$.extend(self, {
+		  link: a,
+		  tag: a.attr('rel'),
+		  target: null,
+      
+			insert: function(event) {
+        squash(event);
+        self.
+      }
+    });
+    
+    self.target = $(a.attr.target);
+    a.click(self.insert);
+  }
+
+  /*
+   * jQuery Color Animations
+   * Copyright 2007 John Resig
+   * Released under the MIT and GPL licenses.
+   * syntax corrected but otherwise untouched.
+   */
+  
+  // We override the animation for all of these color styles
+  $.each(['backgroundColor', 'borderBottomColor', 'borderLeftColor', 'borderRightColor', 'borderTopColor', 'color', 'outlineColor'], function(i, attr) {
+    $.fx.step[attr] = function(fx) {
+      if (!fx.colorInit) {
+        fx.start = getColor(fx.elem, attr);
+        fx.end = getRGB(fx.end);
+        fx.colorInit = true;
+      }
+
+      fx.elem.style[attr] = "rgb(" + [
+      Math.max(Math.min(parseInt((fx.pos * (fx.end[0] - fx.start[0])) + fx.start[0], 10), 255), 0),
+      Math.max(Math.min(parseInt((fx.pos * (fx.end[1] - fx.start[1])) + fx.start[1], 10), 255), 0),
+      Math.max(Math.min(parseInt((fx.pos * (fx.end[2] - fx.start[2])) + fx.start[2], 10), 255), 0)
+      ].join(",") + ")";
+    }
+  });
+
+  // Color Conversion functions from highlightFade
+  // By Blair Mitchelmore
+  // http://jquery.offput.ca/highlightFade/
+
+  // Parse strings looking for color tuples [255,255,255]
+  function getRGB(color) {
+      var result;
+
+      // Check if we're already dealing with an array of colors
+      if ( color && color.constructor == Array && color.length == 3 )
+          return color;
+
+      // Look for rgb(num,num,num)
+      if (result = /rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(color))
+          return [parseInt(result[1], 10), parseInt(result[2], 10), parseInt(result[3], 10)];
+
+      // Look for rgb(num%,num%,num%)
+      if (result = /rgb\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*\)/.exec(color))
+          return [parseFloat(result[1])*2.55, parseFloat(result[2])*2.55, parseFloat(result[3])*2.55];
+
+      // Look for #a0b1c2
+      if (result = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(color))
+          return [parseInt(result[1],16), parseInt(result[2],16), parseInt(result[3],16)];
+
+      // Look for #fff
+      if (result = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(color))
+          return [parseInt(result[1]+result[1],16), parseInt(result[2]+result[2],16), parseInt(result[3]+result[3],16)];
+
+      // Look for rgba(0, 0, 0, 0) == transparent in Safari 3
+      if (result = /rgba\(0, 0, 0, 0\)/.exec(color))
+          return colors['transparent'];
+
+      // Otherwise, we're most likely dealing with a named color
+      return colors[jQuery.trim(color).toLowerCase()];
+  }
+
+  function getColor(elem, attr) {
+    var color;
+
+    do {
+      color = $.curCSS(elem, attr);
+
+      // Keep going until we find an element that has color, or we hit the body
+      if ( color != '' && color != 'transparent' || jQuery.nodeName(elem, "body") )
+        break;
+
+      attr = "backgroundColor";
+    } while ( elem = elem.parentNode );
+
+    return getRGB(color);
+  };
+
+  // Some named colors to work with
+  // From Interface by Stefan Petre
+  // http://interface.eyecon.ro/
+
+  var colors = {
+      aqua:[0,255,255],
+      azure:[240,255,255],
+      beige:[245,245,220],
+      black:[0,0,0],
+      blue:[0,0,255],
+      brown:[165,42,42],
+      cyan:[0,255,255],
+      darkblue:[0,0,139],
+      darkcyan:[0,139,139],
+      darkgrey:[169,169,169],
+      darkgreen:[0,100,0],
+      darkkhaki:[189,183,107],
+      darkmagenta:[139,0,139],
+      darkolivegreen:[85,107,47],
+      darkorange:[255,140,0],
+      darkorchid:[153,50,204],
+      darkred:[139,0,0],
+      darksalmon:[233,150,122],
+      darkviolet:[148,0,211],
+      fuchsia:[255,0,255],
+      gold:[255,215,0],
+      green:[0,128,0],
+      indigo:[75,0,130],
+      khaki:[240,230,140],
+      lightblue:[173,216,230],
+      lightcyan:[224,255,255],
+      lightgreen:[144,238,144],
+      lightgrey:[211,211,211],
+      lightpink:[255,182,193],
+      lightyellow:[255,255,224],
+      lime:[0,255,0],
+      magenta:[255,0,255],
+      maroon:[128,0,0],
+      navy:[0,0,128],
+      olive:[128,128,0],
+      orange:[255,165,0],
+      pink:[255,192,203],
+      purple:[128,0,128],
+      violet:[128,0,128],
+      red:[255,0,0],
+      silver:[192,192,192],
+      white:[255,255,255],
+      yellow:[255,255,0],
+      transparent: [255,255,255]
+  };
+
+  $.fn.blush = function(color, duration) {
+    color = color || "#FFFF9C";
+    duration = duration || 1500;
+    var backto = this.css("background-color");
+    if (backto == "" || backto == 'transparent') backto = '#ffffff';
+    this.css("background-color", color).animate({"background-color": backto}, duration);
+  };
+  
 
 })(jQuery);
 

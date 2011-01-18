@@ -1,23 +1,8 @@
-- content_for :signals do
-  = render :partial => 'readers/flasher'
+= render :partial => 'forums/standard_parts'
 
 - content_for :newtopic do
   .newmessage
     = link_to t('new_topic_here'), new_post_url(:forum_id => @forum.id)
-
-- content_for :reply_form do
-  - if @topic.locked?
-    %p.administrative
-      = t("topic_locked")
-  - else
-    - if current_reader
-      - if current_reader.activated?
-        - @post = @topic.posts.build
-        = render :partial => 'posts/form'
-      - else
-        = render :partial => 'reader_activations/activation_required', :locals => {:purpose => t('to_reply')}
-    - else
-      = render :partial => 'reader_sessions/login_form', :locals => {:purpose => t('to_reply')}
 
 - content_for :pagination do
   = pagination_and_summary_for(@posts, t('post'))
@@ -26,30 +11,19 @@
   = @topic.name
 
 - content_for :speaker do
-  .speaker
-    - reader = @topic.reader
-    - gravatar = gravatar_for(reader, {:size => 40, :default => "/images/furniture/no_gravatar.png"}, {:alt => reader.name, :class => 'gravatar offset', :width => '40', :height => '40'})
-    = link_to gravatar, reader_url(reader)
+  = standard_gravatar_for(@topic.reader)
 
-- content_for :introduction do
-  %p.context
-    = render :partial => "topics/context", :locals => {:topic => @topic}
-  = clean_textilize(@topic.body)
+- content_for :first_post do
+  = render :partial => 'posts/post', :locals => {:post => @topic.posts.first, :headless => true}
 
 - content_for :feedlink do
   = feed_link(topic_path(@topic, :format => :rss))
-
-- content_for :controls do
-  = render :partial => 'readers/controls'
 
 - content_for :parent do
   = link_to @topic.forum.name + ':', forum_url(@topic.forum)
 
 - content_for :breadhead do
-  = home_page_link
-  = t('separator')
-  = link_to t('forum').titlecase, topics_url
-  = t('separator')
+  = link_to t('forum').titlecase + t('separator'), topics_url
   = yield :parent
 
 - content_for :breadcrumbs do
@@ -62,8 +36,11 @@
   = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => false}
   = yield :pagination if @posts.next_page
 
+- content_for :reply_form do
+  = render :partial => 'topics/reply', :locals => {:topic => @topic}
 
 
 #forum
+  = yield :first_post
   = yield :messages
   = yield :reply_form unless @posts.next_page

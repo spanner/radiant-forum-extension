@@ -9,11 +9,12 @@ class PostAttachment < ActiveRecord::Base
     end
     
     def thumbnail_sizes
-      {
-        :icon => ['24x24#', :png],
-        :thumbnail => ['100x100>', :png],
-        :inline => ['640x640>']
-      }
+      { :icon => ['24x24#', :png], :thumbnail => ['100x100>', :png] }.merge(configured_styles)
+    end
+    
+    def configured_styles
+      styles = Radiant::Config["assets.additional_thumbnails"].gsub(/\s+/,'').split(',') if Radiant::Config["assets.additional_thumbnails"]
+      styles.collect{|s| s.split('=')}.inject({}) {|ha, (k, v)| ha[k.to_sym] = v; ha}
     end
     
     def thumbnail_names

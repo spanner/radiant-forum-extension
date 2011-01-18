@@ -1,7 +1,21 @@
-- content_for :form do
-  = render :partial => 'form'
+= render :partial => 'forums/standard_parts'
 
-- content_for :pagetitle do
+- content_for :form do
+  .post_wrapper
+    .post_header
+      .speaker
+        = standard_gravatar_for(current_reader)
+      %h2.person
+        = current_reader.name
+      %p.context
+        = t('if_you_not', :name => current_reader.name)
+        = link_to(t('log_out'), reader_logout_url) + '.'
+    = render :partial => 'form', :locals => {:post => @post}
+
+- content_for :speaker do
+  - standard_gravatar_for(current_reader)
+
+- content_for :title do
   - if @page
     = t('new_comment')
   - elsif @topic 
@@ -14,10 +28,6 @@
     = link_to @page.title, @page.url, :class => 'breadhead'
   - elsif @topic 
     = link_to @topic.name, forum_topic_url(@topic.forum, @topic), :class => 'breadhead'
-  - else
-    = link_to @forum.name, forum_url(@topic.forum), :class => 'breadhead'
-
-
 
 #forum
   = yield :form

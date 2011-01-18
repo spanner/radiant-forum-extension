@@ -1,0 +1,27 @@
+- content_for :section_navigation do
+  = link_to t('navigation.forum'), topics_url, :class => 'section'
+  = link_to t('navigation.topics'), topics_url
+  = link_to t('navigation.forums'), forums_url
+  = link_to t('navigation.new_topic'), new_post_url
+  - if current_reader
+    = link_to t('navigation.your_account'), reader_admin_url
+  - else
+    = link_to t('log_in'), reader_login_url
+  - if Radiant::Config['forum.help_url']
+    = link_to t('navigation.forum_help'), Radiant::Config['forum.help_url']
+
+- content_for :controls do
+  = render :partial => 'readers/controls'
+
+- content_for :homelink do
+  = home_page_link
+
+- content_for :signals do
+  = render :partial => 'readers/flasher'
+
+- content_for :search do
+  = render :partial => 'posts/search_form'
+
+- content_for :newtopic do
+  .newmessage
+    = link_to t('new_topic'), new_post_url

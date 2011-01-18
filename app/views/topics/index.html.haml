@@ -1,5 +1,4 @@
-- content_for :signals do
-  = render :partial => 'readers/flasher'
+= render :partial => 'forums/standard_parts'
 
 - content_for :messages do
   - if @topics.empty?
@@ -19,20 +18,11 @@
         = forum.topics.count
         = t('topics')
 
-- content_for :newtopic do
-  .newmessage
-    = link_to t('new_topic'), new_post_url
-
 - content_for :pagination do
   = pagination_and_summary_for(@topics, t('topics'))
 
-- content_for :breadhead do
-  = home_page_link
-  = t('separator')
-  = link_to t('forum').titlecase, topics_url
-
 - content_for :breadcrumbs do
-  = yield :breadhead
+  = link_to t('forum').titlecase, topics_url
   = t('separator')
   = yield :title
 
@@ -45,9 +35,6 @@
 - content_for :introduction do
   %p
     =t('topics_introduction')
-
-- content_for :controls do
-  = render :partial => 'readers/controls'
 
 #forum
   = yield :pagination if @topics.previous_page
