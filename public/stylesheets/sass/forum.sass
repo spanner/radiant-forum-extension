@@ -1,138 +1,126 @@
-@import reader.sass
+// this is dumped out of current work and needs to be fixed!
 
 div#forum
-  h1, h2
-    margin-bottom: 24px
-    line-height: 1.2
-  a.floating
-    float: right
-    margin: 0 0 10px 20px
-  a.feedlink
-    background: url(/images/furniture/feed_14.png) no-repeat 0 4px
-    padding-left: 18px
-    color: #f58822
-  div.reply, div.first_post
-    margin-left: 0
-  div.post_header a.replied
-    color: #cacac8
-  div.newmessage
-    float: right
-    margin: 0 0 12px 16px
-    +border-radius
-    &:hover
-      +box-shadow(#333, 1px, 2px)
-      background: white url(/images/admin/buttons_background.png) repeat-x top left
-    &:active
-      +box-shadow(#666,1px, 1px)
-      background-position: bottom left
-    a
-      display: block
-      overflow: hidden
-      margin: 6px
-      +functionalfonts
-      color: $dark
-      line-height: 1.1
-      background: transparent url(/images/furniture/post.png) no-repeat 0 4px
-      padding-left: 14px
-  div.post
-    position: relative
-    clear: left
-    margin: 10px 0 50px 0
-  div.first_post
-    margin-top: 30px
-    clear: both
-  div.post_header h2
-    margin: 0
-    line-height: 1.1
-    a.speaker
-      font-weight: bold
-  div.post_body
-    position: relative
-    p
-      margin-top: .25em
-    div.post blockquote
-      color: #cacac8
-      border-left-width: 5px
-      border-left-style: solid
-      border-left-color: #cacac8
-      margin: 0
-      padding-left: 20px
-  div.over
-    background-color: #e2e1dc
-  div.post_control
-    font-size: 85%
-    color: #cacac8
-    p
-      margin: 0
-    p.post_admin
-      float: right
-      a, a:visited
-        font-family: helvetica,arial,sans-serif
-        font-size: 0.8em
-        line-height: 1
-        padding: 4px
-        color: white
-        background-color: #e2e1dd
-        +border-radius
-        &.edit_post:hover
-          background-color: #1c8064
-        &.delete_post:hover
-          background-color: #c00
-    a
-      color: #1bb68b
-      &.edit_post
-        color: #d1005d
-      &.delete_post
-        padding-left: 5px
-        color: #d1005d
-      &:hover
-        color: #1bb68b
-      &.waiting
-        color: #cacac8
-        padding-left: 18px
-        background: transparent url(/images/furniture/wait_16_grey.gif) no-repeat left top
-  p.waiting
-    color: #cacac8
-    padding-left: 18px
-    background: transparent url(/images/furniture/wait_16_grey.gif) no-repeat left top
-  div.post_wrapper
-    position: relative
-    overflow: hidden
-    div.post_form
-      margin: 0 0 20px 0
-      padding: 0
-      background: white url(/images/furniture/wait_16_grey.gif) no-repeat center center
-      form
-        background-color: #ffffff
-        margin: 0
-        label
-          display: none
-        textarea
-          left: 0
-          right: 0
-          color: #559dc4
-          border-color: #cacac8
-          font-size: normal
-          font-size: 1em
+  div.forum
+    div.forum_wrapper
+      margin: 2em 0
+      div.forum_header
+        h2
+          +soft
+          line-height: 1
+          margin: 0
+        p.context
+          +light
+          margin: -5px 0 10px 0
+      div.forum_description
         p
           margin: 0
 
-img.smiley
-  margin: 3px 3px 0 3px
+  div.post
+    &.waiting
+      color: $mid
+    div.post_wrapper
+      margin: 2em 0
+      &.reply
+        margin-top: 4em
+      &.first
+        margin-top: 0
+        padding-bottom: 1em
+        border-bottom: 3px dotted #{$coolgrey8}
+      div.post_header
+        h2
+          +soft
+          line-height: 1
+          margin: 0
+        p.context
+          +light
+          margin: -5px 0 10px 0
+        a
+          &.edit_post
+            color: #d1005d
+          &.delete_post
+            padding-left: 5px
+            color: #d1005d
+          &:hover
+            color: $hover
+          &.waiting
+            color: $mid
+            padding-left: 18px
+            background: transparent url(/images/furniture/wait_16_grey.gif) no-repeat left top
+        div.post_control
+          font-size: 85%
+          float: right
+          a, a:visited
+            font-family: helvetica,arial,sans-serif
+            font-size: 0.8em
+            line-height: 1
+            padding: 4px
+            color: white
+            background-color: #e2e1dd
+            +border-radius
+            &.edit_post:hover
+              background-color: #1c8064
+            &.delete_post:hover
+              background-color: #c00
+      div.post_body
+        position: relative
+        p
+          margin-top: .25em        
+        div.post blockquote
+          color: #cacac8
+          border-left-width: 5px
+          border-left-style: solid
+          border-left-color: #cacac8
+          margin: 0
+          padding-left: 20px
+      div.post_attachments
+        +small
+        
+      p.voices
+        margin: 0
+      p.replies
+        clear: left
+        +small
+        margin-top: 0
+        font-size: 80%
+        color: $coolgrey4
+        a
+          color: $coolgrey8
 
+    div.post_form
+      margin: 0
+      p
+        margin: 0
+    div.post_removal
+      p
+        margin: 0
+      p.warning
+        +soft
+        color: $rubinered
+        font-size: 1.4
+      p.confirmation
+        +soft
+        color: green
+        font-size: 1.4
+
+  div#search
+    overflow: hidden
+    margin: 0 0 2em 0
+    h2
+      margin: 0
+    p
+      width: 24%
+      margin-right: 1%
+      float: left
+      &.buttons
+        padding-top: 1.5em
+  
 div.upload_stack, div.post_attachments
   margin: 0 0 30px 0
-  border-left-width: 5px
-  border-left-style: solid
-  border-left-color: #cacac8
-  padding-left: 20px
   h4
+    +soft
     margin: 0
-    font-family: helvetica,arial,sans-serif
-    font-size: 0.8em
-    line-height: 1.4
-    color: #cacac8
-    margin: -3px 0 2px -10px
+    color: $mid
   ul
     margin: 0
     list-style: none
@@ -150,16 +138,15 @@ div.upload_stack, div.post_attachments
     font-size: 60%
     color: #d1005d
     padding: 3px
+    &:hover
+      color: white
+      background-color: #d1005d
   a.thumbnail
     img
       background-color: white
       padding: 4px
       margin: 4px
       +box-shadow
-
-a.cancel:hover, a.remove:hover
-  background-color: #d1005d
-  color: #ffffff
 
 div.upload_stack
   ul.attachments input, ul.uploads input
@@ -168,11 +155,11 @@ div.upload_stack
     color: #4d4e53
   div.selector
     position: relative
-    cursor: pointer
     input.filefield
       position: relative
       z-index: 100
       opacity: 0
+      cursor: pointer
     div.addfile
       position: absolute
       z-index: 99
@@ -202,46 +189,65 @@ p.administrative
 img.feedicon
   margin: 8px 0
 
-div.activation_required
-  color: #d1005d
+  div.activation_required
+    color: #d1005d
 
-ul.main
-  list-style: none
-  margin: 20px 0 50px 0
-  padding: 0
-  li
+  .context, .updatenote
+    +light
+    color: $pale
+    .still_editable
+      +soft
+      color: $dark
+
+  p.waiting
+    color: $mid
+    padding-left: 18px
+    background: transparent url(/images/furniture/wait_16_grey.gif) no-repeat left top
+
+  img.smiley
+    margin: 3px 3px 0 3px
+
+  div.speaker
+    position: relative
     clear: left
-    margin: 30px 0
-    .subject a
-      font-family: helvetica,arial,sans-serif
-      font-size: 160%
-      font-weight: bold
-      line-height: 1
-      &:visited
-        font-family: helvetica,arial,sans-serif
-        font-size: 160%
-        font-weight: bold
-        line-height: 1
-    div.preview
-      font-size: 85%
-      color: #4d4e53
-      p
-        margin-top: 5px
-    &.sticky .subject a
-      color: #d1005d
-      &:visited
-        color: #d1005d
-    &.locked .subject a
-      color: #4d4e53
-      &:visited
-        color: #4d4e53
+    +outset
+    float: left
+    width: 50px
+    height: 50px
+    margin-right: 10px
 
-.context, .updatenote
-  display: block
-  font-family: helvetica,arial,sans-serif
-  font-size: 0.8em
-  line-height: 1.4
-  color: $mid
-  margin: 0
-  .still_editable
-    color: $dark
+  img.gravatar
+    +box-shadow
+    border: 3px solid white
+    &.thumbnail
+      margin: 2px 10px 10px 0
+    &.big
+      margin: 8px 10px 4px 0
+    &.tiny
+      margin: 0 6px 4px 0
+      border: 1px solid white
+
+  form.friendly
+    margin: 0 0 60px 0
+    p
+      margin: 1em 0 0 0
+    input.titular
+      width: 95%
+      +input
+      font-size: 200%
+    textarea, select
+      width: 95%
+      +input
+    input.standard
+      width: 95%
+      +input
+    input.login
+      +input
+      width: 50%
+    span.formnote
+      +light
+      color: $coolgrey8
+    label
+      +light
+    label.required
+      +heavy
