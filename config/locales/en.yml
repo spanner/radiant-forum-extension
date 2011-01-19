@@ -60,6 +60,8 @@ en:
     topic:
       forum: "File in category"
       name: "Discussion title"
+      sticky: "Sticky"
+      locked: "Locked"
   latest_activity: "latest activity"
   latest_discussion: "Latest topics"
   latest_posts: "Latest comments"

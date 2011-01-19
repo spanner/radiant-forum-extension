@@ -25,3 +25,13 @@
 - content_for :newtopic do
   .newmessage
     = link_to t('new_topic'), new_post_url
+
+- content_for :forum_js do
+  - if current_reader
+    - if Radiant::Config['forum.toolbar?']
+      %script{:type => "text/javascript", :src  => "/punymce/puny_mce_src.js"}
+      %script{:type => "text/javascript", :src  => "/punymce/plugins/link/link.js"}
+      %script{:type => "text/javascript", :src  => "/punymce/plugins/emoticons/emoticons.js"}
+      %script{:type => "text/javascript", :src  => "/punymce/plugins/editsource/editsource.js"}
+      %script{:type => "text/javascript", :src  => "/punymce/plugins/paste.js"}
+    %script{:type => "text/javascript", :src  => "/javascripts/forum.js"}

@@ -44,6 +44,8 @@
         self.form.submit(self.submitForm);
         self.form.find('div.upload_stack').upload_stack();
         self.form.find('a.cancel').click(self.cancel);
+        self.form.find("textarea.toolbarred").add_editor({});
+        
         self.unwait();
         self.show();
       },
@@ -57,6 +59,7 @@
         });
         if (ajaxable) {
           squash(event);
+          self.form.find('textarea.toolbarred').read_editor();
           $.post(self.form.attr('action'), self.form.serialize(), self.finish);  
         } else {
           return true;  // allow event through so that uploads are sent by normal HTTP POST
@@ -235,22 +238,31 @@
 		return self;
 	};
 
-	function Smiley(a) {   
-    var self = this;
-		$.extend(self, {
-		  link: a,
-		  tag: a.attr('rel'),
-		  target: null,
-      
-			insert: function(event) {
-        squash(event);
-        self.
-      }
-    });
-    
-    self.target = $(a.attr.target);
-    a.click(self.insert);
-  }
+	$.fn.add_editor = function() { 
+		this.each(function() { 
+		  var self = $(this);
+      var editor = new punymce.Editor({
+        id : self.attr('id'),
+        plugins : 'Link,Emoticons,EditSource',
+        toolbar : 'bold,italic,link,unlink,emoticons,editsource',
+        width : 500,
+  			height : 250,
+        resize : true
+      });
+      self.data('editor', editor);
+		});
+		return this;
+	};
+
+	$.fn.read_editor = function() { 
+		this.each(function() { 
+		  var self = $(this);
+		  if (self.data('editor')) {
+		    self.val(self.data('editor').getContent());
+		  }
+		});
+		return this;
+	};
 
   /*
    * jQuery Color Animations
@@ -393,4 +405,5 @@
 $(function() {
   $(".post").editable_post({});
   $(".upload_stack").upload_stack({});
+  $(".toolbarred").add_editor({});
 });

@@ -6,16 +6,17 @@
 - else
   - if current_reader
     - if current_reader.activated?
-      .post_wrapper.reply
-        .post_header
-          .speaker
-            = standard_gravatar_for(current_reader)
-          %h2.person
-            = t("add_reply")
-          %p.context
-            = t('if_you_not', :name => current_reader.name)
-            = link_to(t('log_out'), reader_logout_url) + '.'
-        = render :partial => 'posts/form', :locals => {:post => topic.posts.build, :omit_label => true}
+      .post
+        .post_wrapper.reply
+          .post_header
+            .speaker
+              = standard_gravatar_for(current_reader)
+            %h2.person
+              = t("add_reply")
+            %p.context
+              = t('if_you_not', :name => current_reader.name)
+              = link_to(t('log_out'), reader_logout_url) + '.'
+          = render :partial => 'posts/form', :locals => {:post => topic.posts.build, :omit_label => true}
     - else
       = render :partial => 'reader_activations/activation_required', :locals => {:purpose => t('to_reply')}
   - else

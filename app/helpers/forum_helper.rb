@@ -1,4 +1,6 @@
 require 'sanitize'
+require "sanitize/config/forum"
+
 module ForumHelper
 
   def standard_gravatar_for(reader, url=nil)
@@ -27,7 +29,7 @@ module ForumHelper
     else
       textilized = RedCloth.new(text, [ :hard_breaks ])
       textilized.hard_breaks = true if textilized.respond_to?("hard_breaks=")
-      Sanitize.clean(textilized.to_html(:textile, :smilies), Sanitize::Config::RELAXED)
+      Sanitize.clean(textilized.to_html(:textile, :smilies), Sanitize::Config::FORUM)
     end
   end
   

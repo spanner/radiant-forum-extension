@@ -1,11 +1,13 @@
 %fieldset
   %h3 Forum
   %p
+    = edit_config 'forum.public?'
+  %p
     = edit_config 'forum.layout'
   %p
-    = edit_config 'forum.editable_period'
+    = edit_config 'forum.toolbar?'
   %p
-    = edit_config 'forum.public?'
+    = edit_config 'forum.editable_period'
   %p
     = edit_config 'forum.allow_page_comments?'
   %p

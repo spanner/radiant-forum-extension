@@ -27,11 +27,11 @@ class ForumExtension < Radiant::Extension
     admin.reader_configuration.show.add :settings, "forum", :after => "administration"
     admin.reader_configuration.edit.add :form, "edit_forum", :after => "administration"
     
-    if defined? RedCloth::DEFAULT_RULES     # identifies redcloth 3
+    if defined? RedCloth::DEFAULT_RULES
       RedCloth.send :include, ForumRedCloth3
       RedCloth::DEFAULT_RULES.push(:smilies)
     else
-      RedCloth::TextileDoc.send :include, ForumRedCloth4                        # interpolate smily icons
+      RedCloth::TextileDoc.send :include, ForumRedCloth4
     end
 
     tab("Forum") do

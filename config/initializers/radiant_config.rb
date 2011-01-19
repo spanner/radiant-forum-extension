@@ -2,6 +2,7 @@ Radiant.config do |config|
   config.namespace('forum') do |forum|
     forum.define 'allow_registration?', :default => true
     forum.define 'public?', :default => true
+    forum.define 'toolbar?', :default => true
     forum.define 'editable_period', :type => :integer, :default => 15, :units => "minutes"
     forum.define 'allow_page_comments?', :default => true
     forum.define 'allow_attachments?', :default => true

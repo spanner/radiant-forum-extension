@@ -1,16 +1,17 @@
 = render :partial => 'forums/standard_parts'
 
 - content_for :form do
-  .post_wrapper
-    .post_header
-      .speaker
-        = standard_gravatar_for(current_reader)
-      %h2.person
-        = current_reader.name
-      %p.context
-        = t('if_you_not', :name => current_reader.name)
-        = link_to(t('log_out'), reader_logout_url) + '.'
-    = render :partial => 'form', :locals => {:post => @post}
+  .post
+    .post_wrapper
+      .post_header
+        .speaker
+          = standard_gravatar_for(current_reader)
+        %h2.person
+          = current_reader.name
+        %p.context
+          = t('if_you_not', :name => current_reader.name)
+          = link_to(t('log_out'), reader_logout_url) + '.'
+      = render :partial => 'form', :locals => {:post => @post}
 
 - content_for :speaker do
   - standard_gravatar_for(current_reader)
