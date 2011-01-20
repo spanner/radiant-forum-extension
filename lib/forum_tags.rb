@@ -131,10 +131,11 @@ module ForumTags
     Renders the author and date context line for the current topic.
   }
   tag 'forum:topic:context' do |tag|
-    output = I18n.t('started_by')
-    output << " #{tag.render('forum:topic:author')} "
+    output = []
+    output << I18n.t('started_by')
+    output << %{<a href="#{reader_path(tag.locals.topic.reader)}">#{tag.render('forum:topic:author')}</a>}
     output << tag.render('forum:topic:date')
-    output
+    output.join(' ')
   end
 
   desc %{
@@ -249,7 +250,7 @@ module ForumTags
     name and the colloquial form of the creation date.
   }
   tag 'forum:post:context' do |tag|
-    output = ""
+    output = []
     post = tag.locals.post
     if post.page
       output << I18n.t('new_comment_from')
@@ -258,9 +259,9 @@ module ForumTags
     else
       output << I18n.t('new_topic_from')
     end
-    output << tag.render('forum:post:author')
-    output << I18n.t('on_date', :date => tag.render('forum:post:date'))
-    output
+    output << %{<a href="#{reader_path(tag.locals.post.reader)}">#{tag.render('forum:post:author')}</a>}
+    output << tag.render('forum:post:date')
+    output.join(' ')
   end
 
   desc %{
