@@ -81,7 +81,7 @@ module ForumHelper
       elsif (date.year == Date.today.year)
         'this_year'
       else
-        'distant'
+        'standard'
       end
     end
   end

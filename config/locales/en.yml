@@ -91,7 +91,6 @@ en:
     topic_deleted: "Topic '%{name}' was deleted."
     post_deleted: "Post deleted."
   of: "of"
-  on: "on"
   on_date: "on %{date}"
   post: "comment"
   post_body: "Post body"
@@ -142,8 +141,8 @@ en:
   sticky: "sticky"
   time:
     formats:
-      distant: "%B %e, %Y at %l:%M%p"
       recently: "%A at %l:%M%p"
+      standard: "on %B %e, %Y at %l:%M%p"
       this_year: "%B %e at %l:%M%p"
       today: "today at %l:%M%p"
       yesterday: "yesterday at %l:%M%p"

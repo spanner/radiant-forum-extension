@@ -2,7 +2,6 @@ module ForumTags
   include Radiant::Taggable
   include ActionView::Helpers::UrlHelper
   include ActionController::UrlWriter
-  include ForumHelper
   include I18n
   
   class TagError < StandardError; end
@@ -127,7 +126,7 @@ module ForumTags
   tag 'forum:topic:context' do |tag|
     output = I18n.t('started_by')
     output << " #{tag.render('forum:topic:author')} "
-    output << friendly_date(tag.locals.topic.created_at)
+    output << tag.render('forum:topic:date')
     output
   end
 
@@ -135,7 +134,8 @@ module ForumTags
     Renders the creation date of the current topic in a friendly, colloquial form.
   }
   tag 'forum:topic:date' do |tag|
-    friendly_date(tag.locals.topic.created_at)    # friendly_date is a colloquial date-describer in the ForumHelper
+    p "forum:topic:date is about to return #{I18n.l(tag.locals.topic.created_at, :format => :standard)}"
+    I18n.l tag.locals.topic.created_at, :format => :standard
   end
 
   tag 'forum:posts' do |tag|
@@ -258,12 +258,11 @@ module ForumTags
   end
 
   desc %{
-    Renders the creation date of the current post in a friendly, colloquial form.
+    Renders the creation date of the current post
   }
   tag 'forum:post:date' do |tag|
-    friendly_date(tag.locals.post.created_at)    # friendly_date is a colloquial date-describer in the ForumHelper
+    I18n.l tag.locals.post.created_at, :format => :standard
   end
-
 
   # page comments are just a special case of posts that have a page but not topic
   # there is the difference that we generally want to display the whole set

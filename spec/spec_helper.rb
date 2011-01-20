@@ -43,26 +43,6 @@ Spec::Runner.configure do |config|
   # for all of your examples, even those that don't use them.
 end
 
-def friendly_date(datetime)
-  I18n.l(datetime, :format => friendly_date_format(datetime)) if datetime
-end
-
-def friendly_date_format(datetime)
-  if datetime && date = datetime.to_date
-    if (date.to_datetime == Date.today)
-      'today'
-    elsif (date.to_datetime == Date.yesterday)
-      'yesterday'
-    elsif (date.to_datetime > 6.days.ago)
-      'recently'
-    elsif (date.year == Date.today.year)
-      'this_year'
-    else
-      'distant'
-    end
-  end
-end
-
 # class NilClass
 #   def method_missing(method, *args)
 #     p "NilClass##{method} called with args #{args.inspect}" 
