@@ -88,7 +88,14 @@ module ForumTags
     Renders a link to the current topic using its name as the text.
   }
   tag 'forum:topic:link' do |tag|
-    %{<a href="#{tag.render('forum:topic:url')}">#{tag.render('forum:topic:name')}</a>}
+    options = tag.attr.dup
+    anchor = options['anchor'] ? "##{options.delete('anchor')}" : ''
+    attributes = options.inject('') { |s, (k, v)| s << %{#{k.downcase}="#{v}" } }.strip
+    attributes = " #{attributes}" unless attributes.empty?
+    text = tag.double? ? tag.expand : tag.render('forum:topic:name')
+    %{<a href="#{tag.render('forum:topic:url')}#{anchor}"#{attributes}>#{text}</a>}
+  end
+  tag 'link' do |tag|
   end
   
   desc %{
@@ -134,7 +141,6 @@ module ForumTags
     Renders the creation date of the current topic in a friendly, colloquial form.
   }
   tag 'forum:topic:date' do |tag|
-    p "forum:topic:date is about to return #{I18n.l(tag.locals.topic.created_at, :format => :standard)}"
     I18n.l tag.locals.topic.created_at, :format => :standard
   end
 
@@ -273,7 +279,6 @@ module ForumTags
     The address for add-a-comment links
   }
   tag 'comment_url' do |tag|
-    p "calling new_page_post_path(#{tag.locals.page})"
     new_page_post_path(tag.locals.page)
   end
 
