@@ -1,41 +1,293 @@
 module ForumTags
   include Radiant::Taggable
-  include ActionView::Helpers::TagHelper
-  include ActionView::Helpers::FormTagHelper
-  include ActionView::Helpers::FormOptionsHelper
+  include ActionView::Helpers::UrlHelper
+  include ActionController::UrlWriter
+  include ForumHelper
+  include I18n
   
   class TagError < StandardError; end
 
-  tag 'comments' do |tag|
-    raise TagError, "can't have comments without a page" unless page = tag.locals.page
-    if page.commentable?
-      tag.locals.comments = page.posts
-      tag.expand
-    end
+  tag 'forum' do |tag|
+    tag.expand
+  end
+
+  tag 'forum:topics' do |tag|
+    tag.expand
   end
 
   desc %{
-    Returns a string in the form "x comments" or "no comments yet".
-  
-    *Usage:*
-    <pre><code><r:comments:summary /></code></pre>
+    Renders a standard list of recent topics. 
+    Pass a 'limit' parameter to set the length of the list: default is 10.
+    
+    <pre><code>
+      <r:forum:topics:latest limit="5" />
+      # is the same as:
+      <ul>
+        <r:forum:topics:each limit="5">
+          <li><r:forum:topic:link /><br /><r:forum:topic:context /></li>
+        </r:forum:topics:each>
+      </ul>
+    </code></pre>
   }
-  
-  tag 'comments:summary' do |tag|
-    if tag.locals.comments.empty?
-      "no comments yet"
-    elsif tag.locals.comments.size == 1
-      "one comment"
-    else
-      "#{tag.locals.comments.size} comments"
+  tag 'forum:topics:latest' do |tag|
+    limit = (tag.attr['limit'] || 10).to_i
+    output = "<ul>"
+    Topic.latest(limit).each do |topic|
+      tag.locals.topic = topic
+      tag.locals.post = topic.posts.last
+      output << tag.render('forum:topic:summary', tag.attr.dup)
     end
+    output << "</ul>"
+    output
+  end
+
+  desc %{
+    Loops over the most recently-updated forum topics.
+    Supply a `limit` attribute to set the number of topics shown. The default is 10.
+    Within the loop you can use all the usual r:forum:topic and r:forum:post tags.
+    The post tags will refer to the latest reply (or to the first post if there are no replies).
+  }
+  tag 'forum:topics:each' do |tag|
+    output = []
+    limit = (tag.attr['limit'] || 10).to_i
+    Topic.latest(limit).each do |topic|
+      tag.locals.topic = topic
+      tag.locals.post = topic.posts.last
+      output << tag.expand
+    end
+    output
+  end
+
+  tag 'forum:topic' do |tag|
+    tag.locals.topic = Topic.find( tag.attr['id'] ) unless tag.attr['id'].blank?
+    raise TagError, "can't have forum:topic without a topic" unless tag.locals.topic
+    tag.expand
+  end
+
+  desc %{
+    Renders a standard, minimal topic list item consisting of link and explanation.
+    This is the shorthand used by forum:topics:latest but it can also be used in other settings.
+    
+    <pre><code>
+      <r:forum:topic:summary />
+      # is the same as:
+      <li><r:forum:topic:link /><br /><r:forum:topic:context /></li>
+    </code></pre>    
+  }
+  tag 'forum:topic:summary' do |tag|
+    "<li>#{tag.render('forum:topic:link')}<br />#{tag.render('forum:topic:context')}</li>"
+  end
+
+  desc %{
+    Renders the url of the current topic.
+  }
+  tag 'forum:topic:url' do |tag|
+    forum_topic_path(tag.locals.topic.forum, tag.locals.topic)
+  end
+
+  desc %{
+    Renders a link to the current topic using its name as the text.
+  }
+  tag 'forum:topic:link' do |tag|
+    %{<a href="#{tag.render('forum:topic:url')}">#{tag.render('forum:topic:name')}</a>}
+  end
+  
+  desc %{
+    Renders a standard gravatar block (as found in the forum pages) for the reader who 
+    started the current topic.
+  }
+  tag 'forum:topic:gravatar' do |tag|
+    %{<div class="speaker">#{standard_gravatar_for(tag.locals.topic.reader)}</div>}
+  end
+
+  desc %{
+    Renders the name of the reader who started the current topic.
+  }
+  tag 'forum:topic:author' do |tag|
+    tag.locals.topic.reader.name
+  end
+
+  desc %{
+    Renders the name of the current topic.
+  }
+  tag 'forum:topic:name' do |tag|
+    tag.locals.topic.name
+  end
+
+  desc %{
+    Renders the (sanitized and textilized) body of the first post in the current topic.
+  }
+  tag 'forum:topic:body' do |tag|
+    tag.locals.topic.posts.first.body_html
+  end
+
+  desc %{
+    Renders the author and date context line for the current topic.
+  }
+  tag 'forum:topic:context' do |tag|
+    output = I18n.t('started_by')
+    output << " #{tag.render('forum:topic:author')} "
+    output << friendly_date(tag.locals.topic.created_at)
+    output
+  end
+
+  desc %{
+    Renders the creation date of the current topic in a friendly, colloquial form.
+  }
+  tag 'forum:topic:date' do |tag|
+    friendly_date(tag.locals.topic.created_at)    # friendly_date is a colloquial date-describer in the ForumHelper
+  end
+
+  tag 'forum:posts' do |tag|
+    tag.expand
+  end
+
+  desc %{
+    Loops over the posts most recently added. In effect this is very similar to calling
+    r:topics:each, but there are some differences:
+    
+    * page comments and any other non-topic posts are included
+    * here r:post tags always refer to the current post. 
+      Within the topics:each loop they always refer to the last reply to that topic.
+    * tag.locals.page is set if the foreground post is a page comment, so you can use
+      all the usual radius tags for that page.
+    
+    Supply a `limit` attribute to set the number of posts shown. The default is 10.
+  }
+  tag 'forum:posts:each' do |tag|
+    results = []
+    limit = (tag.attr['limit'] || 10).to_i
+    Post.latest(limit).each do |post|
+      tag.locals.post = post
+      tag.locals.topic = post.topic
+      tag.locals.page = post.page
+      results << tag.expand
+    end
+    results
+  end
+
+  desc %{
+    This tag is generally used in double form or as a silent prefix, where it will just expand:
+    
+    <pre><code>
+      <r:forum:post><r:gravatar /> <r:link /></r:forum:post>
+      # or just
+      <r:forum:post:link />
+    </code></pre>
+    
+    But if used in single form it will return a standard, minimal post list item 
+    consisting of link and explanation:
+    
+    <pre><code>
+      <r:forum:post />
+      # is the same as:
+      <li><r:forum:post:link /><br /><r:forum:post:context /></li>
+    </code></pre>
+    
+    Note that the text of the link will be the name of the topic or page to which this post is attached, 
+    and that within a topics:each loop any r:forum:post tags will show the last post to the topic.
+  }
+  tag 'forum:post' do |tag|
+    tag.locals.post = Post.find(tag.attr['id']) unless tag.attr['id'].blank?
+    raise TagError, "can't have forum:post without a post" unless tag.locals.post
+    tag.expand if tag.locals.post
+  end
+  
+  desc %{
+    Renders a url (with pagination and anchor) for the current post. Within a topics:each loop this
+    is a way to link to the last post.
+  }
+  tag 'forum:post:url' do |tag|
+    paginated_post_path(tag.locals.post)
+  end
+
+  desc %{
+    Renders a title that can be used over the post: this will be the name of its page or topic.
+  }
+  tag 'forum:post:name' do |tag|
+    tag.locals.post.holder.title
+  end
+
+  desc %{
+    Renders a link to the current post. The link text will be the page or topic title and within that
+    the destination of the link will be the page and anchor for this post.
+  }
+  tag 'forum:post:link' do |tag|
+    link_to tag.render('forum:post:name'), tag.render('forum:post:url')
+  end
+
+  desc %{
+    Renders a standard gravatar block (as in the forum pages) for the author of this post.
+  }
+  tag 'forum:post:gravatar' do |tag|
+    %{<div class="speaker">#{standard_gravatar_for(tag.locals.post.reader)}</div>}
+  end
+
+  desc %{
+    Renders the name of the author of this post.
+  }
+  tag 'forum:post:author' do |tag|
+    tag.locals.post.reader.name
+  end
+
+  desc %{
+    Renders the (sanitized and textilized) body of the current post.
+  }
+  tag 'forum:post:body' do |tag|
+    tag.locals.post.body_html
+  end
+
+  desc %{
+    Renders a description line for the current post, which is usually something like 
+    'comment added by', 'new reply from' or 'new topic begun by' followed by the author's
+    name and the colloquial form of the creation date.
+  }
+  tag 'forum:post:context' do |tag|
+    output = ""
+    post = tag.locals.post
+    if post.page
+      output << I18n.t('new_comment_from')
+    elsif post.first?
+      output << I18n.t('new_reply_from')
+    else
+      output << I18n.t('new_topic_from')
+    end
+    output << tag.render('forum:post:author')
+    output << I18n.t('on_date', :date => tag.render('forum:post:date'))
+    output
+  end
+
+  desc %{
+    Renders the creation date of the current post in a friendly, colloquial form.
+  }
+  tag 'forum:post:date' do |tag|
+    friendly_date(tag.locals.post.created_at)    # friendly_date is a colloquial date-describer in the ForumHelper
+  end
+
+
+  # page comments are just a special case of posts that have a page but not topic
+  # there is the difference that we generally want to display the whole set
+  # and the added complication that they should be paginated.
+  # but we only need to define some more collection and summary tags and set the post collection appropriately
+
+  desc %{
+    The address for add-a-comment links
+  }
+  tag 'comment_url' do |tag|
+    p "calling new_page_post_path(#{tag.locals.page})"
+    new_page_post_path(tag.locals.page)
+  end
+
+  tag 'comment_link' do |tag|
+    options = tag.attr.dup
+    attributes = options.inject('') { |s, (k, v)| s << %{#{k.to_s.downcase}="#{v}" } }.strip
+    attributes = " #{attributes}" unless attributes.empty?
+    text = tag.double? ? tag.expand : I18n.t("Add a comment")
+    %{<a href="#{tag.render('comment_url')}"#{attributes}>#{text}</a>}
   end
 
   desc %{
     Anything between if_comments tags is displayed only - dramatic pause - if there are comments.
-  
-    *Usage:*
-    <pre><code><r:if_comments>...</r:if_comments></code></pre>
   }
   tag 'if_comments' do |tag|
     raise TagError, "can't have if_comments without a page" unless page = tag.locals.page
@@ -44,241 +296,88 @@ module ForumTags
 
   desc %{
     Anything between unless_comments tags is displayed only if there are no comments.
-  
+
     *Usage:*
     <pre><code><r:unless_comments>...</r:unless_comments></code></pre>
   }
   tag 'unless_comments' do |tag|
     raise TagError, "can't have unless_comments without a page" unless page = tag.locals.page
-    tag.expand if page.posts.any?
+    tag.expand unless page.posts.any?
   end
-  
+
+  tag 'comments' do |tag|
+    raise TagError, "can't have comments without a page" unless page = tag.locals.page
+    if page.commentable?
+      output = []
+      tag.locals.posts = tag.locals.paginated_list = page.posts.paginate
+      tag.expand
+    end
+  end
+
   desc %{
-    If you want more control over the display of page comments, you can spell them out:
-  
-    *Usage:*
-    <pre><code><r:comments:each>
-      <h2><r:comment:reader:name /></h2>
-      <p class="date"><r:comment:date /></p>
-      <r:comment:body_html />
-    </r:comments:each>
-    <r:comment_link />
-    </code></pre>
+    Renders string (internationalised) like "1 comment", "27 comments" or "no comments yet".
+  }
+  tag 'comments:summary' do |tag|
+    I18n.t("comment_count", :count => tag.locals.posts.total_entries)
+  end
+
+  desc %{
+    Loops over the  (paginated) comment set in ascending order of date. Within the loop you can 
+    use the r:comment shorthand or any r:forum:post:* tags. Note that r:forum:topic tags won't 
+    work: there is no topic to show.
   }
   tag 'comments:each' do |tag|
     results = []
-    tag.locals.comments.each do |post|
-      tag.locals.comment = post
+    tag.locals.posts.each do |post|
+      tag.locals.post = post
       results << tag.expand
     end
-    results
-  end
-  
-  desc %{
-    To enable page commenting, all you have to do is put this in your layout:
-  
-    *Usage:*
-    <pre><code><r:comments:all /></code></pre>
-  }
-  tag 'comments:all' do |tag|
-    posts = tag.locals.comments
-    results = ""
-    results << %{<div class="page_comments">}
-    results << "<h2>Comments</h2>"
-    results << %{<div id="forum">
-}
-    if posts.empty?
-      results << "<p>None yet.</p>"
-    else
-      posts.each do |post|
-        tag.locals.comment = post
-        results << tag.render('comment')
-      end
-    end
-    results << %{#{tag.render('comment_link', 'class' => 'inline inviting')}}
-    results << "</div></div>"
+    results << tag.render('pagination', tag.attr.dup)
     results
   end
 
+  desc %{
+    A useful shortcut: To enable page commenting, all you have to do is put this in your layout:
+
+    <pre><code><r:comments:all /></code></pre>
+    
+    It will display a (paginated) list of page comments followed by an 'add comment' link that you 
+    can hook into using the supplied forum javascript or your own equivalent.
+  }
+  tag 'comments:all' do |tag|
+    posts = tag.locals.posts
+    results = ""
+    results << %{<div class="page_comments">}
+    results << %{<p class="context">#{tag.render('comments:summary')}</p>}
+    posts.each do |post|
+      tag.locals.post = post
+      results << tag.render('comment')
+    end
+    results << %{<p class="add_comment">#{tag.render('comment_link', 'class' => 'remote')}</p>}
+    results << tag.render('pagination', tag.attr.dup)
+    results << "</div>"
+    results
+  end
+
+  desc %{
+    A useful shortcut that renders an entire post - in much the same way as a post would appear 
+    in the forum - so that it can be displayed as a comment on the page.
+  }
   tag 'comment' do |tag|
-    raise TagError, "can't have r:comment without a post" unless post = tag.locals.comment
+    raise TagError, "can't have r:comment without a post" unless post = tag.locals.post
     if tag.double?
       tag.locals.reader = post.reader
       tag.expand
     else
-      %{<div class="post" id="#{post.dom_id}">
-  <div class="post_header">
-    <h2><img src="#{post.reader.gravatar_url(:size => 40)}" width="40" height ="40" class="gravatar" /> #{post.reader.name}</h2>
-    <p class="context">#{friendly_date(post.created_at)}</p>
-  </div>
-  <div class="post_body">#{post.body_html}</div>
-</div>}
-    end
-  end
-
-  tag 'comment:reader' do |tag|
-    raise TagError, "can't have comment:reader without a comment" unless reader = tag.locals.reader
-    tag.expand
-  end
-
-  desc %{
-    The name of the commenter
-  }
-  tag 'comment:reader:name' do |tag|
-    tag.locals.reader.name
-  end
-  
-  desc %{
-    A gravatar for the commenter
-  }
-  tag 'comment:reader:gravatar' do |tag|
-    tag.locals.reader.gravatar
-  end
-
-  desc %{
-    The date of the comment
-  }
-  tag 'comment:date' do |tag|
-    tag.locals.comment.created_at.to_s(:html_date)
-  end
-
-  desc %{
-    The time_ago of the comment
-  }
-  tag 'comment:ago' do |tag|
-    time_ago_in_words(tag.locals.comment.created_at)
-  end
-
-  desc %{
-    The body of the comment as it was entered (but html-escaped)
-  }
-  tag 'comment:body' do |tag|
-    h(tag.locals.comment.body)
-  end
-
-  desc %{
-    The body of the comment rendered into html (and whitelisted, so this ought to be safe)
-  }
-  tag 'comment:body_html' do |tag|
-    tag.locals.comment.body_html
-  end
-
-  desc %{
-    A link to the post-a-comment form. Typically you'll use a bit of remote scripting to replace this with
-    a comment or login form depending on whether a reader is detected, but you can just leave the link too.
-    
-    If text is given, the link will be wrapped around it. The default is just "Add a comment". Any supplied 
-    attributes are passed through, so you can specify class, id and anything else you like.
-
-    *Usage:*
-    <pre><code>
-      <r:if_comments>
-        <r:comment_link />
-      </r:if_comments>
-      <r:unless_comments>
-        <r:comment_link class="how_exciting">Be the first to add a comment!</r:comment_link>
-      </r:unless_comments>
-    </code></pre>
-  }
-  tag 'comment_link' do |tag|
-    raise TagError, "can't have `r:comment_link' without a page." unless tag.locals.page
-    options = tag.attr.dup
-    options['class'] ||= 'newmessage'
-    attributes = options.inject('') { |s, (k, v)| s << %{#{k.to_s.downcase}="#{v}" } }.strip
-    attributes = " #{attributes}" unless attributes.empty?
-    text = tag.double? ? tag.expand : "Add a comment"
-    %{<a href="#{tag.render('comment_url')}"#{attributes}>#{text}</a>}
-  end
-
-  desc %{
-    The address for add-a-comment links
-  }
-  tag 'comment_url' do |tag|
-    raise TagError, "can't have `r:comment_url' without a page." unless tag.locals.page
-    new_page_post_url(tag.locals.page)
-  end
-
-  desc %{
-    Shows the standard block of recent discussion activity.
-  }
-  tag 'forum_latest' do |tag|
-    results = []
-    results << %{<ul class="clean">}
-    Topic.visible.latest(6).each do |topic|
-      tag.locals.topic = topic
-      results << %{<li>#{tag.render('topic:summary')}</li>}
-    end
-    results << %{</ul>}
-    results
-  end
-
-  desc %{
-    Shows the standard forum search form in a reasonably compact and stylable way. 
-    
-    Takes options with_title (set to false to omit the usual heading), by_forum (set to true to show a discussion category dropdown) and by_reader (set to true to show a message-from dropdown) and label (set to the title you would like to display over the main search field).
-  }
-  tag 'forum_search' do |tag|
-    results = []
-    compact = true unless tag.attr['by_forum'] == 'true' || tag.attr['by_reader'] == 'true' 
-    q_label = tag.attr['label']
-    q_label = "Look for this text" if q_label.blank? && !compact
-    results << %{<form class="friendly" action="#{posts_url}">}
-    results << %{<h2>Forum Search</h2>} unless tag.attr['with_title'] == 'false'
-    results << %{<p>}
-    results << %{<label for="q">#{q_label}</label><br />} unless q_label.blank?
-    results << %{#{text_field_tag("q", params[:q], :class => 'standard')}}
-    results << %{#{submit_tag "search", :class => 'button'}} if compact
-    results << %{</p>}
-    unless compact
-      results << %{<p><label for="reader_id">From this person</label><br /><select name="reader_id"><option value="">anyone</option>#{options_from_collection_for_select(Reader.all, "id", "name")}</select></p>} if tag.attr['by_reader'] == 'true'
-      results << %{<p><label for="forum_id">In this discussion category</label><br /><select name="forum_id"><option value="">anywhere</option>#{options_from_collection_for_select(Forum.visible, "id", "name")}</select></p>} if tag.attr['by_forum'] == 'true'
-      results << %{<p class="buttons">#{submit_tag "search", :class => 'button'}</p>} 
-    end
-    results << %{</form>}
-    results
-  end
-
-  tag 'topic' do |tag|
-    tag.expand if tag.locals.topic
-  end
-  tag 'topic:summary' do |tag|
-    results = []
-    topic = tag.locals.topic
-    post = topic.last_post
-    results << %{<img src="#{post.reader.gravatar_url(:size => 42)}" width="42" height="42" class="gravatar"> } if tag.attr['gravatar'] == 'true'
-    results << %{<a href="#{forum_topic_path(topic.forum, topic)}">#{topic.name}</a> }
-    results << %{<span class="credit">}
-    if topic.page
-      results << " commented upon by "
-    elsif post.first?
-      results << " started by "
-    else
-      results << " replied to by "
-    end
-    results << "#{post.reader.name} #{friendly_date(post.created_at)}"
-    results << %{</span>}
-    results
-  end
-
-
-
-private
-
-  # copied from forum_helper
-  
-  def friendly_date(datetime)
-    if datetime
-      date = datetime.to_date
-      if (date == Date.today)
-        format = "today at %l:%M%p"
-      elsif (date == Date.yesterday)
-        format = "yesterday at %l:%M%p"
-      elsif (date.year == Date.today.year)
-        format = "on %B %e"
-      else
-        format = "on %B %e, %Y"
-      end
-      datetime.strftime(format)
+      output = %{<div class="post"><div class="post_wrapper">}
+      output << tag.render("forum:post:gravatar")
+      output << %{<div class="post_header">}
+      output << %{<h2>#{tag.render("forum:post:reader")}</h2>}
+      output << %{<p class="context">#{tag.render("forum:post:context")}</p>}
+      output << %{</div>}
+      output << %{<div class="post_body">}
+      output << tag.render("forum:post:body")
+      output
     end
   end
 

@@ -67,22 +67,22 @@ module ForumHelper
   end
   
   def friendly_date(datetime)
-    if datetime
-      date = datetime.to_date
+    I18n.l(datetime, :format => friendly_date_format(datetime)) if datetime
+  end
+  
+  def friendly_date_format(datetime)
+    if datetime && date = datetime.to_date
       if (date.to_datetime == Date.today)
-        format = t('time_today')
+        'today'
       elsif (date.to_datetime == Date.yesterday)
-        format = t('time_yesterday')
+        'yesterday'
       elsif (date.to_datetime > 6.days.ago)
-        format = t('date_recently')
+        'recently'
       elsif (date.year == Date.today.year)
-        format = t('date_this_year')
+        'this_year'
       else
-        format = t('standard_date')
+        'distant'
       end
-      datetime.strftime(format)
-    else 
-      t("unknown_date")
     end
   end
   

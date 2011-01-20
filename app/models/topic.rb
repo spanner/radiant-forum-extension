@@ -30,6 +30,14 @@ class Topic < ActiveRecord::Base
   def body
     posts.first.body
   end
+  
+  def created_at
+    posts.first.created_at if posts.first
+  end
+  
+  def title
+    name
+  end
 
 protected
 

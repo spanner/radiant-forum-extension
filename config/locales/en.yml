@@ -30,8 +30,6 @@ en:
   confirm_remove_forum: "Delete forum?"
   confirm_remove_post: "Delete post?"
   confirm_remove_topic: "Delete topic?"
-  date_recently: "%A"
-  date_this_year: "%B %e"
   definitely_remove_post: "Yes: delete it"
   edit_forum: "Edit forum"
   edit_minimal: "e"
@@ -136,18 +134,21 @@ en:
   separator: ':'
   showing: "showing"
   sorry_locked: "Sorry: this topic is locked."
-  standard_date: "%B %e, %Y at %l:%M%p"
   start_topic: "Start a new conversation"
   started_by: "Started by"
   started_topic_in: "started a new topic under"
   started_topic_on: "started a new topic on %{date}"
   started_on: "started on %{date}"
   sticky: "sticky"
-  time_recently: "%A at %l:%M%p"
+  time:
+    formats:
+      distant: "%B %e, %Y at %l:%M%p"
+      recently: "%A at %l:%M%p"
+      this_year: "%B %e at %l:%M%p"
+      today: "today at %l:%M%p"
+      yesterday: "yesterday at %l:%M%p"
   time_remaining_to_edit: "You have %{time} left to "
-  time_today: "today at %l:%M%p"
-  time_yesterday: "yesterday at %l:%M%p"
-  topic_count: 
+  topic_count:
     zero: "No discussion."
     one: "One topic: "
     other: "%{count} topics, most recently "

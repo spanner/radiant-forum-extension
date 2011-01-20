@@ -43,4 +43,3 @@ class ForumExtension < Radiant::Extension
   end
   
 end
-
