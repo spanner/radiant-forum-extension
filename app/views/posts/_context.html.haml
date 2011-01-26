@@ -1,0 +1,16 @@
+- post ||= @post
+
+- if post
+  - if post.comment?
+    = t('comment_on')
+    = link_to post.page.title, post.page.url
+    = t('posted')
+  - elsif post.first?
+    = t('new_topic_started')
+  - else
+    = t('reply_posted')
+  - if post.reader
+    = t('by')
+    = link_to post.reader.name, reader_url(post.reader)
+- else
+  No post!

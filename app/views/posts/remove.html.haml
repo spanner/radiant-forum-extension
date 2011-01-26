@@ -11,7 +11,7 @@
   = link_to @post.topic.forum.name + t('separator'), forum_url(@post.topic.forum)
   = yield :parent
 
-- content_for :speaker do
+- content_for :person do
   = standard_gravatar_for(@post.reader)
 
 - content_for :title do

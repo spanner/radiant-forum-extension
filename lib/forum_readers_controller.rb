@@ -1,16 +1,9 @@
 module ForumReadersController
-
   def self.included(base)
     base.class_eval do
       helper :forum
-      alias_method_chain :show, :forum 
+      add_show_partial 'readers/forum_messages'
+      add_index_partial 'readers/messages_summary'
     end
   end
-
-  def show_with_forum
-    @reader = Reader.find(params[:id])
-    @posts = Post.paginate_by_reader_id(@reader.id, :page => params[:page], :include => :topic, :order => 'posts.created_at desc') if @reader
-    render :template => 'readers/show_with_posts'
-  end
-
 end

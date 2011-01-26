@@ -13,7 +13,7 @@
           = link_to(t('log_out'), reader_logout_url) + '.'
       = render :partial => 'form', :locals => {:post => @post}
 
-- content_for :speaker do
+- content_for :person do
   - standard_gravatar_for(current_reader)
 
 - content_for :title do

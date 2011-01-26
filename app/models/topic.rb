@@ -8,9 +8,9 @@ class Topic < ActiveRecord::Base
 
   validates_presence_of :name
   validates_uniqueness_of :old_id, :allow_nil => true
-  
-  default_scope :order => "topics.sticky DESC, topics.replied_at DESC"
-  
+    
+  default_scope :order => 'replied_at DESC'
+  named_scope :stickyfirst, :order => "topics.sticky DESC, topics.replied_at DESC"
   named_scope :latest, lambda { |count|
     { :order => 'replied_at DESC', :limit => count }
   }

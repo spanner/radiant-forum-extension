@@ -1,19 +1,17 @@
 %h2
   = t('recent_topics')
-
-%ul.recently
+%ul
   - Topic.latest(10).each do |topic|
     %li.topic
-      %span.subject
-        %a{:href => forum_topic_url(topic.forum, topic)}
-          = topic.name
+      = link_to topic.name, forum_topic_url(topic.forum, topic), :class => 'title'
+      %br
       %span.context
-        = t('posted_by')
-        = link_to topic.reader.name + '.', reader_url(topic.reader)
-        = t('post_count_from', :count => topic.posts.count - 1)
         - if topic.has_replies?
+          = t('new_reply_from')
           = link_to topic.replied_by.name, reader_url(topic.replied_by)
           = friendly_date(topic.replied_at)
-        - else 
+        - else
+          = t('started_by')
+          = link_to topic.reader.name, reader_url(topic.reader)
           = friendly_date(topic.created_at)
-
+        

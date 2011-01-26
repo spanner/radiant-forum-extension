@@ -2,18 +2,6 @@ require 'sanitize'
 require "sanitize/config/forum"
 
 module ForumHelper
-
-  def standard_gravatar_for(reader, url=nil)
-    size = Radiant::Config['forum.gravatar_size'] || 40
-    url ||= reader_url(reader)
-    gravatar = gravatar_for(reader, {:size => size, :default => "#{request.protocol}#{request.host_with_port}/images/furniture/no_gravatar.png"}, {:alt => reader.name, :class => 'gravatar offset', :width => size, :height => size})
-    link_to gravatar, url
-  end
-
-  def home_page_link(options={})
-    home_page = Page.find_by_parent_id(nil)
-    link_to home_page.title, home_page.url, options
-  end
   
   def feed_tag(text, url, options={})
     link_to text, url, options.merge(:class => 'floating feedlink')
@@ -57,6 +45,10 @@ module ForumHelper
       topic_post_url(post.topic, post, {param_name => post.page_when_paginated, :anchor => post.dom_id})
     end
   end
+  
+  def link_to_post(post, options={})
+    link_to post.holder.title, paginated_post_url(post), options
+  end
 
   def edit_link(post)
     link_to t('edit'), edit_topic_post_url(post.topic, post), :class => 'edit_post', :id => "edit_post_#{post.id}", :title => t("edit_post")
@@ -73,43 +65,15 @@ module ForumHelper
   def friendly_date_format(datetime)
     if datetime && date = datetime.to_date
       if (date.to_datetime == Date.today)
-        'today'
+        :today
       elsif (date.to_datetime == Date.yesterday)
-        'yesterday'
+        :yesterday
       elsif (date.to_datetime > 6.days.ago)
-        'recently'
+        :recently
       elsif (date.year == Date.today.year)
-        'this_year'
+        :this_year
       else
-        'standard'
-      end
-    end
-  end
-  
-  def pagination_and_summary_for(list, name='')
-    %{<div class="pagination">
-        #{will_paginate list, :container => false}
-        <span class="pagination_summary">
-          #{pagination_summary(list, name)}
-        </span>
-      </div>
-    }
-  end
-    
-  def pagination_summary(list, name='')
-    total = list.total_entries
-    if list.empty?
-      %{#{t('no')} #{name.pluralize}}
-    else      
-      name ||= t(list.first.class.to_s.underscore.gsub('_', ' '))
-      if total == 1
-        %{#{t('showing')} #{t('one')} #{name}}
-      elsif list.current_page == 1 && total < list.per_page
-        %{#{t('all')} #{total} #{name.pluralize}}
-      else
-        start = list.offset + 1
-        finish = ((list.offset + list.per_page) < list.total_entries) ? list.offset + list.per_page : list.total_entries
-        %{#{start} #{t('to')} #{finish} #{t('of')} #{total} #{name.pluralize}}
+        :standard
       end
     end
   end

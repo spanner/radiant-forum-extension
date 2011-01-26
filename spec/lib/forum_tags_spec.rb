@@ -24,12 +24,12 @@ describe "Forum Tags" do
     it { should render(%{<r:forum:topic id="#{sticky.id}"><r:forum:topic:summary /></r:forum:topic>}).as(%{<li><a href="/forum/forums/#{sticky.forum.id}/topics/#{sticky.id}">#{sticky.name}</a><br />Started by <a href="/readers/#{reader_id(:normal)}">Normal</a> #{sticky_date}</li>}) }
   end
 
-  # describe "r:forum:post tags" do
-  #   let(:post){ posts(:second) }
-  #   let(:comment){ posts(:comment) }
-  #   subject { page }
-  #   it { should render(%{<r:forum:post id="#{post.id}"><r:forum:post:name /></r:forum:post>}).as(post.topic.name) }
-  #   it { should render(%{<r:forum:post id="#{comment.id}"><r:forum:post:name /></r:forum:post>}).as(comment.page.name) }
-  # end
+  describe "r:forum:post tags" do
+    let(:post){ posts(:second) }
+    let(:comment){ posts(:comment) }
+    subject { page }
+    it { should render(%{<r:forum:post id="#{post.id}"><r:forum:post:name /></r:forum:post>}).as(post.topic.name) }
+    it { should render(%{<r:forum:post id="#{comment.id}"><r:forum:post:name /></r:forum:post>}).as(comment.page.title) }
+  end
 
 end

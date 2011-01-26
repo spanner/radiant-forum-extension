@@ -50,8 +50,6 @@
         self.show();
       },
       submitForm: function (event) {
-        self.form.find('p.buttons').hide();
-        self.wait();
         var ajaxable = true;
         self.container.find('input:file').each(function () {
           var file = $(this).val();
@@ -89,11 +87,9 @@
       },
       wait: function () {
         holder.wait();
-        if (self.form) self.form.append('<p class="waiting">Please wait</p>');
       },
       unwait: function () {
         holder.unwait();
-        self.container.find('p.waiting').remove();
       }
 		});
 		
@@ -107,6 +103,7 @@
 		$.extend(self, {
 		  container: container,
 		  wrapper: container.find('.post_wrapper'),
+		  head: container.find('.post_header'),
 		  body: container.find('.post_body'),
 		  actions: {},
       addAction: function (url) {
@@ -129,6 +126,11 @@
       },
       hide: function () {
         self.body.hide();
+      },
+      toggle: function (event) {
+        squash(event);
+        if (self.body.is(":visible")) self.hide();
+        else self.show();
       },
       wait: function () {
         self.container.addClass('waiting');
@@ -156,7 +158,7 @@
 
 		}
 	};
-	
+
 	$.fn.editable_post = function(conf) { 
 		conf = $.extend({}, $.tools.post.conf, conf); 
 		this.each(function() {			
@@ -164,6 +166,42 @@
 		});
 		return this;
 	};
+
+	function FirstPost(container, conf) {   
+    var self = this;
+		$.extend(self, {
+		  head: container.find('.post_header'),
+		  body: container.find('.post_body'),
+		  shower: null,
+      show: function () {
+        self.body.slideDown();
+        self.shower.text('Hide first post');
+      },
+      hide: function () {
+        self.body.slideUp();
+        self.shower.text('Show first post');
+      },
+      toggle: function (event) {
+        squash(event);
+        if (self.body.is(":visible")) self.hide();
+        else self.show();
+      }
+		});
+
+	  self.shower = $('<a href="#" class="shower">Hide first post</a>').appendTo(self.head.find('p.context'));
+    self.shower.click(self.toggle);
+    if ($('a.prev_page').length > 0) self.hide();
+	}
+
+	$.fn.first_post = function() { 
+		this.each(function() {			
+			new FirstPost($(this));
+		});
+		return this;
+	};
+
+
+
 	
 	function UploadStack(container) {   
     var self = this;
@@ -243,10 +281,10 @@
 		  var self = $(this);
       var editor = new punymce.Editor({
         id : self.attr('id'),
-        plugins : 'Link,Emoticons,EditSource',
-        toolbar : 'bold,italic,link,unlink,emoticons,editsource',
-        width : 500,
-  			height : 250,
+        plugins : 'Link,Image,Emoticons,EditSource',
+        toolbar : 'bold,italic,link,unlink,image,emoticons,editsource',
+        width : 510,
+  			height : 375,
         resize : true
       });
       self.data('editor', editor);
@@ -263,7 +301,7 @@
 		});
 		return this;
 	};
-
+	
   /*
    * jQuery Color Animations
    * Copyright 2007 John Resig
@@ -404,6 +442,13 @@
 
 $(function() {
   $(".post").editable_post({});
+  $(".post.first").first_post({});
   $(".upload_stack").upload_stack({});
   $(".toolbarred").add_editor({});
+  $("input:submit").live('click', function (event) {
+	  var self = $(this);
+    self.after('<span class="waiting">Please wait</span>');
+    self.hide();
+    return true;
+  });
 });

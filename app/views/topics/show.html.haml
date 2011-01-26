@@ -10,11 +10,11 @@
 - content_for :title do
   = @topic.name
 
-- content_for :speaker do
+- content_for :person do
   = standard_gravatar_for(@topic.reader)
 
 - content_for :first_post do
-  = render :partial => 'posts/post', :locals => {:post => @topic.posts.first, :headless => true}
+  = render :partial => 'posts/post', :locals => {:post => @topic.posts.first, :headless => true, :with_context => true}
 
 - content_for :feedlink do
   = feed_link(topic_path(@topic, :format => :rss))
@@ -38,6 +38,10 @@
 
 - content_for :reply_form do
   = render :partial => 'topics/reply', :locals => {:topic => @topic}
+
+- content_for :sidebar do
+  = render :partial => 'topics/latest'
+
 
 
 #forum

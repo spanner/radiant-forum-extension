@@ -7,10 +7,6 @@
   %p
     = t('forums_introduction')
 
-- content_for :newtopic do
-  .newmessage
-    = link_to t('new_topic'), new_post_url
-
 - content_for :messages do
   - if @forums.empty?
     %p 
@@ -19,9 +15,6 @@
     = yield :pagination if @forums.previous_page
     = render :partial => 'forums/forum', :collection => @forums
     = yield :pagination if @forums.next_page
-
-- content_for :sidebar do
-  = render :partial => "topics/latest"
 
 - content_for :pagination do
   = pagination_and_summary_for(@forums, t('forum'))

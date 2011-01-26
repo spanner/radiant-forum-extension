@@ -4,7 +4,7 @@ class ForumBaseController < ReaderActionController
   radiant_layout { |c| Radiant::Config['forum.layout'] || Radiant::Config['reader.layout'] }
   before_filter :require_login_unless_public
   before_filter :establish_context
-  helper :forum
+  helper :forum, :reader
 
 protected
 
@@ -20,12 +20,16 @@ protected
   end
 
   def redirect_to_post
+    
+    Rails.logger.warn "!!! redirecting to post #{@post.inspect}"
+    Rails.logger.warn "!   which will have topic #{@post.topic} and within it page #{@post.page_when_paginated}"
+    
     if (@post.page)
-      redirect_to "#{@post.page.url}##{@post.dom_id}"
+      redirect_to "#{@post.page.url}?#{WillPaginate::ViewHelpers.pagination_options[:param_name]}=#{@post.page_when_paginated}##{@post.dom_id}"
     elsif @post.first?
       redirect_to forum_topic_path(@post.topic.forum, @post.topic)
     else
-      post_location = @post ? {WillPaginate::ViewHelpers.pagination_options[:param_name] => @post.page_when_paginated, :anchor => @post.dom_id} : {}
+      post_location = {WillPaginate::ViewHelpers.pagination_options[:param_name] => @post.page_when_paginated, :anchor => @post.dom_id}
       redirect_to forum_topic_url(@post.topic.forum, @post.topic, post_location)
     end
   end

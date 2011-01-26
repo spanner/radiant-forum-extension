@@ -71,9 +71,8 @@ describe Post do
       post.destroy
     end
     it "should revert topic reply data" do
-      topic = Topic.find(topic_id(:older))
-      topic.replied_by.should == @last.reader
-      topic.replied_at.should be_close(@last.created_at, 1.second)
+      topics(:older).replied_by.should == @last.reader
+      topics(:older).replied_at.should be_close(@last.created_at, 1.second)
     end
   end
   

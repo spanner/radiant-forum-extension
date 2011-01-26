@@ -89,10 +89,7 @@ class PostsController < ForumBaseController
     if @post.first?
       @post.topic.destroy
       flash[:notice] = t("topic_removed")
-      respond_to do |format|
-        format.html { redirect_to_forum }
-        format.js { render :partial => 'post' }
-      end
+      redirect_to_forum
     else
       @post.destroy
       flash[:notice] = t("post_removed")
@@ -110,7 +107,7 @@ protected
   end
 
   def require_authority
-    (current_user && current_user.admin?) || @post.editable_by?(current_reader)      # includes an editable-interval check
+    current_reader.is_admin? || @post.editable_by?(current_reader)      # includes an editable-interval check
   end
           
   def require_unlocked_topic_and_page

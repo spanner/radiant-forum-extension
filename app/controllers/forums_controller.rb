@@ -6,7 +6,7 @@ class ForumsController < ForumBaseController
 
   def show
     @forum = Forum.find(params[:id])
-    @topics = @forum.topics.paginate(pagination_parameters)
+    @topics = @forum.topics.stickyfirst.paginate(pagination_parameters)
     render_page_or_feed
   end
   

@@ -8,15 +8,7 @@
     = render :partial => 'topics/topic', :collection => @topics
 
 - content_for :sidebar do
-  %h2
-    = t('forums')
-  %ul
-    - Forum.all.each do |forum|
-      %li
-        = link_to forum.name, forum_url(forum)
-        %br
-        = forum.topics.count
-        = t('topics')
+  = render :partial => 'forums/latest'
 
 - content_for :pagination do
   = pagination_and_summary_for(@topics, t('topics'))

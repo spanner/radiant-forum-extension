@@ -13,10 +13,9 @@ class ForumExtension < Radiant::Extension
     Reader.send :include, ForumReader                                          # has topics and posts
     ReaderNotifier.send :include, ForumReaderNotifier                          # sets up post-notification email
     Page.send :include, ForumPage                                              # topic association and comment support
-    # UserActionObserver.instance.send :add_observer!, Forum                     # hook up the usual ownership and datestamp mechanism
-    # UserActionObserver.instance.send :add_observer!, Topic
-    # UserActionObserver.instance.send :add_observer!, Post
     Page.send :include, ForumTags                                              # radius tags for highlighting forum content on other pages
+    ReadersController.send :include, ForumReadersController
+    ReaderSessionsController.send :include, ForumReaderSessionsController
     
     unless defined? admin.forum # UI is a singleton
       Radiant::AdminUI.send :include, ForumAdminUI

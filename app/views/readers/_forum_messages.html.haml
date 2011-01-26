@@ -1,0 +1,20 @@
+- reader ||= @reader
+- posts ||= reader.posts.paginate(pagination_parameters)
+
+#forum
+  %h2
+    =t('forum_messages', :name => reader.name)
+
+  - if posts.empty?
+    %p 
+      = t('no_posts')
+  - else
+    = pagination_and_summary_for(posts, t('post')) if posts.previous_page
+    - posts.each do |post|
+      - if post.comment?
+        = render :partial => 'posts/post', :object => post, :locals => {:with_context => true}
+      - elsif post.first?
+        = render :partial => 'topics/topic', :object => post.topic
+      - else
+        = render :partial => 'posts/post', :object => post, :locals => {:with_context => true}
+    = pagination_and_summary_for(posts, t('post')) if posts.next_page

@@ -1,10 +1,23 @@
+- add_reader_css '/stylesheets/reader.css'
+- if current_reader
+  - if Radiant::Config['forum.toolbar?']
+    - add_reader_js '/punymce/puny_mce_src.js'
+    - add_reader_js '/punymce/plugins/link/link.js'
+    - add_reader_js '/punymce/plugins/image/image.js'
+    - add_reader_js '/punymce/plugins/emoticons/emoticons.js'
+    - add_reader_js '/punymce/plugins/editsource/editsource.js'
+    - add_reader_js '/punymce/plugins/paste.js'
+  - add_reader_js '/javascripts/forum.js'
+
+
 - content_for :section_navigation do
   = link_to t('navigation.forum'), topics_url, :class => 'section'
   = link_to t('navigation.topics'), topics_url
   = link_to t('navigation.forums'), forums_url
+  = link_to t('navigation.readers'), readers_url
   = link_to t('navigation.new_topic'), new_post_url
   - if current_reader
-    = link_to t('navigation.your_account'), reader_admin_url
+    = link_to t('navigation.your_account'), reader_account_url
   - else
     = link_to t('log_in'), reader_login_url
   - if Radiant::Config['forum.help_url']
@@ -13,11 +26,20 @@
 - content_for :controls do
   = render :partial => 'readers/controls'
 
-- content_for :homelink do
-  = home_page_link
-
 - content_for :signals do
   = render :partial => 'readers/flasher'
+
+- content_for :reader_css do
+  - reader_css_paths.each do |path|
+    %link{:rel => 'stylesheet', :href => path, :type => 'text/css'}
+
+- content_for :reader_js do
+  - reader_js_paths.each do |path|
+    %script{:src => path, :type => 'text/javascript'}
+
+- content_for :person do
+  - if @reader
+    = standard_gravatar_for(@reader)
 
 - content_for :search do
   = render :partial => 'posts/search_form'
@@ -25,13 +47,3 @@
 - content_for :newtopic do
   .newmessage
     = link_to t('new_topic'), new_post_url
-
-- content_for :forum_js do
-  - if current_reader
-    - if Radiant::Config['forum.toolbar?']
-      %script{:type => "text/javascript", :src  => "/punymce/puny_mce_src.js"}
-      %script{:type => "text/javascript", :src  => "/punymce/plugins/link/link.js"}
-      %script{:type => "text/javascript", :src  => "/punymce/plugins/emoticons/emoticons.js"}
-      %script{:type => "text/javascript", :src  => "/punymce/plugins/editsource/editsource.js"}
-      %script{:type => "text/javascript", :src  => "/punymce/plugins/paste.js"}
-    %script{:type => "text/javascript", :src  => "/javascripts/forum.js"}

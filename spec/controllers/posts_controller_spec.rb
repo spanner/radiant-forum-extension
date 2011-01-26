@@ -27,25 +27,40 @@ describe PostsController do
     
     describe "for a page comment" do
       before do
+        Radiant::Config['forum.public?'] = true
         @comment = posts(:comment)
         @page = pages(:commentable)
         get :show, :id => post_id(:comment)
       end
       it "should redirect to the page address and post anchor" do
         response.should be_redirect
-        response.should redirect_to(@page.url + "##{@comment.dom_id}")
+        response.should redirect_to(@page.url + "?page=1##{@comment.dom_id}")
       end
     end
     
-    describe "for a normal post" do
+    describe "for a first post" do
       before do
-        get :show, :id => @post.id
+        Radiant::Config['forum.public?'] = true
+        get :show, :id => post_id(:first)
       end
-      it "should redirect to the topic address, post page and post anchor" do
+      it "should redirect to the topic" do
         response.should be_redirect
-        response.should redirect_to(forum_topic_url(@topic.forum, @topic, {:page => @post.page_when_paginated, :anchor => "post_#{@post.id}"}))
+        response.should redirect_to(forum_topic_url(@topic.forum, @topic))
       end
     end
+
+    describe "for a reply" do
+      before do
+        Radiant::Config['forum.public?'] = true
+        get :show, :id => post_id(:second)
+      end
+      it "should redirect to the topic with the page and anchor of the post" do
+        response.should be_redirect
+        response.should redirect_to(forum_topic_url(@topic.forum, @topic, {:page => posts(:second).page_when_paginated, :anchor => "post_#{posts(:second).id}"}))
+      end
+    end
+
+
   end
   
   describe "on get to new" do
@@ -206,7 +221,7 @@ describe PostsController do
 
           it "should re-render the bare post form" do
             response.should be_success
-            response.should render_template('new')
+            response.should render_template('posts/_form')
             response.layout.should be_nil
           end
           
@@ -248,7 +263,7 @@ describe PostsController do
 
         it "should return the formatted message for inclusion in the page" do
           response.should be_success
-          response.should render_template('show')
+          response.should render_template('posts/_post')
           response.layout.should be_nil
         end
       end

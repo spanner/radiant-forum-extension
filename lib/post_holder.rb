@@ -46,6 +46,7 @@ module PostHolder
   def page_for(post)
     return nil unless post.holder == self
     return 1 unless paged?
-    (posts.index(post).to_f/posts_per_page.to_f).ceil.to_i
+    position = posts.index(post) || posts.count + 1             # new post not always present in cached posts collection
+    (position.to_f/posts_per_page.to_f).ceil.to_i
   end
 end

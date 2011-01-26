@@ -1,24 +1,34 @@
 - post ||= @post
-- first ||= false
+- first ||= post.first?
 - headless ||= first
+- with_context ||= false
   
-.post{:id => post.dom_id}
+.post{:id => post.dom_id, :class => post.first? ? "first" : "reply"}
   - if post.frozen?
     .post_removal
       %p.confirmation
         = t("post_removed")
   - else
-    .post_wrapper{:class => post.first? ? "first" : "reply"}
+    .post_wrapper
       - unless headless
         .speaker
           = standard_gravatar_for(post.reader)
       .post_header
         - unless headless
-          %h2
-            = post.reader.name
+          - if with_context
+            %h2.reply
+              = link_to post.topic.name, paginated_post_url(post)
+          - else
+            %h2
+              = post.reader.name
+
+        = render :partial => 'posts/edit_links', :locals => {:post => post}
+
         %p.context
-          = friendly_date(post.created_at)
-          = render :partial => 'posts/edit_links', :locals => {:post => post}
+          - if with_context
+            = render :partial => 'posts/context', :locals => {:post => post}
+          = friendly_date(post.created_at) + '.'
+
       .post_body
         = clean_textilize(post.body)
         = render :partial => 'posts/attachments', :locals => {:post => post}

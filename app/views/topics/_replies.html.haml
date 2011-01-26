@@ -1,5 +1,6 @@
 - topic ||= @topic
 
-= t('post_count_from', :count => topic.posts.count - 1)
-= link_to topic.replied_by.name, reader_url(topic.replied_by)
-= t('on_date', :date => friendly_date(topic.replied_at))
+- if topic.replied_by
+  = t('post_count_from', :count => topic.posts.count - 1)
+  = link_to topic.replied_by.name, reader_url(topic.replied_by)
+  = t('on_date', :date => friendly_date(topic.replied_at))

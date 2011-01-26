@@ -47,6 +47,9 @@ describe Forum do
     end
     
     it "should not be visible when there is no reader" do
+      
+      p "forum.public? is #{Radiant::Config['forum.public?']} "
+      
       forums(:public).visible_to?(nil).should be_false
     end
   end
