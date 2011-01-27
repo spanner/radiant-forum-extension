@@ -1,5 +1,7 @@
 class PostAttachment < ActiveRecord::Base
 
+  named_scope :imported, :conditions => "old_id IS NOT NULL"
+
   @@image_content_types = ['image/jpeg', 'image/pjpeg', 'image/gif', 'image/png', 'image/x-png', 'image/jpg']
   cattr_reader :image_content_types
 
