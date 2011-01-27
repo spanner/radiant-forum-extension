@@ -2,7 +2,7 @@
   = t('forums')
 %ul
   - Forum.all.each do |forum|
-    - if topic = forum.topics.latest.first
+    - if topic = forum.topics.bydate.first
       %li
         = link_to forum.name, forum_url(forum), :class => 'title'
         %br

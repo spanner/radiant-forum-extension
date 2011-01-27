@@ -11,13 +11,14 @@ class Post < ActiveRecord::Base
   accepts_nested_attributes_for :attachments, :allow_destroy => true
   validates_presence_of :reader, :body
 
-  after_create :update_reply_data
-  after_destroy :update_reply_data
+  after_create :notify_holder_of_creation
+  after_destroy :notify_holder_of_destruction
   
   default_scope :order => "created_at DESC"
   
   named_scope :comments, :conditions => "page_id IS NOT NULL"
   named_scope :non_comments, :conditions => "page_id IS NULL"
+  named_scope :imported, :conditions => "old_id IS NOT NULL"
   named_scope :in_topic, lambda { |topic| { :conditions => ["topic_id = ?", topic.id] }}
   named_scope :in_topics, lambda { |topics| { :conditions => ["topic_id IN (#{topics.map("?").join(',')})", topics.map(&:id)] }}
   named_scope :in_forum, lambda { |forum| in_topics(forum.topics) }
@@ -26,7 +27,7 @@ class Post < ActiveRecord::Base
   named_scope :except, lambda { |post| { :conditions => ["NOT posts.id = ?", post.id] }}
   named_scope :distinct_readers, :select => "DISTINCT posts.reader_id" do
     def count
-      self.length    # replacing some bad sugar
+      self.length  # replacing a SQL shortcut that omits the distinct clause
     end
   end
   named_scope :containing, lambda { |term|
@@ -107,8 +108,12 @@ class Post < ActiveRecord::Base
     files.collect {|file| self.attachments.create(:file => file) unless file.blank? } if files
   end
 
-  def update_reply_data
-    topic.refresh_reply_data if topic
+  def notify_holder_of_destruction
+    holder.notice_destruction_of(self)
+  end
+
+  def notify_holder_of_creation
+    holder.notice_creation_of(self)
   end
 
   def dom_id

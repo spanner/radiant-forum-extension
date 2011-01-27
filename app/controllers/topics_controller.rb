@@ -1,7 +1,7 @@
 class TopicsController < ForumBaseController
   
   def index
-    @topics = Topic.all.paginate(pagination_parameters)
+    @topics = Topic.bydate.paginate(pagination_parameters)
     render_page_or_feed
   end
 

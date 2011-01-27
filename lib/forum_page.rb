@@ -2,8 +2,7 @@ module ForumPage
 
   def self.included(base)
     base.class_eval {
-      has_many :posts
-      include PostHolder
+      has_comments
       include InstanceMethods
     }
   end

@@ -3,6 +3,7 @@ class Forum < ActiveRecord::Base
   has_many :topics, :dependent => :destroy
 
   default_scope :order => 'position ASC'
+  named_scope :imported, :conditions => "old_id IS NOT NULL"
   validates_presence_of :name
   
   def dom_id

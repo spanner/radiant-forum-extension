@@ -67,12 +67,13 @@ describe Post do
   describe "on removal" do
     before do
       @last = topics(:older).posts.last
-      post = topics(:older).posts.create!(:body => 'uh oh', :reader => readers(:idle))
-      post.destroy
+      @post = topics(:older).posts.create!(:body => 'uh oh', :reader => readers(:idle))
     end
     it "should revert topic reply data" do
-      topics(:older).replied_by.should == @last.reader
-      topics(:older).replied_at.should be_close(@last.created_at, 1.second)
+      @post.destroy
+      topic = Topic.find(topic_id(:older))
+      topic.replied_by.should == @last.reader
+      topic.replied_at.should be_close(@last.created_at, 1.second)
     end
   end
   

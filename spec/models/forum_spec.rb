@@ -15,12 +15,17 @@ describe Forum do
     @forum.errors.on(:name).should_not be_empty
   end
   
-  it "should list its topics in date order" do
-    forums(:public).topics.first.should == topics(:newer)
+  describe "topics.bydate" do
+    it "should list its topics in descending date order" do
+      forums(:public).topics.bydate.first.should == topics(:newer)
+      forums(:private).topics.bydate.first.should == topics(:private)
+    end
   end
   
-  it "should list its topics with the sticky first" do
-    forums(:private).topics.first.should == topics(:sticky)
+  describe "topics.stickyfirst" do
+    it "should list its topics with the sticky first" do
+      forums(:private).topics.stickyfirst.first.should == topics(:sticky)
+    end
   end
   
   describe "when the forum is public" do
@@ -37,7 +42,7 @@ describe Forum do
     end
   end
 
-  describe "when the forum is private" do
+  describe "when the whole forum is private" do
     before do
       Radiant::Config['forum.public?'] = false
     end
@@ -47,9 +52,6 @@ describe Forum do
     end
     
     it "should not be visible when there is no reader" do
-      
-      p "forum.public? is #{Radiant::Config['forum.public?']} "
-      
       forums(:public).visible_to?(nil).should be_false
     end
   end
