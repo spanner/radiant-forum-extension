@@ -2,33 +2,33 @@
 - first ||= post.first?
 - headless ||= first
 - with_context ||= false
+
+- cssclasses = []
+- cssclasses << 'first' if post.first?
+- cssclasses << 'reply' unless post.first?
+- cssclasses << 'deleted' if post.frozen?
   
-.post{:id => post.dom_id, :class => post.first? ? "first" : "reply"}
-  - if post.frozen?
-    .post_removal
-      %p.confirmation
-        = t("post_removed")
-  - else
-    .post_wrapper
+.post{:id => post.dom_id, :class => cssclasses.join(' ')}
+  .post_wrapper
+    - unless headless
+      .speaker
+        = standard_gravatar_for(post.reader)
+    .post_header
       - unless headless
-        .speaker
-          = standard_gravatar_for(post.reader)
-      .post_header
-        - unless headless
-          - if with_context
-            %h2.reply
-              = link_to post.topic.name, paginated_post_url(post)
-          - else
-            %h2
-              = post.reader.name
+        - if with_context
+          %h2.reply
+            = link_to post.topic.name, paginated_post_url(post)
+        - else
+          %h2
+            = post.reader.name
 
-        = render :partial => 'posts/edit_links', :locals => {:post => post}
+      = render :partial => 'posts/edit_links', :locals => {:post => post}
 
-        %p.context
-          - if with_context
-            = render :partial => 'posts/context', :locals => {:post => post}
-          = friendly_date(post.created_at) + '.'
+      %p.context
+        - if with_context
+          = render :partial => 'posts/context', :locals => {:post => post}
+        = friendly_date(post.created_at) + '.'
 
-      .post_body
-        = clean_textilize(post.body)
-        = render :partial => 'posts/attachments', :locals => {:post => post}
+    .post_body
+      = clean_textilize(post.body)
+      = render :partial => 'posts/attachments', :locals => {:post => post}

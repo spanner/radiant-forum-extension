@@ -92,9 +92,11 @@ class PostsController < ForumBaseController
       redirect_to_forum
     else
       @post.destroy
-      flash[:notice] = t("post_removed")
       respond_to do |format|
-        format.html { redirect_to_page_or_topic }
+        format.html { 
+          flash[:notice] = t("post_removed")
+          redirect_to_page_or_topic 
+        }
         format.js { render :partial => 'post' }
       end
     end

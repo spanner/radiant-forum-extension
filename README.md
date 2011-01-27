@@ -1,36 +1,40 @@
 # Forum
 
-This is a simple but comprehensive forum implementation that plugs into radiant. It's fairly well-featured, including:
+This is a tidy but comprehensive forum implementation that plugs into radiant and supports both discussion forums and page comments. 
+
+This new (as I write) version 2 is a complete rewrite with a lot of internal clarification in preparation for rails 3. It's in late beta at the moment: bug fixes, documentation and packaging for public release.
+
+The forum is designed to be pick-and-mixed with other radiant extensions, so it's very focused on being an excellent forum and doesn't do anything else. I hope you will find it's very good at what it does do:
 
 * forums, topics, posts etc
 * page comments
 * simple but effective forum search
 * rss feeds of pretty much anything (including search queries and individual authors)
-* textile-formatted messages with html sanitized
-* smilies :(
 * multiple message attachments and helpful image-handling
 * configurable message-editing interval during which authors can make corrections
+* minimal wysiwig message editing including smilies :(
+* ajax edit-in-place
 
-I've tried to keep it simple and tidy both inside and out. This is helped by the fact that all the user-management is in the reader extension, so you should find this one easy to adapt and extend. 
+I've tried to keep it simple and tidy both inside and out. This is helped by the fact that all the user-management is in the reader extension, so you should find this is easy to adapt and extend. The admin interface on the other hand is pretty basic: we expect most administration to happen through the public pages but there does need to be at least a dashboard to give a better overview. That will come soon.
 
-The forum was derived long ago from [Beast](http://beast.caboo.se) and the fossilised bones will still be visible here and there. It has been in use on various sites in various versions for three years, but in making it ready for publication I've pretty much refactored the whole thing and probably optimised new bugs into it. Please let me know as soon as you spot one.
+As far as I know this is the best forum software available for rails. I look forward to finding out that it's not.
 
 ## Status
 
-Mature and stable, but I'm a bit habitual with it so may have overlooked some rough edges in parts of the interface I don't visit much. It would benefit from wider use. 
-
-There's a lot going on here and plenty of places for me to hide bugs, but the tests are fairly thorough.
+This code has been surviving in the world for four or five years (and more, since some it originally came from Beast), but this version is about 75% new and you know what that means: new bugs. Github issues, please.
 
 ## Latest
 
-* page comments data structure simplified: page comments are just posts that have a page but no topic. Migration required.
-* Everything updated for 0.9.x and latest changes to reader
-* Public interface internationalized
-* Scripting all moved over to jquery (mootools too niche, sadly)
+* Inline editing with editable-for-interval setting
+* Punymce-based wysiwig editing.
+* Page comments data structure simplified. Migration required.
+* Everything internationalized
+* Scripting all moved over to jquery (mootools was too niche, sadly)
 * Uses the new radiant configuration interface
 * Basic admin interface as well as readerland administration
-* Lots of simplifications
 * Editable interval for messages
+
+This version is not wholly multi-site compatible at the moment, since it relies heavily on configuration items that are not yet site-scoped. They will be soon.
 
 ## Still to do
 
@@ -49,23 +53,6 @@ We also require [will_paginate](http://github.com/mislav/will_paginate/) and [pa
 should get everything you need. 
 
 The forum is compatible with multi_site but you should use [sites](https://github.com/spanner/radiant-sites-extension) instead if you want forums and readers site-scoped.
-
-## Installation
-
-The usual:
-
-	git submodule add git://github.com/spanner/radiant-forum-extension.git vendor/extensions/forum
-
-Check the extension loading order in environment.rb (you will need `layouts`, `reader` and perhaps `sites` to load before this one) and then:
-
-	rake radiant:extensions:forum:migrate
-	rake radiant:extensions:forum:update
-
-As well as the basic machinery this should give you:
-
-* a basic forum.css that you will want to improve upon,
-* an admin/forum.css that you can probably leave alone, 
-* a sample layout that should be enough to let you experiment
 	
 ## Administration
 
@@ -77,22 +64,22 @@ There is now a configuration panel for the forum and you shouldn't have to do an
 
 ## Layouts
 
-We use `share_layouts` (or, now, `layouts`) to present your forum pages inside the radiant layout of your choice. Set the config option 'forum.layout' to the name of the layout you want to use (or see below for multi_site instructions). Your layout can work in the usual way: all we do is define page parts for you to include with `<r:content part="something" />`. These are the parts available:
+Forum pages have their own controllers but they are presented inside your normal radiant layouts. Use the configuration interface to choose the layout you want to use. Your layout can work in the usual way: all we do is define page parts for you to include with `<r:content part="something" />`. These are the parts available:
 
 * the main page content (that you get with a bare `<r:content />`) gives you the main list, object or form.
 * 'pagetitle' will be the main page heading (eg the name of the topic): `<r:content part="pagetitle" />`
 * 'breadcrumbs' is what you'd expect: usually something simple like Forum > Category name
-* 'breadhead' is an up-one-level link that you may want to include in the page header
+* 'breadhead' is a minimal breadcrumb link that you may want to include in the page header
 * 'feed' is an icon link to the RSS feed for whatever you are currently looking at (and works for most things including searches, of which more below)
 * 'mugshot' is a gravatar for the author of this topic or post
 * 'credits' is the authorship summary for this topic or post
 
-These parts are only defined where they're relevent, so you can do something like this:
+These parts are only defined where they're relevant, so you can do something like this:
 
 	<h1 class="pagetitle">
-	  <r:content part="mugshot" />
+	  <r:content part="person" />
 	  <r:content part="breadhead" />
-	  <r:content part="pagetitle" />
+	  <r:title />
 	  <r:content part="feed" />
 	</h1>
 
@@ -104,10 +91,6 @@ You probably also want to include this somewhere, as on all reader-service pages
 
 Have a look at the included sample layout for a starting point.
 
-## Multi_site
-
-The forum is fine under multi_site. If you use [our version](http://github.com/spanner/radiant-multi-site-extension) then everything will be site-scoped for you. In that case, the forum layout is chosen for each site using a dropdown on the (currently extremely scruffy) site-editing page. Everything else works in just the same way and you should be able to run several forums next to each other without problems.
-
 ## Private discussion
 
 If you install the [reader_group](http://github.com/spanner/radiant-reader_group-extension) and [group_forum](http://github.com/spanner/radiant-group_forum-extension) extensions then your forums can be made visible only to designated groups, as with pages and other groupable items.
@@ -116,7 +99,7 @@ If you install the [reader_group](http://github.com/spanner/radiant-reader_group
 
 The forum has its own simple search mechanism. It's not very bright but it has two great advantages: you can combine text search with filtering by author and category, and you can bookmark any search query as an RSS feed to be alerted when new posts match that search. There are arguments for integrating this with eg `sphinx_search` but at the moment I quite like keeping them separate: I find that searching for messages is not the same as searching for pages, but usually a different group seeking different results. Let me know if you disagree.
 
-To enable the search, you can either link to `/forum/posts/search` or put `<r:forum_search>` somewhere in your forum layout. See the tag documentation for control of the search form presentation.
+The search is implemented just by passing parameters to posts_controller#index, so you can link to addresses like `/forum/posts?q=something&reader_id=45` or put `<r:forum_search>` somewhere in your forum layout. See the tag documentation for control of the search form presentation.
 
 ## Page Comments
 
@@ -127,7 +110,7 @@ The page cache means we don't want anything personal on the page itself - no edi
 * Put `<r:comments:remote />` on the page instead and a stub will be included suitable for your scripts to grab. A simple example is included in platform/forum.js.
 * `<r:comments:all /><r:comments:link />` is more efficient but less friendly: it will give you a static list of all comments followed by a reply link. Posting a comment clears the page cache, btw.
 
-You can also use `<r:comments:each>...</r:comments:each>` and the various r:comment tags to compose page comments however you like. See the tags-available documentation for details.
+You can also use `<r:comments:each>...</r:comments:each>` and the various `r:forum:post` tags to compose page comments however you like. See the tags-available documentation for details.
 
 ## Security & Spam
 
@@ -135,19 +118,19 @@ The reader extension includes email confirmation and a simple honeytrap that sho
 
 ## Scripting the forum interface
 
-I've presented this in the simplest way possible, on the assumption that everyone will want to do their own thing with it. An unobtrusive javascript front end (based on mootools but without much fanciness) is included to make things a little bit more friendly: it includes edit-in-place for posts, a bit of code to handle bringing page comments into the page, and some generally-useful routines like notice faders. That's about it, but I hope it will provide a starting point. The 'forum_example' layout that is created on installation should bring in that javascript and enough css for you to see it all working. For local reasons it's all stored under `javascripts/platform/...`
+The forum comes with some jquery-based scripting to handle inline administration and a few other useful functions. It's entirely unobtrusive and I assume you will want to replace or extend it. You should find the page DOM is quite simple and robust.
 
 ## Smilies
 
-I've included a basic set here and a redcloth extension that catches :smile: notation alongside the textile markup. There's a javascript front end in the works for that - click on the smiley, you know - which will also soon appear here.
+Included here is a redcloth extension to handle emoticons of the type inserted by the punymce toolbar we're using. Since we have control of both ends I've customised the set to make accidental emoticons less likely. There will soon be an option to disable them completely.
 
 ## Bugs
 
-Very likely. [Github issues](http://github.com/spanner/radiant-forum-extension/issues), please, or for little things an email or github message is fine.
+In the short term, quite likely. [Github issues](http://github.com/spanner/radiant-forum-extension/issues), please, or for little things an email or github message is fine.
 
 ## Author & Copyright
 
 * William Ross, for spanner. will at spanner.org
 * Originally based on dear old Beast, currently not visible at [http://beast.caboo.se](http://beast.caboo.se)
-* Copyright 2007-9 spanner ltd
+* Copyright 2007-11 spanner ltd
 * released under the same terms as Rails and/or Radiant

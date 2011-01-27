@@ -1,4 +1,4 @@
-- if Radiant::Config['forum.allow_attachments?'] && post.attachments.any?
+- if Radiant::Config['forum.allow_attachments?'] && !post.frozen? && post.attachments.any?
   .post_attachments
     %h4 
       = t('attached') + ':'

@@ -3,7 +3,7 @@
 %ul
   - Topic.latest(10).each do |topic|
     %li.topic
-      = link_to topic.name, forum_topic_url(topic.forum, topic), :class => 'title'
+      = link_to_post(topic.posts.last, :class => 'title')
       %br
       %span.context
         - if topic.has_replies?
