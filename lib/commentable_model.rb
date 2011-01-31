@@ -1,6 +1,17 @@
 module CommentableModel # for inclusion into ActiveRecord::Base
   def self.included(base)
     base.extend ClassMethods
+    base.class_eval do
+      named_scope :most_commented, lambda { |count|
+        {
+          :select => "topics.*, count(posts.id) AS post_count", 
+          :joins => "INNER JOIN posts ON posts.topic_id = topics.id",
+          :group => "topics.id",
+          :order => "post_count DESC",
+          :limit => count
+        }
+      }
+    end
   end
 
   module ClassMethods

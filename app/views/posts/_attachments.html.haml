@@ -4,10 +4,10 @@
       = t('attached') + ':'
     - post.attachments.images.each do |att|
       - display_size = Radiant::Config['forum.image_zoom_size'] || :original
-      = link_to image_tag(att.thumbnail), att.file.url(display_size), :class => :thumbnail
+      = link_to image_tag(post_attachment_url(att, :size => :thumbnail)), post_attachment_url(att, :size => display_size), :class => :thumbnail, :rel => post_attachment_url(att, :size => :original)
     - if post.attachments.non_images.any?
       %ul.attachments
         - post.attachments.non_images.each do |att|
           %li
-            = link_to att.filename, att.file.url, :class => "attachment #{att.extension}"
+            = link_to att.filename, post_attachment_url(att), :class => "attachment #{att.extension}"
 

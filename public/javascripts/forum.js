@@ -1,9 +1,11 @@
 /*
   Sample jquery-based forum scripts.
   
-  Two functions are handled here: 
   * inline editing of posts by authors and administrators.
   * attachment and upload of files.
+  * simple show and hide for first post
+  * toolbar hookup
+  * submit-button protection
 */
 
 (function($) { 
@@ -153,21 +155,14 @@
 		});
 	}
 	
-	$.tools.post = {
-		conf: {	
-
-		}
-	};
-
 	$.fn.editable_post = function(conf) { 
-		conf = $.extend({}, $.tools.post.conf, conf); 
 		this.each(function() {			
 			new EditablePost($(this), conf);
 		});
 		return this;
 	};
 
-	function FirstPost(container, conf) {   
+	function HideablePost(container, conf) {   
     var self = this;
 		$.extend(self, {
 		  head: container.find('.post_header'),
@@ -175,11 +170,11 @@
 		  shower: null,
       show: function () {
         self.body.slideDown();
-        self.shower.text('Hide first post');
+        self.shower.text('Hide');
       },
       hide: function () {
         self.body.slideUp();
-        self.shower.text('Show first post');
+        self.shower.text('Show');
       },
       toggle: function (event) {
         squash(event);
@@ -188,14 +183,14 @@
       }
 		});
 
-	  self.shower = $('<a href="#" class="shower">Hide first post</a>').appendTo(self.head.find('p.context'));
+	  self.shower = $('<a href="#" class="shower">Hide</a>').appendTo(self.head.find('p.context'));
     self.shower.click(self.toggle);
     if ($('a.prev_page').length > 0) self.hide();
 	}
 
-	$.fn.first_post = function() { 
+	$.fn.hideable_post = function() { 
 		this.each(function() {			
-			new FirstPost($(this));
+			new HideablePost($(this));
 		});
 		return this;
 	};
@@ -215,7 +210,7 @@
 			addUpload: function(event) {
         squash(event);
         var upload_field = self.file_field.clone();
-        var nest_id = self.uploadCount() + 1;
+        var nest_id = self.attachmentCount() + self.uploadCount();  // nb. starts at zero so this total is +1
         var container = $('<li class="attachment">' + upload_field.val() + '</li>');
         upload_field.attr("id", upload_field.attr('id').replace(/\d+/, nest_id));
         upload_field.attr("name", upload_field.attr('name').replace(/\d+/, nest_id));
@@ -245,15 +240,8 @@
     self.attachments_list.find('li').add_remover();
     self.file_field.change(self.addUpload);
 	}
-
-	$.tools.stack = {
-		conf: {	
-
-		}
-	};
 	
 	$.fn.upload_stack = function(conf) { 
-		conf = $.extend({}, $.tools.stack.conf, conf); 
 		this.each(function() {			
 			el = new UploadStack($(this), conf);
 		});
@@ -442,7 +430,7 @@
 
 $(function() {
   $(".post").editable_post({});
-  $(".post.first").first_post({});
+  $(".post.first").hideable_post({});
   $(".upload_stack").upload_stack({});
   $(".toolbarred").add_editor({});
   $("input:submit").live('click', function (event) {

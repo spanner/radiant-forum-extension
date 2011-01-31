@@ -37,7 +37,7 @@ class PostAttachment < ActiveRecord::Base
     },
     :whiny_thumbnails => false,
     :url => "/:class/:id/:basename:no_original_style.:extension",
-    :path => ":rails_root/public/:class/:id/:basename:no_original_style.:extension"
+    :path => ":rails_root/:class/:id/:basename:no_original_style.:extension"      # attachments can only be accessed through the PostAttachments controller, in case file security is required
 
   attr_protected :file_file_name, :file_content_type, :file_file_size
   validates_attachment_presence :file, :message => t('error.no_file')

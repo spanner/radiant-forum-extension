@@ -1,7 +1,7 @@
 require_dependency 'application_controller'
 
 class ForumExtension < Radiant::Extension
-  version "2.0.1"
+  version "2.0.2"
   description "Nice clean forums and page comments for inclusion in your radiant site. Requires the reader extension and share_layouts."
   url "http://spanner.org/radiant/forum"
 

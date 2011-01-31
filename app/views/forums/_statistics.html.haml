@@ -1,0 +1,26 @@
+%h2
+  = t('busy_topics')
+%ul
+  - Topic.most_commented(10).each do |topic|
+    %li
+      = link_to topic.name, forum_topic_url(topic.forum, topic), :class => 'title'
+      = t('started_by')
+      = link_to(topic.reader.name, reader_url(topic.reader))
+      %br
+      = topic.posts.count
+      = t('posts') + ','
+      = t('most_recently')
+      = friendly_date(topic.replied_at) + '.'
+
+%h2
+  = t('busy_readers')
+%ul
+  - Reader.most_commenting(10).each do |reader|
+    %li
+      = link_to reader.name, reader_url(reader), :class => 'title'
+      = reader.posts.count
+      = t('posts') + ','
+      %br
+      = t('last_seen')
+      = time_ago_in_words(reader.posts.first.created_at)
+      = t('ago')

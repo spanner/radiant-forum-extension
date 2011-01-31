@@ -3,6 +3,7 @@ ActionController::Routing::Routes.draw do |map|
     forum.resources :forums, :only => [:index, :show], :has_many => [:topics]
     forum.resources :topics, :only => [:index, :show], :has_many => [:posts]
     forum.resources :posts, :member => { :remove => :get }
+    forum.resources :post_attachments, :only => [:show]
   end
   
   map.namespace :admin, :member => { :remove => :get }, :path_prefix => 'admin/forum' do |admin|

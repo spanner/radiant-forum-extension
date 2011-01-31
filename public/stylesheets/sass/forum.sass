@@ -1,4 +1,10 @@
-// this is dumped out of current work and needs to be fixed!
+@import compass/css3
+@import reader.sass
+
+p.context
+  +functional
+  line-height: 1.2
+  margin: 0 0 10px 0
 
 div#forum
   div.forum
@@ -6,68 +12,53 @@ div#forum
       margin: 2em 0
       div.forum_header
         h2
-          +soft
+          +strong
           line-height: 1
           margin: 0
-        p.context
-          +light
-          margin: -5px 0 10px 0
       div.forum_description
         p
           margin: 0
-
   div.post
+    clear: left
     &.waiting
       color: $mid
+    &.deleted
+      text-decoration: line-through
+      color: $mid
     div.post_wrapper
-      margin: 2em 0
-      &.reply
-        margin-top: 4em
-      &.first
-        margin-top: 0
-        padding-bottom: 1em
-        border-bottom: 3px dotted #{$coolgrey8}
+      margin: 1em 0 2em 0
       div.post_header
         h2
-          +soft
           line-height: 1
           margin: 0
-        p.context
-          +light
-          margin: -5px 0 10px 0
+          &.reply
+            a
+              color: $mid
+              &:hover
+                color: $accent
         a
           &.edit_post
-            color: #d1005d
+            color: green
           &.delete_post
             padding-left: 5px
-            color: #d1005d
+            color: red
           &:hover
-            color: $hover
+            color: $accent
           &.waiting
             color: $mid
             padding-left: 18px
             background: transparent url(/images/furniture/wait_16_grey.gif) no-repeat left top
-        div.post_control
-          font-size: 85%
+        div.edit_me
           float: right
-          a, a:visited
-            font-family: helvetica,arial,sans-serif
-            font-size: 0.8em
-            line-height: 1
-            padding: 4px
-            color: white
-            background-color: #e2e1dd
-            +border-radius
-            &.edit_post:hover
-              background-color: #1c8064
-            &.delete_post:hover
-              background-color: #c00
+          +strong
+          color: $dark
+          margin: 0 0 0 10px
       div.post_body
         position: relative
         p
           margin-top: .25em        
-        div.post blockquote
-          color: #cacac8
+        blockquote
+          color: $mid
           border-left-width: 5px
           border-left-style: solid
           border-left-color: #cacac8
@@ -75,17 +66,20 @@ div#forum
           padding-left: 20px
       div.post_attachments
         +small
-        
       p.voices
         margin: 0
       p.replies
         clear: left
         +small
         margin-top: 0
-        font-size: 80%
-        color: $coolgrey4
+        color: $paler
         a
-          color: $coolgrey8
+          color: $pale
+    &.first
+      div.post_wrapper
+        margin-top: 0
+        padding-bottom: 1em
+        border-bottom: 3px dotted $mid
 
     div.post_form
       margin: 0
@@ -95,11 +89,11 @@ div#forum
       p
         margin: 0
       p.warning
-        +soft
-        color: $rubinered
+        +strong
+        color: red
         font-size: 1.4
       p.confirmation
-        +soft
+        +strong
         color: green
         font-size: 1.4
 
@@ -118,7 +112,7 @@ div#forum
 div.upload_stack, div.post_attachments
   margin: 0 0 30px 0
   h4
-    +soft
+    +strong
     margin: 0
     color: $mid
   ul
@@ -136,23 +130,22 @@ div.upload_stack, div.post_attachments
   a.remove
     font-family: helvetica,arial,sans-serif
     font-size: 60%
-    color: #d1005d
+    color: $accent
     padding: 3px
     &:hover
       color: white
-      background-color: #d1005d
+      background-color: $accent
   a.thumbnail
+    margin: 8px 8px 4px 0
     img
-      background-color: white
-      padding: 4px
-      margin: 4px
+      border: 4px solid white
       +box-shadow
 
 div.upload_stack
   ul.attachments input, ul.uploads input
     display: none
   ul li a
-    color: #4d4e53
+    color: $dark
   div.selector
     position: relative
     input.filefield
@@ -178,76 +171,155 @@ div#forum_search
     &.button
       font-size: 1.2em
       line-height: 1
-      color: #4d4e53
+      color: $dark
       padding: 5px
       margin: 0 0 0 6px
-
-p.administrative
-  font-family: helvetica,arial,sans-serif
-  color: #cacac8
 
 img.feedicon
   margin: 8px 0
 
-  div.activation_required
-    color: #d1005d
+.context, .updatenote
+  +functional
+  color: $pale
 
-  .context, .updatenote
-    +light
-    color: $pale
-    .still_editable
-      +soft
-      color: $dark
+p.waiting, span.waiting
+  color: $mid
+  padding-left: 18px
+  background: transparent url(/images/furniture/wait_16_grey.gif) no-repeat left top
 
-  p.waiting
+img.smiley
+  margin: 3px 3px 0 3px
+
+div.speaker
+  position: relative
+  clear: left
+  float: left
+  width: 50px
+  height: 50px
+  margin-right: 0
+
+///////////////////////////// emoticons in message display are interpolated by our redcloth extension as span class="emoticon something"
+
+img.emoticon
+  overflow: hidden
+  width: 16px
+  height: 16px
+  margin: 0
+  padding: 0
+  border: 0
+  background: transparent url('/images/furniture/emoticons.png') no-repeat 0 0
+  &.happy
+    background-position: 0 0
+  &.neutral
+    background-position: -16px 0
+  &.sad
+    background-position: -32px 0
+  &.grin
+    background-position: -48px 0
+  &.surprised
+    background-position: -64px 0
+  &.wink
+    background-position: -80px 0
+  &.devil
+    background-position: -96px 0
+  &.tongue
+    background-position: -112px 0
+  &.lol
+    background-position: -128px 0
+  &.mad
+    background-position: -144px 0
+  &.shocked
+    background-position: -160px 0
+  &.cool
+    background-position: -176px 0
+
+///////////////////////////// pictures
+
+img.bordered
+  border: 16px solid white
+  +box-shadow
+  &.thin
+    border: 8px solid white
+  &.thinner
+    border: 4px solid white
+
+p.caption
+  color: $mid
+  margin: 4px 20px 20px 20px
+  a
+    color: $dark
+    &:hover
+      color: $accent
+
+img.grower
+  position: absolute
+  border: 20px solid white
+  +box-shadow
+
+img.preloader
+  visibility: hidden
+  
+div.gallery
+  position: absolute
+  overflow: hidden
+  display: none
+  background-color: white
+  +box-shadow
+  img
+    overflow: hidden
+    border: 20px solid white
+  p.caption
+    width: 480px
+    overflow: hidden
+    margin: 10px 0 0 0
+    +small
     color: $mid
-    padding-left: 18px
-    background: transparent url(/images/furniture/wait_16_grey.gif) no-repeat left top
-
-  img.smiley
-    margin: 3px 3px 0 3px
-
-  div.speaker
-    position: relative
-    clear: left
-    +outset
-    float: left
-    width: 50px
-    height: 50px
-    margin-right: 10px
-
-  img.gravatar
+    a
+      color: $dark
+      &:hover
+        color: $accent
+  div.closer
+    position: absolute
+    top: 32px
+    right: 32px
+    width: 32px
+    height: 32px
+    background-color: white
+    +border-radius
     +box-shadow
-    border: 3px solid white
-    &.thumbnail
-      margin: 2px 10px 10px 0
-    &.big
-      margin: 8px 10px 4px 0
-    &.tiny
-      margin: 0 6px 4px 0
-      border: 1px solid white
-
-  form.friendly
-    margin: 0 0 60px 0
-    p
-      margin: 1em 0 0 0
-    input.titular
-      width: 95%
-      +input
-      font-size: 200%
-    textarea, select
-      width: 95%
-      +input
-    input.standard
-      width: 95%
-      +input
-    input.login
-      +input
-      width: 50%
-    span.formnote
-      +light
-      color: $coolgrey8
-    label
-      +light
-    label.required
-      +heavy
+    a
+      position: relative
+      display: block
+      width: 32px
+      height: 32px
+      background: transparent url('/images/furniture/gallerylinks.png') no-repeat -96px 0
+      &:hover
+        background-image: url('/images/furniture/gallerylinks_over.png')
+  div.controls
+    position: absolute
+    display: none
+    width: 96px
+    height: 32px
+    bottom: 50px
+    left: 50px
+    background-color: white
+    +border-radius
+    +box-shadow
+    a
+      position: relative
+      display: block
+      float: left
+      width: 32px
+      height: 32px
+      background: transparent url('/images/furniture/gallerylinks.png') no-repeat 0 0
+      &:hover
+        background-image: url('/images/furniture/gallerylinks_over.png')
+      &.disabled
+        background-image: url('/images/furniture/gallerylinks_disabled.png')
+      &.download
+        background-position: -32px 0
+      &.next
+        background-position: -64px 0
+      &.close
+        background-position: -96px 0
+    

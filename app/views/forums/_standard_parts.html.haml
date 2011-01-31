@@ -1,4 +1,4 @@
-- add_reader_css '/stylesheets/reader.css'
+- add_reader_css '/stylesheets/forum.css'
 - if current_reader
   - if Radiant::Config['forum.toolbar?']
     - add_reader_js '/punymce/puny_mce_src.js'
@@ -8,7 +8,7 @@
     - add_reader_js '/punymce/plugins/editsource/editsource.js'
     - add_reader_js '/punymce/plugins/paste.js'
   - add_reader_js '/javascripts/forum.js'
-
+  - add_reader_js '/javascripts/gallery.js'
 
 - content_for :section_navigation do
   = link_to t('navigation.forum'), topics_url, :class => 'section'
@@ -18,6 +18,7 @@
   = link_to t('navigation.new_topic'), new_post_url
   - if current_reader
     = link_to t('navigation.your_account'), reader_account_url
+    = link_to t('log_out'), reader_logout_url
   - else
     = link_to t('log_in'), reader_login_url
   - if Radiant::Config['forum.help_url']
@@ -47,3 +48,4 @@
 - content_for :newtopic do
   .newmessage
     = link_to t('new_topic'), new_post_url
+

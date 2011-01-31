@@ -4,6 +4,7 @@ class ForumBaseController < ReaderActionController
   radiant_layout { |c| Radiant::Config['forum.layout'] || Radiant::Config['reader.layout'] }
   before_filter :require_login_unless_public
   before_filter :establish_context
+  after_filter :clear_site_cache, :only => [:create, :update, :destroy]
   helper :forum, :reader
 
 protected
@@ -54,7 +55,10 @@ protected
 
   def render_page_or_feed(template_name = action_name)
     respond_to do |format|
-      format.html { render :action => template_name }
+      format.html { 
+        expires_in SiteController.cache_timeout, :public => true, :private => false
+        render :action => template_name 
+      }
       format.rss { render :action => template_name, :layout => 'feed' }
       format.js { render :action => template_name, :layout => false }
     end
@@ -73,6 +77,10 @@ protected
       format.js { render :partial => 'topics/locked' }
     end
     false
+  end
+
+  def clear_site_cache
+    Radiant::Cache.clear if defined?(Radiant::Cache)
   end
 
 end
