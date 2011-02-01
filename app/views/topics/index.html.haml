@@ -9,7 +9,7 @@
 
 - content_for :sidebar do
   = render :partial => 'forums/latest'
-  = render :partial => 'forums/statistics'
+  = render :partial => 'topics/busiest'
 
 - content_for :pagination do
   = pagination_and_summary_for(@topics, t('topics'))

@@ -1,0 +1,12 @@
+%h2
+  = t('busy_topics')
+%ul
+  - Topic.most_commented(10).each do |topic|
+    %li
+      = link_to topic.name, forum_topic_url(topic.forum, topic), :class => 'title'
+      %br
+      = t('started_by')
+      = link_to(topic.reader.name, reader_url(topic.reader)) + ', '
+      = t('now_has')
+      = topic.posts.count
+      = t('posts') + '.'

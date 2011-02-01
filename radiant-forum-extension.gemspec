@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{radiant-forum-extension}
-  s.version = "2.0.2"
+  s.version = "2.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["spanner"]
@@ -57,9 +57,6 @@ Gem::Specification.new do |s|
      "app/views/forums/show.html.haml",
      "app/views/forums/show.rss.builder",
      "app/views/layouts/feed.rss.builder",
-     "app/views/monitorships/create.rjs.erb",
-     "app/views/monitorships/destroy.rjs.erb",
-     "app/views/monitorships/index.html.erb",
      "app/views/pages/_comment.html.haml",
      "app/views/pages/_comments.html.haml",
      "app/views/posts/_attachment.html.haml",

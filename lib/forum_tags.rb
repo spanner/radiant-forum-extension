@@ -99,14 +99,6 @@ module ForumTags
   end
   
   desc %{
-    Renders a standard gravatar block (as found in the forum pages) for the reader who 
-    started the current topic.
-  }
-  tag 'forum:topic:gravatar' do |tag|
-    %{<div class="speaker">#{standard_gravatar_for(tag.locals.topic.reader)}</div>}
-  end
-
-  desc %{
     Renders the name of the reader who started the current topic.
   }
   tag 'forum:topic:author' do |tag|
@@ -128,21 +120,33 @@ module ForumTags
   end
 
   desc %{
-    Renders the author and date context line for the current topic.
+    Renders the usual context line for the current topic, but with no date.
   }
   tag 'forum:topic:context' do |tag|
     output = []
-    output << I18n.t('started_by')
-    output << %{<a href="#{reader_path(tag.locals.topic.reader)}">#{tag.render('forum:topic:author')}</a>}
-    output << tag.render('forum:topic:date')
+    topic = tag.locals.topic
+    if tag.locals.topic.has_replies?
+      output << I18n.t('reply_from')
+      output << %{<a href="#{reader_path(tag.locals.topic.replied_by)}">#{tag.locals.topic.replied_by.name}</a>}
+    else
+      output << I18n.t('started_by')
+      output << %{<a href="#{reader_path(tag.locals.topic.reader)}">#{tag.render('forum:topic:author')}</a>}
+    end
     output.join(' ')
   end
 
   desc %{
-    Renders the creation date of the current topic in a friendly, colloquial form.
+    Renders the creation date of the current topic in a colloquial form.
   }
   tag 'forum:topic:date' do |tag|
     I18n.l tag.locals.topic.created_at, :format => :standard
+  end
+
+  desc %{
+    Renders the reply date of the current topic in a colloquial form.
+  }
+  tag 'forum:topic:date' do |tag|
+    I18n.l tag.locals.topic.replied_at, :format => :standard
   end
 
   tag 'forum:posts' do |tag|
@@ -177,7 +181,7 @@ module ForumTags
     This tag is generally used in double form or as a silent prefix, where it will just expand:
     
     <pre><code>
-      <r:forum:post><r:gravatar /> <r:link /></r:forum:post>
+      <r:forum:post><r:link /></r:forum:post>
       # or just
       <r:forum:post:link />
     </code></pre>
@@ -221,13 +225,6 @@ module ForumTags
   }
   tag 'forum:post:link' do |tag|
     link_to tag.render('forum:post:name'), tag.render('forum:post:url')
-  end
-
-  desc %{
-    Renders a standard gravatar block (as in the forum pages) for the author of this post.
-  }
-  tag 'forum:post:gravatar' do |tag|
-    %{<div class="speaker">#{standard_gravatar_for(tag.locals.post.reader)}</div>}
   end
 
   desc %{
@@ -375,7 +372,6 @@ module ForumTags
       tag.expand
     else
       output = %{<div class="post"><div class="post_wrapper">}
-      output << tag.render("forum:post:gravatar")
       output << %{<div class="post_header">}
       output << %{<h2>#{tag.render("forum:post:reader")}</h2>}
       output << %{<p class="context">#{tag.render("forum:post:context")}</p>}

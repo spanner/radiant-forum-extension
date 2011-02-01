@@ -10,8 +10,8 @@ en:
   attach_file: "attach a file"
   author: "author"
   begun_on: "begun on %{date}"
-  busy_topics: "Biggest topics"
-  busy_readers: "Biggest talkers"
+  busy_topics: "Busy topics"
+  busy_readers: "Busiest people"
   by: "by"
   by_content_and_author: "by content, author or category."
   comment: "comment"
@@ -105,6 +105,7 @@ en:
   notice:
     topic_deleted: "Topic '%{name}' was deleted."
     post_deleted: "Post deleted."
+  now_has: "now has"
   of: "of"
   on_date: "on %{date}"
   post: "comment"
