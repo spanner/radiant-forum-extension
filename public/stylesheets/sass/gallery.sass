@@ -1,0 +1,83 @@
+@import compass/css3
+@import reader.sass
+
+p.caption
+  color: $mid
+  margin: 4px 20px 20px 20px
+  a
+    color: $dark
+    &:hover
+      color: $accent
+
+img.grower
+  position: absolute
+  border: 20px solid white
+  +box-shadow
+
+img.preloader
+  visibility: hidden
+  
+div.gallery
+  position: absolute
+  overflow: hidden
+  display: none
+  background-color: white
+  +box-shadow
+  img
+    overflow: hidden
+    border: 20px solid white
+  p.caption
+    width: 480px
+    overflow: hidden
+    margin: -10px 0 10px 20px
+    +small
+    color: $mid
+    a
+      color: $dark
+      &:hover
+        color: $accent
+  div.closer
+    position: absolute
+    top: 32px
+    right: 32px
+    width: 32px
+    height: 32px
+    background-color: white
+    +border-radius
+    +box-shadow
+    a
+      position: relative
+      display: block
+      width: 32px
+      height: 32px
+      background: transparent url('/images/furniture/gallerylinks.png') no-repeat -96px 0
+      &:hover
+        background-image: url('/images/furniture/gallerylinks_over.png')
+  div.controls
+    position: absolute
+    display: none
+    width: 96px
+    height: 32px
+    bottom: 50px
+    left: 50px
+    background-color: white
+    +border-radius
+    +box-shadow
+    a
+      position: relative
+      display: block
+      float: left
+      width: 32px
+      height: 32px
+      background: transparent url('/images/furniture/gallerylinks.png') no-repeat 0 0
+      &:hover
+        background-image: url('/images/furniture/gallerylinks_over.png')
+      &.disabled
+        background-image: url('/images/furniture/gallerylinks_disabled.png')
+      &.download
+        background-position: -32px 0
+      &.next
+        background-position: -64px 0
+      &.close
+        background-position: -96px 0
+    

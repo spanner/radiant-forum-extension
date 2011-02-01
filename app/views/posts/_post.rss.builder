@@ -9,5 +9,5 @@ xm.item do
   xm.description clean_textilize(truncate_words(post.body, 64))
   xm.pubDate post.created_at.to_s(:rfc822)
   xm.guid [ActionController::Base.session_options[:session_key], post.forum_id.to_s, post.topic_id.to_s, post.id.to_s].join(":"), "isPermaLink" => "false"
-  xm.link paged_post_url(post)
+  xm.link paginated_post_url(post)
 end

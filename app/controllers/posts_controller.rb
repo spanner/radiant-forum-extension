@@ -16,12 +16,6 @@ class PostsController < ForumBaseController
     render_page_or_feed
   end
 
-  def monitored
-    @topics = current_reader.monitored_topics
-    @posts = Post.in_topics(@topics).paginate(pagination_parameters)
-    render_page_or_feed
-  end
-
   def show
     respond_to do |format|
       format.html { redirect_to_post }

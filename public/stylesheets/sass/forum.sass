@@ -1,10 +1,6 @@
 @import compass/css3
 @import reader.sass
-
-p.context
-  +functional
-  line-height: 1.2
-  margin: 0 0 10px 0
+@import gallery.sass
 
 div#forum
   div.forum
@@ -37,22 +33,25 @@ div#forum
               &:hover
                 color: $accent
         a
-          &.edit_post
-            color: green
-          &.delete_post
-            padding-left: 5px
-            color: red
           &:hover
             color: $accent
           &.waiting
             color: $mid
             padding-left: 18px
             background: transparent url(/images/furniture/wait_16_grey.gif) no-repeat left top
-        div.edit_me
-          float: right
-          +strong
-          color: $dark
-          margin: 0 0 0 10px
+          &.edit_post, &.delete_post
+            color: white
+            padding: 1px 3px
+            +border-radius(3px)
+            font-size: 75%
+            opacity: 0.2
+            &:hover
+              opacity: 1
+              color: white
+          &.edit_post
+            background-color: green
+          &.delete_post
+            background-color: red
       div.post_body
         position: relative
         p
@@ -96,6 +95,11 @@ div#forum
         +strong
         color: green
         font-size: 1.4
+
+  p.context
+    +functional
+    line-height: 1.2
+    margin: 0 0 10px 0
 
   div#search
     overflow: hidden
@@ -178,6 +182,12 @@ div#forum_search
 img.feedicon
   margin: 8px 0
 
+a.rssfeed
+  display: inline
+  margin: 0
+  padding: 0
+  width: 14px
+
 .context, .updatenote
   +functional
   color: $pale
@@ -196,9 +206,9 @@ div.speaker
   float: left
   width: 50px
   height: 50px
-  margin-right: 0
+  margin-right: 8px
 
-///////////////////////////// emoticons in message display are interpolated by our redcloth extension as span class="emoticon something"
+// emoticons in message display are interpolated by our redcloth extension as <img class="emoticon something" />
 
 img.emoticon
   overflow: hidden
@@ -233,93 +243,3 @@ img.emoticon
   &.cool
     background-position: -176px 0
 
-///////////////////////////// pictures
-
-img.bordered
-  border: 16px solid white
-  +box-shadow
-  &.thin
-    border: 8px solid white
-  &.thinner
-    border: 4px solid white
-
-p.caption
-  color: $mid
-  margin: 4px 20px 20px 20px
-  a
-    color: $dark
-    &:hover
-      color: $accent
-
-img.grower
-  position: absolute
-  border: 20px solid white
-  +box-shadow
-
-img.preloader
-  visibility: hidden
-  
-div.gallery
-  position: absolute
-  overflow: hidden
-  display: none
-  background-color: white
-  +box-shadow
-  img
-    overflow: hidden
-    border: 20px solid white
-  p.caption
-    width: 480px
-    overflow: hidden
-    margin: 10px 0 0 0
-    +small
-    color: $mid
-    a
-      color: $dark
-      &:hover
-        color: $accent
-  div.closer
-    position: absolute
-    top: 32px
-    right: 32px
-    width: 32px
-    height: 32px
-    background-color: white
-    +border-radius
-    +box-shadow
-    a
-      position: relative
-      display: block
-      width: 32px
-      height: 32px
-      background: transparent url('/images/furniture/gallerylinks.png') no-repeat -96px 0
-      &:hover
-        background-image: url('/images/furniture/gallerylinks_over.png')
-  div.controls
-    position: absolute
-    display: none
-    width: 96px
-    height: 32px
-    bottom: 50px
-    left: 50px
-    background-color: white
-    +border-radius
-    +box-shadow
-    a
-      position: relative
-      display: block
-      float: left
-      width: 32px
-      height: 32px
-      background: transparent url('/images/furniture/gallerylinks.png') no-repeat 0 0
-      &:hover
-        background-image: url('/images/furniture/gallerylinks_over.png')
-      &.disabled
-        background-image: url('/images/furniture/gallerylinks_disabled.png')
-      &.download
-        background-position: -32px 0
-      &.next
-        background-position: -64px 0
-      &.close
-        background-position: -96px 0
-    

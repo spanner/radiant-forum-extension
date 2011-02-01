@@ -10,5 +10,6 @@ xml.channel do
   xml.language "en-us"
   xml.ttl "60"
 
+  render :partial => "posts/post", :object => @topic.posts.first, :locals => {:xm => xml}
   render :partial => "posts/post", :collection => @posts, :locals => {:xm => xml}
 end

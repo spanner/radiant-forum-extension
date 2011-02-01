@@ -8,9 +8,11 @@
       .post_header
         %h2
           = link_to topic.name, forum_topic_url(topic.forum, topic)
-        = render :partial => 'posts/edit_links', :locals => {:post => post}
+          = feed_link(topic_path(topic, :format => :rss))
+          
         %p.context
           = render :partial => "topics/context", :locals => {:topic => topic}
+          = render :partial => 'posts/edit_links', :locals => {:post => post}
 
       .post_body
         = truncate_and_textilize(post.body, 100)

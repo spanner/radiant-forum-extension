@@ -6,8 +6,8 @@
 - else
   - if current_reader
     - if current_reader.activated?
-      .post
-        .post_wrapper.reply
+      .post.replyform
+        .post_wrapper
           .post_header
             .speaker
               = standard_gravatar_for(current_reader)

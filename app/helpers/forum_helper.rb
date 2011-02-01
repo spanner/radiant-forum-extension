@@ -3,12 +3,8 @@ require "sanitize/config/forum"
 
 module ForumHelper
   
-  def feed_tag(text, url, options={})
-    link_to text, url, options.merge(:class => 'floating feedlink')
-  end
-
   def feed_link(url)
-    link_to image_tag('/images/furniture/feed_14.png', :class => 'feedicon', :alt => t('rss_feed'), :size => '14x20'), url
+    link_to image_tag('/images/furniture/feed_14.png', :alt => t('rss_feed')), url, :class => "rssfeed"
   end
 
   def clean_textilize(text) # adding smilies to the default reader method
@@ -21,20 +17,6 @@ module ForumHelper
     end
   end
   
-  def watch_tag(topic, label='watching', formclass=nil)
-    if current_user
-      monitoring = current_user.monitoring?(topic)
-    	%{
-    	  <form action="#{monitorship_path(topic.forum, topic)}" method="post" class="#{formclass}"><div>
-    	  <input id="monitor_checkbox_#{topic.id}" name="monitor_checkbox" class="monitor_checkbox" type="checkbox"#{ ' checked="checked"' if monitoring } />
-    	  <label class="monitor_label" for="monitor_checkbox_#{topic.id}">#{label}</label>
-    	  #{hidden_field_tag '_method', monitoring ? 'delete' : ''}
-    	  #{submit_tag :set, :class => 'monitor_submit'}
-    	  </div></form>
-    	}
-    end
-  end
-
   def paginated_post_url(post)
     param_name = WillPaginate::ViewHelpers.pagination_options[:param_name]
     if post.page

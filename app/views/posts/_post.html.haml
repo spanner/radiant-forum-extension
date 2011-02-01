@@ -22,12 +22,11 @@
           %h2
             = post.reader.name
 
-      = render :partial => 'posts/edit_links', :locals => {:post => post}
-
       %p.context
         - if with_context
           = render :partial => 'posts/context', :locals => {:post => post}
         = friendly_date(post.created_at) + '.'
+        = render :partial => 'posts/edit_links', :locals => {:post => post}
 
     .post_body
       = clean_textilize(post.body)

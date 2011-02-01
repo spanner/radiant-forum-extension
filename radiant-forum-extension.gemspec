@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{radiant-forum-extension}
-  s.version = "2.0.1"
+  s.version = "2.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["spanner"]
-  s.date = %q{2011-01-27}
+  s.date = %q{2011-02-01}
   s.description = %q{Nice clean forums and page comments for inclusion in your radiant site. Derived long ago from beast. Requires the reader extension and share_layouts.}
   s.email = %q{will@spanner.org}
   s.extra_rdoc_files = [
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
      "app/controllers/admin/topics_controller.rb",
      "app/controllers/forum_base_controller.rb",
      "app/controllers/forums_controller.rb",
+     "app/controllers/post_attachments_controller.rb",
      "app/controllers/posts_controller.rb",
      "app/controllers/topics_controller.rb",
      "app/helpers/forum_helper.rb",
@@ -51,6 +52,7 @@ Gem::Specification.new do |s|
      "app/views/forums/_forum.html.haml",
      "app/views/forums/_latest.html.haml",
      "app/views/forums/_standard_parts.html.haml",
+     "app/views/forums/_statistics.html.haml",
      "app/views/forums/index.html.haml",
      "app/views/forums/show.html.haml",
      "app/views/forums/show.rss.builder",
@@ -157,7 +159,7 @@ Gem::Specification.new do |s|
      "public/images/furniture/rdo_on.png",
      "public/images/furniture/wait_16_grey.gif",
      "public/javascripts/forum.js",
-     "public/javascripts/jquery.tools.min.js",
+     "public/javascripts/gallery.js",
      "public/punymce/blank.htm",
      "public/punymce/css/content.css",
      "public/punymce/css/editor.css",
@@ -207,6 +209,7 @@ Gem::Specification.new do |s|
      "public/punymce/puny_mce_full.js",
      "public/punymce/puny_mce_src.js",
      "public/stylesheets/sass/forum.sass",
+     "public/stylesheets/sass/gallery.sass",
      "radiant-forum-extension.gemspec",
      "spec/controllers/admin/forums_controller_spec.rb",
      "spec/controllers/forums_controller_spec.rb",

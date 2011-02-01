@@ -23,7 +23,7 @@
   = t('topics_heading')
 
 - content_for :feedlink do
-  = feed_link(topics_path(:format => :rss))
+  = feed_link(topics_url(:format => :rss))
 
 - content_for :introduction do
   %p
