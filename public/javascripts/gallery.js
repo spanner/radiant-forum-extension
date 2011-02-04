@@ -38,6 +38,7 @@
       mimic: function () {
         self.zoomer.setImage(self.item.src);
         self.image.attr('src', self.item.src);
+        self.controls.find('a.download').attr('href', self.item.download_url());
         if (self.item.caption.html()) self.caption.html(self.item.caption.html()).show();
         else self.caption.hide();
       },
@@ -96,7 +97,6 @@
       showControls: function (e) {
         self.controls.fadeIn("fast");
         self.closer.fadeIn("fast");
-        self.controls.find('a.download').attr('href', self.item.download_url());
       },
       hideControls: function (e) {
         self.controls.fadeOut("fast");
@@ -108,11 +108,13 @@
         var w = $(window);
         var d = item.imageSize();
         var p = self.container.offset();
-        self.image.animate(d, 'fast');
-        self.container.animate({
+        var r = {
           left: p.left + (self.image.innerWidth() - d.width)/2,
           top: p.top + (self.image.innerHeight() - d.height)/2
-        }, 'fast');
+        };
+        if (resized.top <= 10) resized.top = 10;
+        self.image.animate(d, 'fast');
+        self.container.animate(r, 'fast');
         self.controls.css({left: (d.width - 96)/2});
       },
       reposition: function (item) {
@@ -123,6 +125,7 @@
           top: w.scrollTop() + (w.height() - d.height)/2,
           left: w.scrollLeft() + (w.width() - d.width)/2
         };
+        if (p.top <= 10) p.top = 10;
         if (self.visible) {
           self.image.animate(d, 'fast');
           self.container.animate(p, 'fast');
