@@ -30,7 +30,7 @@
       = t('no_posts')
   - else
     = yield :pagination if @posts.previous_page
-    = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true}
+    = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true, :headless => false}
     = yield :pagination if @posts.next_page
 
 #forum

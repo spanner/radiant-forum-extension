@@ -1,7 +1,7 @@
 - post ||= @post
 - first ||= post.first?
-- headless ||= first
 - with_context ||= false
+- headless ||= first unless defined? headless
 
 - cssclasses = []
 - cssclasses << 'first' if post.first?
