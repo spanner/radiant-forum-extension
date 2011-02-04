@@ -24,9 +24,6 @@
             - tbody.title_cell do
               %td.name
                 = link_to forum.name, edit_admin_forum_url(:id => forum)
-                -if forum.for_comments
-                  %p.context
-                    = t('for_comments')
                     
             - tbody.description_cell do
               %td.forum_description
@@ -57,17 +54,12 @@
 
             - tbody.modify_cell do
               %td.actions
-                -if forum.for_comments
+                - if admin?
+                  = link_to image('minus') + ' ' + t('remove'), remove_admin_forum_url(:id => forum) , :class => 'action'
+                - else
                   %span.action.disabled
                     = image('minus_disabled')
                     = " " + t('remove')
-                -else
-                  - if admin?
-                    = link_to image('minus') + ' ' + t('remove'), remove_admin_forum_url(:id => forum) , :class => 'action'
-                  - else
-                    %span.action.disabled
-                      = image('minus_disabled')
-                      = " " + t('remove')
 
 - render_region :bottom do |bottom|
   - bottom.buttons do
