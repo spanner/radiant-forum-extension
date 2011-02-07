@@ -145,7 +145,7 @@ module ForumTags
   desc %{
     Renders the reply date of the current topic in a colloquial form.
   }
-  tag 'forum:topic:date' do |tag|
+  tag 'forum:topic:replydate' do |tag|
     I18n.l tag.locals.topic.replied_at, :format => :standard
   end
 

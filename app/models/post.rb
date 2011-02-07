@@ -20,9 +20,11 @@ class Post < ActiveRecord::Base
   named_scope :non_comments, :conditions => "page_id IS NULL"
   named_scope :imported, :conditions => "old_id IS NOT NULL"
   named_scope :in_topic, lambda { |topic| { :conditions => ["topic_id = ?", topic.id] }}
-  named_scope :in_topics, lambda { |topics| { :conditions => ["topic_id IN (#{topics.map("?").join(',')})", topics.map(&:id)] }}
-  named_scope :in_forum, lambda { |forum| in_topics(forum.topics) }
-  named_scope :from, lambda { |reader| { :conditions => ["reader_id = ?", reader.id] }}
+  named_scope :in_topics, lambda { |topics|
+    ids = topics.map(&:id)
+    { :conditions => ["topic_id IN (#{ids.map{"?"}.join(',')})", *ids] }
+  }
+  named_scope :from_reader, lambda { |reader| { :conditions => ["reader_id = ?", reader.id] }}
   named_scope :latest, lambda { |count| { :order => 'created_at DESC', :limit => count }}
   named_scope :except, lambda { |post| { :conditions => ["NOT posts.id = ?", post.id] }}
   named_scope :distinct_readers, :select => "DISTINCT posts.reader_id" do
@@ -32,10 +34,14 @@ class Post < ActiveRecord::Base
   end
   named_scope :containing, lambda { |term|
     { 
-      :conditions => "posts.body LIKE :term OR topics.name LIKE :term", :term => "%#{term}%",
+      :conditions => ["posts.body LIKE :term OR topics.name LIKE :term", {:term => "%#{term}%"}],
       :joins => "LEFT OUTER JOIN topics on posts.topic_id = topics.id"
     }
   }
+
+  def self.in_forum(forum)
+    in_topics(forum.topics)
+  end
 
   def holder
     page || topic

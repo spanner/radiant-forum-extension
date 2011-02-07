@@ -12,5 +12,6 @@ Radiant.config do |config|
     forum.define 'paginate_posts?', :default => true
     forum.define 'posts_per_page', :type => :integer, :default => 20
     forum.define 'commentable_period', :type => :integer, :default => 7, :units => "days"
+    forum.define 'allow_search_by_reader?', :default => true
   end
 end 

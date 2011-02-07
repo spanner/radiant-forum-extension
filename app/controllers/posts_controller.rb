@@ -7,11 +7,11 @@ class PostsController < ForumBaseController
   before_filter :require_authority, :only => [:edit, :update, :destroy]
 
   def index
-    posts = Post.scoped
-    posts = posts.from(@reader) if @reader
+    @term = params[:q]
+    posts = @forum ? Post.in_forum(@forum) : Post.scoped
+    posts = posts.containing(@term) unless @term.blank?
+    posts = posts.from_reader(@reader) if @reader
     posts = posts.in_topic(@topic) if @topic
-    posts = posts.in_forum(@forum) if @forum
-    posts = posts.containing(@term) if @term = params[:q]
     @posts = posts.paginate(pagination_parameters)
     render_page_or_feed
   end
@@ -29,8 +29,12 @@ class PostsController < ForumBaseController
       @post.topic = @forum.topics.new
     end
     respond_to do |format|
-      format.html { }
-      format.js { render :partial => 'posts/form', :layout => false }
+      format.html { 
+        expires_now
+      }
+      format.js { 
+        render :partial => 'posts/form', :layout => false 
+      }
     end
   end
     
@@ -51,7 +55,9 @@ class PostsController < ForumBaseController
 
   def edit
     respond_to do |format| 
-      format.html { }
+      format.html { 
+        expires_now
+      }
       format.js { render :partial => 'posts/form' }
     end
   end

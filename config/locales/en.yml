@@ -32,13 +32,7 @@ en:
   confirm_remove_forum: "Delete forum?"
   confirm_remove_post: "Delete post?"
   confirm_remove_topic: "Delete topic?"
-  time:
-    formats:
-      recently: "%A at %l:%M%p"
-      standard: "on %B %e, %Y at %l:%M%p"
-      this_year: "%B %e at %l:%M%p"
-      today: "today at %l:%M%p"
-      yesterday: "yesterday at %l:%M%p"
+  containing: "containing the phrase"
   definitely_remove_post: "Yes: delete it"
   edit_forum: "Edit forum"
   edit_minimal: "e"
@@ -85,6 +79,7 @@ en:
     forums: "Categories"
     readers: "People"
     new_topic: "New topic"
+    search: "Search"
     topics: "Latest"
     your_account: "Your account"
   new_forum: "New forum"
@@ -101,6 +96,7 @@ en:
   no_messages_yet: "No messages yet"
   no_posts: "The forum is empty."
   no_posts_found: "No messages found."
+  no_search_results: "Sorry: no messages match your criteria. Please use the form below to broaden your search."
   no_topics: "No talk here yet."
   notice:
     topic_deleted: "Topic '%{name}' was deleted."
@@ -126,8 +122,8 @@ en:
     zero: "Nothing found"
     one: "One message found"
     other: "%{count} messages found"
-  posts_heading: "Latest messages"
-  posts_introduction: 'This is a list of all forum posts by date, with the most recent first. You can get a similar list of recent messages <a href="/forum/topics">organised by topic</a>.'
+  posts_heading: "Search the forum"
+  posts_introduction: 'This begins as a full list of all the posts in the forum. Add criteria below to cut down the list to specific subjects and speakers.'
   really_remove_post: "Are you sure you want to delete this comment?"
   recent_topics: "Recent topics"
   remove_minimal: "x"
@@ -147,10 +143,12 @@ en:
     person_label: "From this person"
     query_label: "Look for this text"
   search_whole_forum: "search the whole forum"
+  search_header: "Forum Search"
   search_introduction: "Please choose a search phrase and/or a person or discussion category."
   search_results: "Search Results"
   separator: ':'
   showing: "showing"
+  showing_posts: "Showing topics and messages"
   sorry_locked: "Sorry: this topic is locked."
   start_topic: "Start a new conversation"
   started: "started"
@@ -158,6 +156,13 @@ en:
   started_topic_in: "started a new topic under"
   started_topic_on: "started a new topic on %{date}"
   sticky: "sticky"
+  time:
+    formats:
+      recently: "%A at %l:%M%p"
+      standard: "on %B %e, %Y at %l:%M%p"
+      this_year: "%B %e at %l:%M%p"
+      today: "today at %l:%M%p"
+      yesterday: "yesterday at %l:%M%p"
   time_remaining_to_edit: "You have %{time} left to "
   topic_count:
     zero: "No discussion."
@@ -165,7 +170,6 @@ en:
     other: "%{count} topics, most recently "
   topic_show_introduction: ""
   topic_removed: "Topic removed"
-  post_removed: "Post removed"
   to: "to"
   to_add_post: "To add a %{message_type}"
   topic: "topic"
@@ -174,6 +178,6 @@ en:
   topic_name: "Topic name"
   topics: "Topics"
   topics_heading: "Latest topics"
-  topics_introduction: 'This is a list of all the discussions going on here, with the most recently updated first. You can also see a more organised list of <a href="/forum/forums">discussion categories</a> or a purely chronological list of <a href="/forum/posts">recent posts.</a>'
+  topics_introduction: 'This is a list of all the discussions going on here, with the most recently updated first. You can also see a more organised list of <a href="/forum/forums">discussion categories</a> or  <a href="/forum/posts">search</a> for particular posts and people.'
   under: "under"
   unknown_date: "unknown date"

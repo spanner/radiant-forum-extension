@@ -16,11 +16,8 @@
   = link_to t('navigation.forums'), forums_url
   = link_to t('navigation.readers'), readers_url
   = link_to t('navigation.new_topic'), new_post_url
-  - if current_reader
-    = link_to t('navigation.your_account'), reader_account_url
-    = link_to t('log_out'), reader_logout_url
-  - else
-    = link_to t('log_in'), reader_login_url
+  = link_to t('navigation.your_account'), reader_account_url
+  = link_to t('navigation.search'), posts_url
   - if Radiant::Config['forum.help_url']
     = link_to t('navigation.forum_help'), Radiant::Config['forum.help_url']
 

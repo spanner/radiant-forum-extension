@@ -17,11 +17,11 @@ describe "Forum Tags" do
     it { should render(%{<r:forum:topic id="#{topic.id}"><r:forum:topic:author /></r:forum:topic>}).as("Normal") }
     it { should render(%{<r:forum:topic id="#{topic.id}"><r:forum:topic:date /></r:forum:topic>}).as(on_date) }
     it { should render(%{<r:forum:topic id="#{topic.id}"><r:forum:topic:url /></r:forum:topic>}).as("/forum/forums/#{topic.forum.id}/topics/#{topic.id}") }
-    it { should render(%{<r:forum:topic id="#{topic.id}"><r:forum:topic:context /></r:forum:topic>}).as(%{Started by <a href="/readers/#{reader_id(:normal)}">Normal</a> #{on_date}}) }
+    it { should render(%{<r:forum:topic id="#{topic.id}"><r:forum:topic:context /></r:forum:topic>}).as(%{reply from <a href="/readers/#{reader_id(:normal)}">Normal</a>}) }
     it { should render(%{<r:forum:topic id="#{topic.id}"><r:forum:topic:body /></r:forum:topic>}).as("<p>original topic message</p>") }
     it { should render(%{<r:forum:topic id="#{topic.id}"><r:forum:topic:link /></r:forum:topic>}).as(%{<a href="/forum/forums/#{topic.forum.id}/topics/#{topic.id}">#{topic.name}</a>}) }
-    it { should render(%{<r:forum:topic id="#{topic.id}"><r:forum:topic:summary /></r:forum:topic>}).as(%{<li><a href="/forum/forums/#{topic.forum.id}/topics/#{topic.id}">#{topic.name}</a><br />Started by <a href="/readers/#{reader_id(:normal)}">Normal</a> #{on_date}</li>}) }
-    it { should render(%{<r:forum:topic id="#{sticky.id}"><r:forum:topic:summary /></r:forum:topic>}).as(%{<li><a href="/forum/forums/#{sticky.forum.id}/topics/#{sticky.id}">#{sticky.name}</a><br />Started by <a href="/readers/#{reader_id(:normal)}">Normal</a> #{sticky_date}</li>}) }
+    it { should render(%{<r:forum:topic id="#{topic.id}"><r:forum:topic:summary /></r:forum:topic>}).as(%{<li><a href="/forum/forums/#{topic.forum.id}/topics/#{topic.id}">#{topic.name}</a><br />reply from <a href="/readers/#{reader_id(:normal)}">Normal</a></li>}) }
+    it { should render(%{<r:forum:topic id="#{sticky.id}"><r:forum:topic:summary /></r:forum:topic>}).as(%{<li><a href="/forum/forums/#{sticky.forum.id}/topics/#{sticky.id}">#{sticky.name}</a><br />Started by <a href="/readers/#{reader_id(:normal)}">Normal</a></li>}) }
   end
 
   describe "r:forum:post tags" do

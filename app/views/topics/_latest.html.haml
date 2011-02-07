@@ -1,7 +1,7 @@
 %h2
   = t('recent_topics')
 %ul
-  - Topic.latest(10).each do |topic|
+  - Topic.latest(5).each do |topic|
     %li.topic
       = link_to_post(topic.posts.last, :class => 'title')
       %br

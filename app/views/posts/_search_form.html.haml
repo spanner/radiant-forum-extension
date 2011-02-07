@@ -1,8 +1,10 @@
-%form.friendly{:action => posts_url}
+%form.friendly{:action => posts_url, :method => :get}
+  %h2
+    =t('search_header')
   %p
     %label{:for => "q"}
       = t('search_form.query_label')
-    = text_field_tag "q", params[:q], :class => 'standard'
+    = text_field_tag "q", params[:q], :class => 'titular'
 
   %p
     %label{:for => "forum_id"}
@@ -12,13 +14,14 @@
       %option{:value => ""}= t('anywhere')
       = options_from_collection_for_select(Forum.find(:all), "id", "name", params[:forum_id].to_i)
 
-  %p
-    %label{:for => "reader_id"}
-      = t('search_form.person_label')
-    %select{:name => "reader_id"}
-      %option{:value => ""}
-        =t('anyone')
-      = options_from_collection_for_select(Reader.find(:all), "id", "name", params[:reader_id].to_i)
+  - if Radiant::Config['forum.allow_search_by_reader?']
+    %p
+      %label{:for => "reader_id"}
+        = t('search_form.person_label')
+      %select{:name => "reader_id"}
+        %option{:value => ""}
+          =t('anyone')
+        = options_from_collection_for_select(Reader.find(:all), "id", "name", params[:reader_id].to_i)
 
   %p.buttons
-    = submit_tag t("search")
+    %input{:type => 'submit', :value => "Search"}

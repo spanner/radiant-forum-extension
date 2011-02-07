@@ -1,17 +1,26 @@
+- if !@term.blank? || @reader || @forum || @topic
+  - @searching = true
+  - summary = [t('showing_posts')]
+  - summary << t('in') + ' ' + link_to(@forum.name, forum_url(@forum)) if @forum
+  - summary << t('containing') + " <strong>#{@term}</strong>" unless @term.blank?
+  - summary << t('posted_by') + ' ' + link_to(@reader.name, reader_url(@reader)) if @reader
+  - summary << t('in_topic') + ' ' + link_to(@topic.name, forum_topic_url(@topic.forum, @topic)) if @topic
+
 = render :partial => 'forums/standard_parts'
 
 - content_for :title do
   = t('posts_heading')
 
 - content_for :introduction do
-  = t('posts_introduction')
+  - if @searching
+    = summary.join(' ') + ":"
+  - else
+    = t('posts_introduction')
   
 - content_for :sidebar do
+  - unless @searching && @posts.empty?
+    = render :partial => 'posts/search_form'
   = render :partial => "topics/latest"
-
-- content_for :newtopic do
-  .newmessage
-    = link_to t('new_topic'), new_post_url
 
 - content_for :pagination do
   = pagination_and_summary_for(@posts, t('post'))
@@ -26,8 +35,13 @@
 
 - content_for :messages do
   - if @posts.empty?
-    %p 
-      = t('no_posts')
+    - if @searching
+      %p.has_error
+        = t('no_search_results')
+      = render :partial => 'posts/search_form'
+    - else
+      %p 
+        = t('no_posts')
   - else
     = yield :pagination if @posts.previous_page
     = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true, :headless => false}

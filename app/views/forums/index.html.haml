@@ -7,6 +7,11 @@
   %p
     = t('forums_introduction')
 
+- content_for :sidebar do
+  = render :partial => 'posts/search_form'
+  = render :partial => 'topics/latest'
+  = render :partial => 'topics/busiest'
+
 - content_for :messages do
   - if @forums.empty?
     %p 
