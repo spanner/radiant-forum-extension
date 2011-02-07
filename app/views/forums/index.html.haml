@@ -8,7 +8,7 @@
     = t('forums_introduction')
 
 - content_for :sidebar do
-  = render :partial => 'posts/search_form'
+  = render :partial => 'posts/search_form', :locals => {:minimal => true}
   = render :partial => 'topics/latest'
   = render :partial => 'topics/busiest'
 

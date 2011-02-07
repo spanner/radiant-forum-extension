@@ -11,6 +11,7 @@
     = link_to t('new_topic_here'), new_post_url(:forum_id => @forum.id)
 
 - content_for :sidebar do
+  = render :partial => 'posts/search_form'
   = render :partial => "topics/latest"
 
 - content_for :pagination do

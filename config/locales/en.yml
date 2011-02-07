@@ -145,7 +145,8 @@ en:
   search_form:
     forum_label: "In this discussion category"
     person_label: "From this person"
-    query_label: "Look for this text"
+    minimal_query_label: "Forum search"
+    query_label: "Search for this text"
   search_header: "Forum Search"
   search_introduction: "Please choose a search phrase and/or a person or discussion category."
   search_results: "Search Results"

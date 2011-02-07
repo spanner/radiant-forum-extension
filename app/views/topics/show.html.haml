@@ -16,6 +16,10 @@
 - content_for :first_post do
   = render :partial => 'posts/post', :locals => {:post => @topic.posts.first, :headless => true, :with_context => true}
 
+- content_for :sidebar do
+  = render :partial => 'posts/search_form', :locals => {:minimal => true}
+  = render :partial => 'topics/latest'
+
 - content_for :feedurl do
   = topic_path(@topic, :format => :rss)
 
@@ -41,9 +45,6 @@
 
 - content_for :reply_form do
   = render :partial => 'topics/reply', :locals => {:topic => @topic}
-
-- content_for :sidebar do
-  = render :partial => 'topics/latest'
 
 
 
