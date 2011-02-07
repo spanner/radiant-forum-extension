@@ -16,6 +16,9 @@
 - content_for :first_post do
   = render :partial => 'posts/post', :locals => {:post => @topic.posts.first, :headless => true, :with_context => true}
 
+- content_for :feedurl do
+  = topic_path(@topic, :format => :rss)
+
 - content_for :feedlink do
   = feed_link(topic_path(@topic, :format => :rss))
 

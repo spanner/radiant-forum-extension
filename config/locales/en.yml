@@ -55,6 +55,7 @@ en:
   from_reader: "from %{name}"
   if_you_not: "If you're not %{name}, please"
   in: "in"
+  in_forum: "filed under"
   in_reply_to: "in reply to"
   label:
     post:
@@ -67,8 +68,10 @@ en:
   last_seen: "last here"
   latest_activity: "latest activity"
   latest_discussion: "Latest topics"
-  latest_posts: "Latest comments"
-  latest_topics: "all the latest topics"
+  latest_posts: "Latest posts"
+  latest_posts_description: "Topics and replies from across the forum in descending date order."
+  latest_topics: "Latest topics"
+  latest_topics_description: "Topics most recently posted or replied to."
   locked: "locked"
   matching: "matching"
   messages_from_reader: "Messages from %{name}"
@@ -138,14 +141,15 @@ en:
   save_changes: "Save changes"
   save_post: "Save post"
   search: "Search"
+  search_feed: "Search Results Feed"
   search_form:
     forum_label: "In this discussion category"
     person_label: "From this person"
     query_label: "Look for this text"
-  search_whole_forum: "search the whole forum"
   search_header: "Forum Search"
   search_introduction: "Please choose a search phrase and/or a person or discussion category."
   search_results: "Search Results"
+  search_whole_forum: "search the whole forum"
   separator: ':'
   showing: "showing"
   sorry_locked: "Sorry: this topic is locked."

@@ -23,6 +23,9 @@
 - content_for :title do
   = t('topics_heading')
 
+- content_for :feedurl do
+  = topics_url(:format => :rss)
+
 - content_for :feedlink do
   = feed_link(topics_url(:format => :rss))
 

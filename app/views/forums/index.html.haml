@@ -24,6 +24,9 @@
 - content_for :pagination do
   = pagination_and_summary_for(@forums, t('forum'))
 
+- content_for :feedurl do
+  = forums_path(:format => :rss)
+
 - content_for :feedlink do
   = feed_link(forums_path(:format => :rss))
 

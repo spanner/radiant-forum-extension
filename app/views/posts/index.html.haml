@@ -1,10 +1,16 @@
-- if !@term.blank? || @reader || @forum || @topic
-  - @searching = true
+- if @searching = !@term.blank? || @reader || @forum || @topic
   - summary = [t('topics_and_posts')]
   - summary << t('in') + ' ' + link_to(@forum.name, forum_url(@forum)) if @forum
   - summary << t('containing') + " <strong>#{@term}</strong>" unless @term.blank?
   - summary << t('posted_by') + ' ' + link_to(@reader.name, reader_url(@reader)) if @reader
   - summary << t('in_topic') + ' ' + link_to(@topic.name, forum_topic_url(@topic.forum, @topic)) if @topic
+
+- feed_url_parts = {:format => :rss}
+- if @searching
+  - feed_url_parts[:q] = @term unless @term.blank?
+  - feed_url_parts[:reader_id] = @reader.id if @reader
+  - feed_url_parts[:forum_id] = @forum.id if @forum
+  - feed_url_parts[:reader_id] = @topic.id if @topic
 
 = render :partial => 'forums/standard_parts'
 
@@ -31,13 +37,11 @@
   = t('separator')
   = yield :title
 
+- content_for :feedurl do
+  = posts_path(feed_url_parts)
+
 - content_for :feedlink do
-  - url_parts = {:format => :rss}
-  - url_parts[:term] = @term unless @term.blank?
-  - url_parts[:reader_id] = @reader.id if @reader
-  - url_parts[:forum_id] = @forum.id if @forum
-  - url_parts[:reader_id] = @topic.id if @topic
-  = feed_link(posts_path(url_parts))
+  = feed_link(posts_path(feed_url_parts))
 
 - content_for :messages do
   - if @posts.empty?

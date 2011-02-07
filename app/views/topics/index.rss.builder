@@ -4,10 +4,10 @@ xml.channel do
     :rel => 'self', :type => 'application/rss+xml'
   }
 
-  xml.title "#{@site_title} : Discussions most recently updated"
-  xml.description "The latest new and updated topics"
+  xml.title "#{@site_title} : #{t('latest_topics')}"
+  xml.description t("latest_topics_description")
   xml.link topics_url
-  xml.language "en-us"
+  xml.language I18n.locale.to_s
   xml.ttl "60"
 
   render :partial => "topic", :collection => @topics, :locals => {:xm => xml}
