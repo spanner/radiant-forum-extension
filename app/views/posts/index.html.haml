@@ -1,6 +1,6 @@
 - if !@term.blank? || @reader || @forum || @topic
   - @searching = true
-  - summary = [t('showing_posts')]
+  - summary = [t('topics_and_posts')]
   - summary << t('in') + ' ' + link_to(@forum.name, forum_url(@forum)) if @forum
   - summary << t('containing') + " <strong>#{@term}</strong>" unless @term.blank?
   - summary << t('posted_by') + ' ' + link_to(@reader.name, reader_url(@reader)) if @reader
@@ -12,10 +12,11 @@
   = t('posts_heading')
 
 - content_for :introduction do
-  - if @searching
-    = summary.join(' ') + ":"
-  - else
-    = t('posts_introduction')
+  %p
+    - if @searching
+      = summary.join(' ') + ":"
+    - else
+      = t('posts_introduction')
   
 - content_for :sidebar do
   - unless @searching && @posts.empty?
@@ -31,7 +32,12 @@
   = yield :title
 
 - content_for :feedlink do
-  = feed_link(posts_path(:format => :rss))
+  - url_parts = {:format => :rss}
+  - url_parts[:term] = @term unless @term.blank?
+  - url_parts[:reader_id] = @reader.id if @reader
+  - url_parts[:forum_id] = @forum.id if @forum
+  - url_parts[:reader_id] = @topic.id if @topic
+  = feed_link(posts_path(url_parts))
 
 - content_for :messages do
   - if @posts.empty?

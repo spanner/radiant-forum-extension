@@ -148,7 +148,6 @@ en:
   search_results: "Search Results"
   separator: ':'
   showing: "showing"
-  showing_posts: "Showing topics and messages"
   sorry_locked: "Sorry: this topic is locked."
   start_topic: "Start a new conversation"
   started: "started"
@@ -170,6 +169,7 @@ en:
     other: "%{count} topics, most recently "
   topic_show_introduction: ""
   topic_removed: "Topic removed"
+  topics_and_posts: "Topics and messages"
   to: "to"
   to_add_post: "To add a %{message_type}"
   topic: "topic"
