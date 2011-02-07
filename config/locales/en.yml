@@ -84,7 +84,6 @@ en:
     new_topic: "New topic"
     search: "Search"
     topics: "Latest"
-    your_account: "Your account"
   new_forum: "New forum"
   new_reply_to: "new reply to"
   new_reply_from: "new reply from"
@@ -168,6 +167,9 @@ en:
       today: "today at %l:%M%p"
       yesterday: "yesterday at %l:%M%p"
   time_remaining_to_edit: "You have %{time} left to "
+  to_comment: "To comment"
+  to_post: "To reply"
+  to_start_topic: "To start a topic"
   topic_count:
     zero: "No discussion."
     one: "One topic: "
