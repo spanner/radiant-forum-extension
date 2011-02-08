@@ -33,47 +33,47 @@
 		  container: null,
 		  form: null,
 
-		  getForm: function () {
+		  fetch: function () {
 		    if (self.showing()) self.hide();
         else if (self.form) self.show();
         else {
           self.wait();
-          self.container.load(self.url, self.captureForm);
+          $.get(self.url, self.step);  
         }
       },
-      captureForm: function () {
-        self.form = self.container.find('form');
-        self.form.submit(self.submitForm);
-        self.form.find('div.upload_stack').upload_stack();
-        self.form.find('a.cancel').click(self.cancel);
-        self.form.find("textarea.toolbarred").add_editor({});
-        
-        self.unwait();
-        self.show();
-      },
-      submitForm: function (event) {
+      submit: function (e) {
         var ajaxable = true;
         self.container.find('input:file').each(function () {
           var file = $(this).val();
           if (file && file != "") ajaxable = false;
         });
         if (ajaxable) {
-          squash(event);
+          e.preventDefault();
           self.form.find('textarea.toolbarred').read_editor();
-          $.post(self.form.attr('action'), self.form.serialize(), self.finish);  
+          $.post(self.form.attr('action'), self.form.serialize(), self.step);  
         } else {
           return true;  // allow event through so that uploads are sent by normal HTTP POST
+                        // toolbar is read in onSubmit
+        }
+      },
+      step: function (results) {
+        self.unwait();
+        if (results) self.container.html(results);
+        self.form = self.container.find('form');
+        if (self.form.length > 0) {
+          self.form.submit(self.submit);
+          self.form.find('div.upload_stack').upload_stack();
+          self.form.find('a.cancel').click(self.cancel);
+          self.form.find("textarea.toolbarred").add_editor({});
+          self.show();
+        } else {
+          holder.replaceWith(results);
         }
       },
       cancel: function (event) {
         squash(event);
         self.unwait();
         self.hide();
-      },
-      finish: function (results) {
-        self.unwait();
-        var newpost = holder.replaceWith(results);
-        newpost.blush();
       },
       show: function () {
         self.unwait();
@@ -94,70 +94,73 @@
         holder.unwait();
       }
 		});
-		
-		self.container = $('<div class="post_form" />').hide();
+		self.container = $('<div class="remote_form" />').hide();
 		self.holder.append(self.container);
   }
   
-  
-	function EditablePost(container, conf) {   
+	function ActionHolder(container, conf) {   
     var self = this;
 		$.extend(self, {
 		  container: container,
-		  wrapper: container.find('.post_wrapper'),
-		  head: container.find('.post_header'),
-		  body: container.find('.post_body'),
+		  wrapper: container.find('.wrapper'),
 		  actions: {},
+		  initActions: function () {
+		    self.actions = {};
+    		self.container.find('a.remote').each(function () {
+    		  var a = $(this);
+    		  var href = a.attr('href');
+          self.addAction(href);
+          a.click(function (event) {
+            squash(event);
+            a.addClass('waiting');
+            self.showAction(href);
+          });
+          if (a.is('.autoload')) self.showAction(href);
+    		});
+		  },
       addAction: function (url) {
         if (!self.actions[url]) self.actions[url] = new RemoteAction(url, self);
         return self.actions[url];
       },
       showAction: function (url) {
         $.each(self.actions, function (key, action) { action.hide(); });
-        self.actions[url].getForm();
+        self.actions[url].fetch();
       },
       append: function (el) {
-        return self.wrapper.append(el);
+        return self.container.append(el);
       },
-      replaceWith: function (post) {
-        self.container.replaceWith(post);
-        return $(post).editable_post();
+      replaceWith: function (html) {
+        self.container.html(html);
+        self.wrapper = self.container.find('.wrapper');
+        self.initActions();
+        return self.container;
       },
       show: function () {
-        self.body.show();
+        self.wrapper.show();
       },
       hide: function () {
-        self.body.hide();
+        self.wrapper.hide();
       },
       toggle: function (event) {
         squash(event);
-        if (self.body.is(":visible")) self.hide();
+        if (self.wrapper.is(":visible")) self.hide();
         else self.show();
       },
       wait: function () {
         self.container.addClass('waiting');
+        self.container.find('a.remote').addClass('waiting');
       },
       unwait: function () {
         self.container.removeClass('waiting');
-        self.container.find('a').removeClass('waiting');
+        self.container.find('a.remote').removeClass('waiting');
       }
 		});
-		
-		container.find('a.remote').each(function () {
-		  var a = $(this);
-		  var href = a.attr('href');
-      self.addAction(href);
-      a.click(function (event) {
-        squash(event);
-        a.addClass('waiting');
-        self.showAction(href);
-      });
-		});
+		self.initActions();
 	}
 	
-	$.fn.editable_post = function(conf) { 
+	$.fn.enable_remote_actions = function(conf) {
 		this.each(function() {			
-			new EditablePost($(this), conf);
+			new ActionHolder($(this), conf);
 		});
 		return this;
 	};
@@ -182,10 +185,11 @@
         else self.show();
       }
 		});
-
-	  self.shower = $('<a href="#" class="shower">Hide</a>').appendTo(self.head.find('p.context'));
-    self.shower.click(self.toggle);
-    if ($('a.prev_page').length > 0) self.hide();
+    if ($('a.prev_page').length > 0) {
+  	  self.shower = $('<a href="#" class="shower">Hide</a>').appendTo(self.head.find('p.context'));
+      self.shower.click(self.toggle);
+      self.hide();
+    }
 	}
 
 	$.fn.hideable_post = function() { 
@@ -195,9 +199,6 @@
 		return this;
 	};
 
-
-
-	
 	function UploadStack(container) {   
     var self = this;
 		$.extend(self, {
@@ -429,7 +430,8 @@
 })(jQuery);
 
 $(function() {
-  $(".post").editable_post({});
+  $(".post").enable_remote_actions({});
+  $(".new_post").enable_remote_actions({});
   $(".post.first").hideable_post({});
   $(".upload_stack").upload_stack({});
   $(".toolbarred").add_editor({});

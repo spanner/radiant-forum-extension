@@ -5,6 +5,7 @@ describe ForumsController do
 
   before do
     controller.stub!(:request).and_return(request)
+    Radiant::Config['forum.public?'] = true
   end
     
   describe "on get to index" do

@@ -371,7 +371,7 @@ module ForumTags
       tag.locals.reader = post.reader
       tag.expand
     else
-      output = %{<div class="post"><div class="post_wrapper">}
+      output = %{<div class="post"><div class="wrapper">}
       output << %{<div class="post_header">}
       output << %{<h2>#{tag.render("forum:post:reader")}</h2>}
       output << %{<p class="context">#{tag.render("forum:post:context")}</p>}

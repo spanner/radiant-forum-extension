@@ -32,12 +32,16 @@ class PostsController < ForumBaseController
       format.html { 
         expires_now
       }
-      format.js { 
-        render :partial => 'posts/form', :layout => false 
+      format.js {
+        if @post.page
+          render :partial => 'comments/add_comment', :layout => false
+        else
+          render :partial => 'topics/reply', :layout => false
+        end
       }
     end
   end
-    
+  
   def create
     @post.save!
     Radiant::Cache.clear if @post.page
@@ -49,16 +53,14 @@ class PostsController < ForumBaseController
     flash[:error] = t("validation_failure")
     respond_to do |format|
       format.html { render :action => 'new' }
-      format.js { render :partial => 'posts/form' }
+      format.js { render :template => 'posts/new', :layout => false }
     end
   end
 
   def edit
     respond_to do |format| 
-      format.html { 
-        expires_now
-      }
-      format.js { render :partial => 'posts/form' }
+      format.html { expires_now }
+      format.js { render :template => 'posts/edit', :layout => false }
     end
   end
   
@@ -74,7 +76,7 @@ class PostsController < ForumBaseController
     flash[:error] = t("validation_failure")
     respond_to do |format|
       format.html { render :action => 'edit' }
-      format.js { render :partial => 'posts/form' }
+      format.js { render :template => 'posts/edit', :layout => false }
     end
   end
 

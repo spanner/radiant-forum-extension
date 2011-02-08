@@ -6,6 +6,7 @@ describe TopicsController do
   before do
     Page.current_site = sites(:test) if defined? Site
     controller.stub!(:request).and_return(request)
+    Radiant::Config['forum.public?'] = true
   end
 
   describe "on get to index" do

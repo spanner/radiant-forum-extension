@@ -21,7 +21,7 @@ As far as I know this is the best forum software available for rails. I look for
 
 ## Status
 
-This code has been surviving in the world for four or five years (and more, since some it originally came from Beast), but this version is about 75% new and you know what that means: new bugs. Github issues, please.
+This code has been surviving in the world for four or five years (and more, since some it originally came from Beast), but this version is about 75% new and you know what that means: new bugs. Github issues are always welcome.
 
 ## Latest
 
@@ -90,6 +90,12 @@ You probably also want to include this somewhere, as on all reader-service pages
 	<r:if_reader><r:reader:controls /></r:if_reader>
 
 Have a look at the included sample layout for a starting point.
+
+## Speed and caching
+
+This version of the forum is designed to work from behind radiant's main cache. There is no context-specific material in any of the pages or page parts visible to a normal browsing user and the comment and reply forms are normally retrieved by ajax calls after the pages have loaded. For that you need to use the provided (jquery-based) forum.js, or write your own equivalent (or for a more robust but less helpful forum, skip the ajax and let people click through to the comment or reply form).
+
+The intention is to make this behaviour configurable but at the moment I'm finding the forum pages too slow if uncached. Most of the wait comes from the shared_layouts/radius template machinery but there are some slow queries too. With optimisation a live forum should be viable.
 
 ## Private discussion
 

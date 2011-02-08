@@ -1,14 +1,13 @@
 - add_reader_css '/stylesheets/forum.css'
-- if current_reader
-  - if Radiant::Config['forum.toolbar?']
-    - add_reader_js '/punymce/puny_mce_src.js'
-    - add_reader_js '/punymce/plugins/link/link.js'
-    - add_reader_js '/punymce/plugins/image/image.js'
-    - add_reader_js '/punymce/plugins/emoticons/emoticons.js'
-    - add_reader_js '/punymce/plugins/editsource/editsource.js'
-    - add_reader_js '/punymce/plugins/paste.js'
-  - add_reader_js '/javascripts/forum.js'
-  - add_reader_js '/javascripts/gallery.js'
+- if Radiant::Config['forum.toolbar?']
+  - add_reader_js '/punymce/puny_mce_src.js'
+  - add_reader_js '/punymce/plugins/link/link.js'
+  - add_reader_js '/punymce/plugins/image/image.js'
+  - add_reader_js '/punymce/plugins/emoticons/emoticons.js'
+  - add_reader_js '/punymce/plugins/editsource/editsource.js'
+  - add_reader_js '/punymce/plugins/paste.js'
+- add_reader_js '/javascripts/forum.js'
+- add_reader_js '/javascripts/gallery.js'
 
 - content_for :section_navigation do
   = link_to t('navigation.forum'), topics_url, :class => 'section'

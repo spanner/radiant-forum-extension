@@ -9,7 +9,7 @@
 - cssclasses << 'deleted' if post.frozen?
   
 .post{:id => post.dom_id, :class => cssclasses.join(' ')}
-  .post_wrapper
+  .wrapper
     - unless headless
       .speaker
         = standard_gravatar_for(post.reader)

@@ -1,6 +1,7 @@
 en:
   a_reply_to: "A reply to"
   add_post: "Add a %{message_type}"
+  add_comment: "Add a comment"
   add_reply: "Add a reply"
   ago: "ago"
   all: "all"
@@ -106,6 +107,7 @@ en:
   now_has: "now has"
   of: "of"
   on_date: "on %{date}"
+  page_locked: "Sorry: comments are not allowed on this page"
   post: "comment"
   post_body: "Post body"
   post_count_from: 
@@ -168,7 +170,7 @@ en:
       yesterday: "yesterday at %l:%M%p"
   time_remaining_to_edit: "You have %{time} left to "
   to_comment: "To comment"
-  to_post: "To reply"
+  to_post: "To post messages"
   to_start_topic: "To start a topic"
   topic_count:
     zero: "No discussion."

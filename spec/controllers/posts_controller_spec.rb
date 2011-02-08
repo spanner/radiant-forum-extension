@@ -137,9 +137,9 @@ describe PostsController do
           xhr :get, :new, :topic_id => @topic.id, :forum_id => forum_id(:public)
         end
 
-        it "should render a bare post form" do
+        it "should render a bare reply form" do
           response.should be_success
-          response.should render_template('posts/_form')
+          response.should render_template('topics/_reply')
           response.layout.should be_nil
         end
       end
@@ -221,7 +221,7 @@ describe PostsController do
 
           it "should re-render the bare post form" do
             response.should be_success
-            response.should render_template('posts/_form')
+            response.should render_template('posts/new')
             response.layout.should be_nil
           end
           

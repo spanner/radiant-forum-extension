@@ -26,6 +26,8 @@
       closer: container.find('div.closer'),
       stack: [],
       item: null,
+      click_outside: null,
+      escape_key: null,
       add: function (a) {
         self.stack.push(new GalleryItem(a));
       },
@@ -46,9 +48,11 @@
         self.hide();
         self.mimic();
         self.zoomer.zoomUp(self.item, self.show);
+        self.setClosers();
       },
       zoomDown: function () {
         self.zoomer.zoomDown(self.item);
+        self.unsetClosers();
         self.hide();
       },
       crossfade: function () {
@@ -69,21 +73,38 @@
         return self.stack.indexOf(self.item);
       },
       next: function (e) {
-        e.preventDefault();
+        if (e) e.preventDefault();
         var at = self.current();
         var next = (at == self.stack.length-1) ? 0 : at + 1;
         self.display(self.stack[next]);
       },
       previous: function (e) {
-        e.preventDefault();
+        if (e) e.preventDefault();
         var at = self.current();
         var previous = (at == 0) ? self.stack.length-1 : at - 1;
         self.display(self.stack[previous]);
       },
       close: function (e) {
-        e.preventDefault();
+        if (e) e.preventDefault();
         self.zoomDown();
       },
+      setClosers: function (argument) {
+        self.click_outside = $('#pagecontent').click(self.close);
+        self.escape_key = $(document).keyup(function(e) {
+          if (e.keyCode == 27) self.close(e);
+          if (!e.metaKey) {
+            if (e.keyCode == 39) self.next(e);
+            if (e.keyCode == 37) self.previous(e);
+          }
+          return false;
+        });
+      },
+      unsetClosers: function (argument) {
+       if (self.click_outside) $('#pagecontent').unbind('click', self.click_outside);
+        if (self.escape_key) $(document).unbind('keyup', self.escape_key);
+      },
+
+
       show: function () {
         self.zoomer.hide();
         self.container.show();
@@ -112,7 +133,7 @@
           left: p.left + (self.image.innerWidth() - d.width)/2,
           top: p.top + (self.image.innerHeight() - d.height)/2
         };
-        if (resized.top <= 10) resized.top = 10;
+        if (r.top <= 10) r.top = 10;
         self.image.animate(d, 'fast');
         self.container.animate(r, 'fast');
         self.controls.css({left: (d.width - 96)/2});
@@ -172,9 +193,13 @@
       },
       zoomDown: function (item, onZoom) {
         if (!onZoom) onZoom = self.hide;
+        self.interrupt();
         self.show();
         self.sprite.css($.extend(self.defaultUpState, $.gallery.currentPosition()));
         self.sprite.animate($.extend({}, self.defaultDownState, item.position()), self.zoomDuration, onZoom);
+      },
+      interrupt: function () {
+        self.sprite.stop(true, false);
       },
       show: function () {
         self.sprite.show();

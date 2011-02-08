@@ -44,8 +44,10 @@
   = yield :pagination if @posts.next_page
 
 - content_for :reply_form do
-  = render :partial => 'topics/reply', :locals => {:topic => @topic}
-
+  .new_post
+    .wrapper
+      %p
+        = link_to t('add_reply'), new_topic_post_url(@topic), :class => 'remote autoload'
 
 
 #forum
