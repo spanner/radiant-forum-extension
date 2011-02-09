@@ -86,10 +86,9 @@
       },
       close: function (e) {
         if (e) e.preventDefault();
-        self.zoomDown();
+        if (self.visible) self.zoomDown();
       },
       setClosers: function (argument) {
-        self.click_outside = $('#pagecontent').click(self.close);
         self.escape_key = $(document).keyup(function(e) {
           if (e.keyCode == 27) self.close(e);
           if (!e.metaKey) {
@@ -100,7 +99,6 @@
         });
       },
       unsetClosers: function (argument) {
-       if (self.click_outside) $('#pagecontent').unbind('click', self.click_outside);
         if (self.escape_key) $(document).unbind('keyup', self.escape_key);
       },
 

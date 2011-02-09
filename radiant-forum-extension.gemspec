@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{radiant-forum-extension}
-  s.version = "2.0.9"
+  s.version = "2.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["spanner"]
-  s.date = %q{2011-02-07}
+  s.date = %q{2011-02-09}
   s.description = %q{Nice clean forums and page comments for inclusion in your radiant site. Derived long ago from beast. Requires the reader extension and share_layouts.}
   s.email = %q{will@spanner.org}
   s.extra_rdoc_files = [
@@ -57,7 +57,7 @@ Gem::Specification.new do |s|
      "app/views/forums/show.html.haml",
      "app/views/forums/show.rss.builder",
      "app/views/layouts/feed.rss.builder",
-     "app/views/pages/_comment.html.haml",
+     "app/views/pages/_add_comment.html.haml",
      "app/views/pages/_comments.html.haml",
      "app/views/posts/_attachment.html.haml",
      "app/views/posts/_attachments.html.haml",
