@@ -16,7 +16,13 @@ en:
   by: "by"
   by_content_and_author: "by content, author or category."
   comment: "comment"
+  comment_count:
+    zero: "No comments yet"
+    one: "One comment"
+    other: "%{count} comments."
   comment_on_page: "a comment added to the page"
+  comments_closed: "Comments closed."
+  comments_on: "Comments on"
   comments: "comments"
   config:
     forum:

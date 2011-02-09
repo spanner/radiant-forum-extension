@@ -46,7 +46,7 @@
 - content_for :reply_form do
   .new_post
     .wrapper
-      %p
+      %p.add_reply
         = link_to t('add_reply'), new_topic_post_url(@topic), :class => 'remote autoload'
 
 

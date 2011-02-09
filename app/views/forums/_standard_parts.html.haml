@@ -1,22 +1,33 @@
-- add_reader_css '/stylesheets/forum.css'
-- if Radiant::Config['forum.toolbar?']
-  - add_reader_js '/punymce/puny_mce_src.js'
-  - add_reader_js '/punymce/plugins/link/link.js'
-  - add_reader_js '/punymce/plugins/image/image.js'
-  - add_reader_js '/punymce/plugins/emoticons/emoticons.js'
-  - add_reader_js '/punymce/plugins/editsource/editsource.js'
-  - add_reader_js '/punymce/plugins/paste.js'
-- add_reader_js '/javascripts/forum.js'
-- add_reader_js '/javascripts/gallery.js'
+- content_for :forum_css do
+  %link{:rel => 'stylesheet', :type => 'text/css', :href => '/stylesheets/forum.css', :media => 'all'}
+
+- content_for :gallery_js do
+  %script{:src => '/javascripts/gallery.js', :type => 'text/javascript'}
+
+- content_for :forum_js do
+  %script{:src => '/javascripts/forum.js', :type => 'text/javascript'}
+
+- content_for :toolbar_js do
+  - if Radiant::Config['forum.toolbar?']
+    %script{:src => '/punymce/puny_mce_src.js', :type => 'text/javascript'}
+    %script{:src => '/punymce/plugins/link/link.js', :type => 'text/javascript'}
+    %script{:src => '/punymce/plugins/image/image.js', :type => 'text/javascript'}
+    %script{:src => '/punymce/plugins/emoticons/emoticons.js', :type => 'text/javascript'}
+    %script{:src => '/punymce/plugins/editsource/editsource.js', :type => 'text/javascript'}
+    %script{:src => '/punymce/plugins/paste.js', :type => 'text/javascript'}
+
+- content_for :all_forum_js do
+  = yield :forum_js
+  = yield :gallery_js
+  = yield :toolbar_js
 
 - content_for :section_navigation do
   = link_to t('navigation.forum'), topics_url, :class => 'section'
   = link_to t('navigation.topics'), topics_url
   = link_to t('navigation.forums'), forums_url
-  = link_to t('navigation.readers'), readers_url
-  = link_to t('navigation.new_topic'), new_post_url
-  = link_to t('navigation.your_account'), reader_account_url
   = link_to t('navigation.search'), posts_url
+  = link_to t('navigation.new_topic'), new_post_url
+  = link_to t('navigation.loading'), reader_session_url, :class => "remotecontent"
   - if Radiant::Config['forum.help_url']
     = link_to t('navigation.forum_help'), Radiant::Config['forum.help_url']
 

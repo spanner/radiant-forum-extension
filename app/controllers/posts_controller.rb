@@ -34,7 +34,7 @@ class PostsController < ForumBaseController
       }
       format.js {
         if @post.page
-          render :partial => 'comments/add_comment', :layout => false
+          render :partial => 'pages/add_comment', :layout => false
         else
           render :partial => 'topics/reply', :layout => false
         end

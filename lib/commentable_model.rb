@@ -57,7 +57,7 @@ module CommentableModel # for inclusion into ActiveRecord::Base
     end
   
     def voice_count
-      posts.distinct_readers.count  #actually counting posts, but the total is the same
+      posts.distinct_readers.count  #nb. actually counting posts from distinct readers
     end
   
     def other_voices

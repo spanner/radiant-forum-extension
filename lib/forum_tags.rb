@@ -277,23 +277,25 @@ module ForumTags
     The address for add-a-comment links
   }
   tag 'comment_url' do |tag|
-    new_page_post_path(tag.locals.page)
+    add_comment_path(tag.locals.page)
   end
 
   tag 'comment_link' do |tag|
     options = tag.attr.dup
-    attributes = options.inject('') { |s, (k, v)| s << %{#{k.to_s.downcase}="#{v}" } }.strip
-    attributes = " #{attributes}" unless attributes.empty?
-    text = tag.double? ? tag.expand : I18n.t("Add a comment")
-    %{<a href="#{tag.render('comment_url')}"#{attributes}>#{text}</a>}
+    if tag.locals.page.still_commentable?
+      attributes = options.inject('') { |s, (k, v)| s << %{#{k.to_s.downcase}="#{v}" } }.strip
+      text = tag.double? ? tag.expand : I18n.t("add_comment")
+      %{<a href="#{tag.render('comment_url')}" #{attributes}>#{text}</a>}
+    else
+      I18n.t("comments_closed")
+    end
   end
 
   desc %{
     Anything between if_comments tags is displayed only - dramatic pause - if there are comments.
   }
   tag 'if_comments' do |tag|
-    raise TagError, "can't have if_comments without a page" unless page = tag.locals.page
-    tag.expand if page.posts.any?
+    tag.expand if tag.locals.page.posts.any?
   end
 
   desc %{
@@ -303,38 +305,41 @@ module ForumTags
     <pre><code><r:unless_comments>...</r:unless_comments></code></pre>
   }
   tag 'unless_comments' do |tag|
-    raise TagError, "can't have unless_comments without a page" unless page = tag.locals.page
-    tag.expand unless page.posts.any?
+    tag.expand unless tag.locals.page.posts.any?
   end
 
   tag 'comments' do |tag|
-    raise TagError, "can't have comments without a page" unless page = tag.locals.page
-    if page.commentable?
-      output = []
-      tag.locals.posts = tag.locals.paginated_list = page.posts.paginate
-      tag.expand
-    end
+    tag.expand if tag.locals.page.commentable?
   end
 
   desc %{
     Renders string (internationalised) like "1 comment", "27 comments" or "no comments yet".
   }
   tag 'comments:summary' do |tag|
-    I18n.t("comment_count", :count => tag.locals.posts.total_entries)
+    if tag.locals.posts.respond_to? :total_entries
+      I18n.t("comment_count", :count =>  tag.locals.posts.total_entries)
+    else
+      I18n.t("comment_count", :count =>  tag.locals.posts.length)
+    end
   end
 
   desc %{
-    Loops over the  (paginated) comment set in ascending order of date. Within the loop you can 
+    Loops over the (paginated) comment set in ascending order of date. Within the loop you can 
     use the r:comment shorthand or any r:forum:post:* tags. Note that r:forum:topic tags won't 
     work: there is no topic to show.
   }
   tag 'comments:each' do |tag|
     results = []
+    if paging = pagination_find_options
+      tag.locals.posts = tag.locals.paginated_list = page.posts.paginate(paging)
+    else
+      tag.locals.posts = page.posts
+    end
     tag.locals.posts.each do |post|
       tag.locals.post = post
       results << tag.expand
     end
-    results << tag.render('pagination', tag.attr.dup)
+    results << tag.render('pagination', tag.attr.dup) if paging
     results
   end
 
@@ -347,15 +352,19 @@ module ForumTags
     can hook into using the supplied forum javascript or your own equivalent.
   }
   tag 'comments:all' do |tag|
-    posts = tag.locals.posts
+    if tag.attr['paginated'] == 'true'
+      tag.locals.posts = tag.locals.paginated_list = tag.locals.page.posts.paginate(pagination_parameters)
+    else
+      tag.locals.posts = tag.locals.page.posts
+    end
     results = ""
     results << %{<div class="page_comments">}
     results << %{<p class="context">#{tag.render('comments:summary')}</p>}
-    posts.each do |post|
+    tag.locals.posts.each do |post|
       tag.locals.post = post
       results << tag.render('comment')
     end
-    results << %{<p class="add_comment">#{tag.render('comment_link', 'class' => 'remote')}</p>}
+    results << %{<div class="new_post"><div class="wrapper"><p class="add_comment">#{tag.render('comment_link', 'class' => 'remote')}</p></div></div>}
     results << tag.render('pagination', tag.attr.dup)
     results << "</div>"
     results

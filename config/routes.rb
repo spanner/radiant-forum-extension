@@ -13,4 +13,6 @@ ActionController::Routing::Routes.draw do |map|
   end
   
   map.forum_home "/forum.:format", :controller => 'topics', :action => 'index'
+  map.add_comment "/pages/:page_id/posts/new.:format", :controller => 'posts', :action => 'new'
+
 end

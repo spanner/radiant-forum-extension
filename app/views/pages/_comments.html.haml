@@ -1,15 +1,13 @@
+- posts ||= @posts
+- page ||= @page
+
 #forum
   %h2
-    Comments on 
+    = t('comments_on')
     = page.title
 
-- if posts.nil?
-  %p None yet
-  %pre 
-    = posts.inspect
-
+- if posts.empty?
+  %p 
+    = t('none_yet')
 - else
-  %pre 
-    = posts.inspect
-  %p
-    = current_reader.inspect
+  = render :partial => 'posts/post', :collection => posts
