@@ -24,7 +24,7 @@ class Sanitize
   module Config
     FORUM = {
       :elements => %w[
-        a b blockquote br caption cite code dd del dl dt em h1 h2 h3 h4 h5 h6 i img li ol p pre small span strike strong sub sup table tbody td thead tr u ul
+        a b blockquote br caption cite code dd del dl dt em h1 h2 h3 h4 h5 h6 i img li ol p pre small span strike strong sub sup table tbody td th thead tr u ul
       ],
 
       :attributes => {
@@ -34,7 +34,7 @@ class Sanitize
         'img'        => ['align', 'alt', 'height', 'src', 'width'],
         'ol'         => ['start', 'reversed', 'type'],
         'ul'         => ['type'],
-        'tr'         => ['colspan', 'rowspan'],
+        'th'         => ['colspan', 'rowspan'],
         'td'         => ['colspan', 'rowspan']
       },
 
