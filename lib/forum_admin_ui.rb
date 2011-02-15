@@ -27,7 +27,7 @@ module ForumAdminUI
             forum.edit = Radiant::AdminUI::RegionSet.new do |edit|
               edit.main.concat %w{edit_header edit_form}
               edit.form.concat %w{edit_name edit_description}
-              edit.form_bottom.concat %w{edit_timestamp edit_buttons}
+              edit.form_bottom.concat %w{edit_buttons}
             end
             forum.index = Radiant::AdminUI::RegionSet.new do |index|
               index.thead.concat %w{title_header description_header latest_header modify_header}
