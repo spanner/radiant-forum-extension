@@ -8,9 +8,10 @@ class PostsController < ForumBaseController
 
   def index
     @term = params[:q]
-    posts = @forum ? Post.in_forum(@forum) : Post.scoped
+    posts = Post.visible_to(current_reader)
     posts = posts.containing(@term) unless @term.blank?
     posts = posts.from_reader(@reader) if @reader
+    posts = posts.in_forum(@forum) if @forum
     posts = posts.in_topic(@topic) if @topic
     @posts = posts.paginate(pagination_parameters)
     render_page_or_feed
@@ -29,9 +30,7 @@ class PostsController < ForumBaseController
       @post.topic = @forum.topics.new
     end
     respond_to do |format|
-      format.html { 
-        expires_now
-      }
+      format.html { expires_now }
       format.js {
         if @post.page
           render :partial => 'pages/add_comment', :layout => false
@@ -82,7 +81,7 @@ class PostsController < ForumBaseController
 
   def remove
     respond_to do |format|
-      format.html {}
+      format.html { expires_now }
       format.js { render :partial => 'confirm_delete' }
     end
   end
@@ -107,7 +106,7 @@ class PostsController < ForumBaseController
 protected
 
   def find_post
-    @post ||= Post.find(params[:id])
+    @post ||= Post.visible_to(current_reader).find(params[:id])
   end
 
   def require_authority

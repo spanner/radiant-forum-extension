@@ -14,7 +14,7 @@ class Post < ActiveRecord::Base
   after_create :notify_holder_of_creation
   after_destroy :notify_holder_of_destruction
   
-  default_scope :order => "created_at DESC"
+  default_scope :order => "posts.created_at DESC"
   
   named_scope :comments, :conditions => "page_id IS NOT NULL"
   named_scope :non_comments, :conditions => "page_id IS NULL"
@@ -38,6 +38,11 @@ class Post < ActiveRecord::Base
       :joins => "LEFT OUTER JOIN topics on posts.topic_id = topics.id"
     }
   }
+
+  # other extensions can attach chains here to limit access
+  def self.visible_to(reader)
+    self.scoped
+  end
 
   def self.in_forum(forum)
     in_topics(forum.topics)

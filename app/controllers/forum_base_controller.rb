@@ -14,16 +14,12 @@ protected
   
   def establish_context
     @reader = Reader.find(params[:reader_id]) unless params[:reader_id].blank?
-    @topic = Topic.find(params[:topic_id]) unless params[:topic_id].blank?
-    @forum = Forum.find(params[:forum_id]) unless params[:forum_id].blank?
-    @page = Page.find(params[:page_id]) unless params[:page_id].blank?
+    @topic = Topic.visible_to(current_reader).find(params[:topic_id]) unless params[:topic_id].blank?
+    @forum = Forum.visible_to(current_reader).find(params[:forum_id]) unless params[:forum_id].blank?
+    @page = Page.visible_to(current_reader).find(params[:page_id]) unless params[:page_id].blank?
   end
 
   def redirect_to_post
-    
-    Rails.logger.warn "!!! redirecting to post #{@post.inspect}"
-    Rails.logger.warn "!   which will have topic #{@post.topic} and within it page #{@post.page_when_paginated}"
-    
     if (@post.page)
       redirect_to "#{@post.page.url}?#{WillPaginate::ViewHelpers.pagination_options[:param_name]}=#{@post.page_when_paginated}##{@post.dom_id}"
     elsif @post.first?
@@ -54,9 +50,17 @@ protected
 
   def render_page_or_feed(template_name = action_name)
     respond_to do |format|
-      format.html { render :action => template_name }
-      format.rss { render :action => template_name, :layout => 'feed' }
-      format.js { render :action => template_name, :layout => false }
+      format.html { 
+        expires_now
+        render :action => template_name 
+      }
+      format.rss { 
+        expires_now
+        render :action => template_name, :layout => 'feed' 
+      }
+      format.js { 
+        render :action => template_name, :layout => false 
+      }
     end
   end
   
@@ -67,6 +71,7 @@ protected
   def render_locked
     respond_to do |format|
       format.html { 
+        expires_now
         flash[:error] = t('topic_locked')
         redirect_to_page_or_topic 
       }

@@ -15,6 +15,11 @@ class Topic < ActiveRecord::Base
     { :order => 'replied_at DESC', :limit => count }
   }
 
+  # other extensions can attach chains here to limit access
+  def self.visible_to(reader)
+    self.scoped
+  end
+
   def dom_id
     "topic_#{self.id}"
   end
@@ -30,11 +35,7 @@ class Topic < ActiveRecord::Base
   def body
     posts.first.body
   end
-  
-  def created_at
-    posts.first.created_at if posts.first
-  end
-  
+    
   def title
     name
   end

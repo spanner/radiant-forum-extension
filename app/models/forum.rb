@@ -1,10 +1,15 @@
 class Forum < ActiveRecord::Base
   has_site if respond_to? :has_site
-  has_many :topics, :dependent => :destroy
+  has_many :topics, :dependent => :destroy, :order => "created_at DESC"
 
-  default_scope :order => 'position ASC'
+  default_scope :order => 'name ASC'
   named_scope :imported, :conditions => "old_id IS NOT NULL"
   validates_presence_of :name
+  
+  # other extensions can attach chains here to limit access
+  def self.visible_to(reader)
+    self.scoped
+  end
   
   def dom_id
     "forum_#{self.id}"

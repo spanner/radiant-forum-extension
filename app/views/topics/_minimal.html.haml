@@ -1,0 +1,15 @@
+- topic ||= @topic
+
+%li.topic
+  = link_to_post(topic.posts.last, :class => 'title')
+  %br
+  %span.context
+    - if topic.has_replies?
+      - if topic.replied_by
+        = t('new_reply_from')
+        = link_to topic.replied_by.name, reader_url(topic.replied_by)
+        = friendly_date(topic.replied_at)
+    - else
+      = t('started_by')
+      = link_to topic.reader.name, reader_url(topic.reader)
+      = friendly_date(topic.created_at)

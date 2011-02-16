@@ -6,8 +6,6 @@ class TopicMerelyAssociative < ActiveRecord::Migration
     remove_column :topics, :posts_count
     remove_column :topics, :updated_by_id
     remove_column :topics, :created_by_id
-    remove_column :topics, :updated_at
-    remove_column :topics, :created_at
   end
 
   def self.down
@@ -15,8 +13,6 @@ class TopicMerelyAssociative < ActiveRecord::Migration
     add_column :topics, :first_post_id, :integer
     add_column :topics, :last_post_id, :integer
     add_column :topics, :posts_count, :integer
-    add_column :topics, :updated_at, :datetime
-    add_column :topics, :created_at, :datetime
     add_column :topics, :updated_by_id, :integer
     add_column :topics, :created_by_id, :integer
   end

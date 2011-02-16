@@ -26,8 +26,9 @@
   = link_to t('navigation.topics'), topics_url
   = link_to t('navigation.forums'), forums_url
   = link_to t('navigation.search'), posts_url
-  = link_to t('navigation.new_topic'), new_post_url
-  = link_to t('navigation.loading'), reader_session_url, :class => "remotecontent"
+  - if current_reader
+    = link_to t('navigation.new_topic'), new_post_url
+  = render :partial => 'readers/controls'
   - if Radiant::Config['forum.help_url']
     = link_to t('navigation.forum_help'), Radiant::Config['forum.help_url']
 
