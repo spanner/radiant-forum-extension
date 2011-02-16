@@ -1,6 +1,6 @@
 class Forum < ActiveRecord::Base
   has_site if respond_to? :has_site
-  has_many :topics, :dependent => :destroy, :order => "created_at DESC"
+  has_many :topics, :dependent => :destroy
 
   default_scope :order => 'name ASC'
   named_scope :imported, :conditions => "old_id IS NOT NULL"

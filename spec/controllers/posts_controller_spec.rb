@@ -6,17 +6,13 @@ describe PostsController do
   before do
     Page.current_site = sites(:test) if defined? Site
     controller.stub!(:request).and_return(request)
-    @forum = forums(:public)
-    @topic = topics(:older)
-    @post = posts(:first)
-    @comment = posts(:comment)
   end
 
   describe "on get to index" do
     before do
       get :index
     end
-
+  
     it "should render the index page" do
       response.should be_success
       response.should render_template("index")
@@ -24,17 +20,14 @@ describe PostsController do
   end
     
   describe "on get to show" do
-    
     describe "for a page comment" do
       before do
         Radiant::Config['forum.public?'] = true
-        @comment = posts(:comment)
-        @page = pages(:commentable)
-        get :show, :id => post_id(:comment)
       end
       it "should redirect to the page address and post anchor" do
+        get :show, :id => post_id(:comment)
         response.should be_redirect
-        response.should redirect_to(@page.url + "?page=1##{@comment.dom_id}")
+        response.should redirect_to(pages(:commentable).url + "?page=1##{posts(:comment).dom_id}")
       end
     end
     
@@ -45,7 +38,8 @@ describe PostsController do
       end
       it "should redirect to the topic" do
         response.should be_redirect
-        response.should redirect_to(forum_topic_url(@topic.forum, @topic))
+        topic = topics(:older)
+        response.should redirect_to(forum_topic_url(topic.forum, topic))
       end
     end
 
@@ -56,11 +50,10 @@ describe PostsController do
       end
       it "should redirect to the topic with the page and anchor of the post" do
         response.should be_redirect
-        response.should redirect_to(forum_topic_url(@topic.forum, @topic, {:page => posts(:second).page_when_paginated, :anchor => "post_#{posts(:second).id}"}))
+        topic = topics(:older)
+        response.should redirect_to(forum_topic_url(topic.forum, topic, {:page => posts(:second).page_when_paginated, :anchor => "post_#{posts(:second).id}"}))
       end
     end
-
-
   end
   
   describe "on get to new" do
@@ -104,14 +97,13 @@ describe PostsController do
 
       describe "but to a locked topic" do
         before do
-          @topic.locked = true
-          @topic.save!
-          get :new, :topic_id => @topic.id, :forum_id => forum_id(:public)
+          get :new, :topic_id => topic_id(:locked), :forum_id => forum_id(:public)
         end
         
         it "should redirect to the topic page" do 
           response.should be_redirect
-          response.should redirect_to(forum_topic_url(@topic.forum, @topic))
+          topic = topics(:locked)
+          response.should redirect_to(forum_topic_url(topic.forum, topic))
         end
         
         it "should flash an appropriate message" do 
@@ -122,7 +114,7 @@ describe PostsController do
 
       describe "over normal http" do
         before do
-          get :new, :topic_id => @topic.id, :forum_id => forum_id(:public)
+          get :new, :topic_id => topic_id(:older), :forum_id => forum_id(:public)
         end
 
         it "should render the new post form in the normal way" do
@@ -134,7 +126,7 @@ describe PostsController do
 
       describe "over xmlhttp" do
         before do
-          xhr :get, :new, :topic_id => @topic.id, :forum_id => forum_id(:public)
+          xhr :get, :new, :topic_id => topic_id(:older), :forum_id => forum_id(:public)
         end
 
         it "should render a bare reply form" do
@@ -150,7 +142,7 @@ describe PostsController do
     describe "without a logged-in reader" do
       before do
         logout_reader
-        post :create, :post => {:body => 'otherwise complete'}, :topic_id => @topic.id, :forum_id => forum_id(:public)
+        post :create, :post => {:body => 'otherwise complete'}, :topic_id => topic_id(:older), :forum_id => forum_id(:public)
       end
       
       it "should redirect to login" do
@@ -165,18 +157,14 @@ describe PostsController do
       end
 
       describe "but to a locked topic" do
-        before do
-          @topic.locked = true
-          @topic.save!
-        end
-        
         describe "over normal http" do
           before do 
-            post :create, :post => {:body => ''}, :topic_id => @topic.id, :forum_id => forum_id(:public)
+            post :create, :post => {:body => ''}, :topic_id => topic_id(:locked)
           end
           it "should redirect to the topic page" do 
             response.should be_redirect
-            response.should redirect_to(forum_topic_url(@topic.forum, @topic))
+            topic = topics(:locked)
+            response.should redirect_to(forum_topic_url(topic.forum, topic))
           end
           
           it "should flash an appropriate error" do 
@@ -186,7 +174,7 @@ describe PostsController do
         end
         describe "over xmlhttp" do
           before do
-            xhr :post, :create, :post => {:body => 'otherwise complete'}, :topic_id => @topic.id, :forum_id => forum_id(:public)
+            xhr :post, :create, :post => {:body => 'otherwise complete'}, :topic_id => topic_id(:locked), :forum_id => forum_id(:public)
           end
 
           it "should render a bare 'locked' template" do
@@ -200,7 +188,7 @@ describe PostsController do
       describe "with an invalid message" do
         describe "over normal http" do
           before do 
-            post :create, :post => {:body => ''}, :topic_id => @topic.id, :forum_id => forum_id(:public)
+            post :create, :post => {:body => ''}, :topic_id => topic_id(:older), :forum_id => forum_id(:public)
           end
           
           it "should re-render the post form with layout" do
@@ -216,7 +204,7 @@ describe PostsController do
         
         describe "over xmlhttp" do
           before do
-            xhr :post, :create, :post => {:body => ''}, :topic_id => @topic.id, :forum_id => forum_id(:public)
+            xhr :post, :create, :post => {:body => ''}, :topic_id => topic_id(:older), :forum_id => forum_id(:public)
           end
 
           it "should re-render the bare post form" do
@@ -238,7 +226,7 @@ describe PostsController do
         before do
           alphabet = ("a".."z").to_a
           @body = Array.new(64, '').collect{alphabet[rand(alphabet.size)]}.join
-          post :create, :post => {:body => @body}, :topic_id => @topic.id, :forum_id => forum_id(:public)
+          post :create, :post => {:body => @body}, :topic_id => topic_id(:older), :forum_id => forum_id(:public)
           @post = Post.find_by_body(@body)
         end
 
@@ -247,18 +235,19 @@ describe PostsController do
         end
 
         it "should associate the post with its topic" do
-          @post.topic.should == @topic
+          @post.topic.should == topics(:older)
         end
 
         it "should redirect to the right topic and page" do
           response.should be_redirect
-          response.should redirect_to(forum_topic_url(@forum, @topic, {:page => @post.page_when_paginated, :anchor => "post_#{@post.id}"}))
+          topic = topics(:older)
+          response.should redirect_to(forum_topic_url(topic.forum, topic, {:page => @post.page_when_paginated, :anchor => "post_#{@post.id}"}))
         end
       end
 
       describe "over xmlhttp" do
         before do
-          xhr :post, :create, :post => {:body => 'test post body'}, :topic_id => @topic.id, :forum_id => forum_id(:public)
+          xhr :post, :create, :post => {:body => 'test post body'}, :topic_id => topics(:older), :forum_id => forum_id(:public)
         end
 
         it "should return the formatted message for inclusion in the page" do
@@ -290,7 +279,6 @@ describe PostsController do
         it "should clear the cache" do
           Radiant::Cache.should_receive(:clear)
           post :create, :post => {:body => 'marmalade'}, :page_id => page_id(:commentable)
-          Post.find_by_body('marmalade').should_not be_nil
         end
       end
 
