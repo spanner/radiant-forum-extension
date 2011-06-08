@@ -4,7 +4,7 @@
   = render :partial => 'confirm_delete', :locals => {:post => @post}
 
 - content_for :parent do
-  = link_to @post.topic.name, forum_topic_url(@post.topic, @post.topic.forum)
+  = link_to_topic(@post.topic)
 
 - content_for :breadhead do
   = link_to t('forum').titlecase + t('separator'), topics_url

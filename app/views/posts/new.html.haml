@@ -28,7 +28,7 @@
   - if @page
     = link_to @page.title, @page.url, :class => 'breadhead'
   - elsif @topic 
-    = link_to @topic.name, forum_topic_url(@topic.forum, @topic), :class => 'breadhead'
+    = link_to_topic(@topic, :class => 'breadhead')
 
 #forum
   = yield :form

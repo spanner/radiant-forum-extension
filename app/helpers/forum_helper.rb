@@ -2,6 +2,12 @@ require 'sanitize'
 require "sanitize/config/forum"
 
 module ForumHelper
+  mattr_accessor :forums_found
+  
+  def using_forums?
+    @forums_found = Forum.count > 1 unless defined? @forums_found
+    @forums_found
+  end
   
   def feed_link(url)
     link_to image_tag('/images/furniture/feed_14.png', :alt => t('rss_feed')), url, :class => "rssfeed"
@@ -28,8 +34,19 @@ module ForumHelper
     end
   end
   
+  def link_to_forum(forum, options={})
+    title = options.delete(:title) || forum.title 
+    link_to title, forum_url(forum), options
+  end
+
+  def link_to_topic(topic, options={})
+    title = options.delete(:title) || topic.title 
+    link_to title, topic_url(topic), options
+  end
+
   def link_to_post(post, options={})
-    link_to post.holder.title, paginated_post_url(post), options
+    title = options.delete(:title) || post.holder.title 
+    link_to title, paginated_post_url(post), options
   end
 
   def edit_link(post)

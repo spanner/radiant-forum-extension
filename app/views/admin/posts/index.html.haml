@@ -37,7 +37,7 @@
 
             - tbody.topic_cell do
               %td.post_topic
-                = link_to post.topic.name, forum_topic_url(post.topic.forum, post.topic), :class => 'external'
+                = link_to_topic(post.topic, :class => 'external')
 
             - tbody.modify_cell do
               %td.actions

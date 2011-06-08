@@ -4,10 +4,10 @@
   .post
     .wrapper
       .speaker
-        = standard_gravatar_for(post.reader, forum_topic_url(topic.forum, topic))
+        = standard_gravatar_for(post.reader, topic_url(topic))
       .post_header
         %h2
-          = link_to topic.name, forum_topic_url(topic.forum, topic)
+          = link_to_topic(topic)
           = feed_link(topic_path(topic, :format => :rss))
           
         %p.context

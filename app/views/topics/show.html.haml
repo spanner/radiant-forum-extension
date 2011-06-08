@@ -1,9 +1,5 @@
 = render :partial => 'forums/standard_parts'
 
-- content_for :newtopic do
-  .newmessage
-    = link_to t('new_topic_here'), new_post_url(:forum_id => @forum.id)
-
 - content_for :pagination do
   = pagination_and_summary_for(@posts, t('post'))
 
@@ -27,7 +23,8 @@
   = feed_link(topic_path(@topic, :format => :rss))
 
 - content_for :parent do
-  = link_to @topic.forum.name + ':', forum_url(@topic.forum)
+  - if @topic.forum
+    = link_to @topic.forum.name + ':', forum_url(@topic.forum)
 
 - content_for :breadhead do
   = link_to t('forum').titlecase + t('separator'), topics_url
@@ -44,10 +41,7 @@
   = yield :pagination if @posts.next_page
 
 - content_for :reply_form do
-  .new_post
-    .wrapper
-      %p.add_reply
-        = link_to t('add_reply'), new_topic_post_url(@topic), :class => 'remote autoload'
+  = render :partial => 'topics/reply'
 
 
 #forum

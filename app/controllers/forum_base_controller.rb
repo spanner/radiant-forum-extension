@@ -18,27 +18,27 @@ protected
     @forum = Forum.visible_to(current_reader).find(params[:forum_id]) unless params[:forum_id].blank?
     @page = Page.visible_to(current_reader).find(params[:page_id]) unless params[:page_id].blank?
   end
-
+  
   def redirect_to_post
     if (@post.page)
       redirect_to "#{@post.page.url}?#{WillPaginate::ViewHelpers.pagination_options[:param_name]}=#{@post.page_when_paginated}##{@post.dom_id}"
     elsif @post.first?
-      redirect_to forum_topic_path(@post.topic.forum, @post.topic)
+      redirect_to topic_path(@post.topic)
     else
       post_location = {WillPaginate::ViewHelpers.pagination_options[:param_name] => @post.page_when_paginated, :anchor => @post.dom_id}
-      redirect_to forum_topic_url(@post.topic.forum, @post.topic, post_location)
+      redirect_to topic_path(@post.topic, post_location)
     end
   end
 
   def redirect_to_topic
-    redirect_to forum_topic_path(@forum, @topic)
+    redirect_to topic_path(@topic)
   end
   
   def redirect_to_page_or_topic
     if @page
       redirect_to @page.url
     elsif @topic
-      redirect_to forum_topic_url(@topic.forum, @topic)
+      redirect_to topic_path(@topic)
     end
   end
 

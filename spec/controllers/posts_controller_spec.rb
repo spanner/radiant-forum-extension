@@ -39,7 +39,7 @@ describe PostsController do
       it "should redirect to the topic" do
         response.should be_redirect
         topic = topics(:older)
-        response.should redirect_to(forum_topic_url(topic.forum, topic))
+        response.should redirect_to(topic_path(topic))
       end
     end
 
@@ -51,7 +51,7 @@ describe PostsController do
       it "should redirect to the topic with the page and anchor of the post" do
         response.should be_redirect
         topic = topics(:older)
-        response.should redirect_to(forum_topic_url(topic.forum, topic, {:page => posts(:second).page_when_paginated, :anchor => "post_#{posts(:second).id}"}))
+        response.should redirect_to(topic_path(topic, {:page => posts(:second).page_when_paginated, :anchor => "post_#{posts(:second).id}"}))
       end
     end
   end
@@ -103,7 +103,7 @@ describe PostsController do
         it "should redirect to the topic page" do 
           response.should be_redirect
           topic = topics(:locked)
-          response.should redirect_to(forum_topic_url(topic.forum, topic))
+          response.should redirect_to(topic_path(topic))
         end
         
         it "should flash an appropriate message" do 
@@ -164,7 +164,7 @@ describe PostsController do
           it "should redirect to the topic page" do 
             response.should be_redirect
             topic = topics(:locked)
-            response.should redirect_to(forum_topic_url(topic.forum, topic))
+            response.should redirect_to(topic_path(topic))
           end
           
           it "should flash an appropriate error" do 
@@ -241,7 +241,7 @@ describe PostsController do
         it "should redirect to the right topic and page" do
           response.should be_redirect
           topic = topics(:older)
-          response.should redirect_to(forum_topic_url(topic.forum, topic, {:page => @post.page_when_paginated, :anchor => "post_#{@post.id}"}))
+          response.should redirect_to(topic_path(topic, {:page => @post.page_when_paginated, :anchor => "post_#{@post.id}"}))
         end
       end
 

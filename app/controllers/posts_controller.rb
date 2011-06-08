@@ -26,8 +26,11 @@ class PostsController < ForumBaseController
 
   def new
     unless @post.topic || @post.page
-      @forum ||= Forum.find_by_name(Radiant::Config['forum.default_forum'])
-      @post.topic = @forum.topics.new
+      if @forum ||= Forum.find_by_name(Radiant::Config['forum.default_forum'])
+        @post.topic = @forum.topics.new
+      else
+        @post.topic = Topic.new
+      end
     end
     respond_to do |format|
       format.html { expires_now }

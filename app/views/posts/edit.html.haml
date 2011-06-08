@@ -23,8 +23,7 @@
   - if @post.page
     = link_to @page.title, @page.url, :class => 'breadhead'
   - elsif @post.topic && !@post.first?
-    = link_to @post.topic.name, forum_topic_url(@topic.forum, @topic), :class => 'breadhead'
-
+    = link_to_topic(@post.topic, :class => 'breadhead')
 
 
 #forum

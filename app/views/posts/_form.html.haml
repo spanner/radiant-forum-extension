@@ -17,10 +17,13 @@
             = tf.label :sticky, t('label.topic.sticky'), :class => 'minor'
             = tf.check_box :locked
             = tf.label :locked, t('label.topic.locked'), :class => 'minor'
-      %p
-        = tf.label :forum_id, t('label.topic.forum'), :class => "required"
-        %br
-        = tf.select :forum_id, Forum.all.collect {|forum| [ forum.name, forum.id ] }, :class=> 'standard'
+
+      - if using_forums?
+        %p
+          = tf.label :forum_id, t('label.topic.forum'), :class => "required"
+          %br
+          = tf.select :forum_id, Forum.all.collect {|forum| [ forum.name, forum.id ] }, :class=> 'standard'
+
   - elsif post.topic
     = f.hidden_field :topic_id
 

@@ -38,11 +38,11 @@
                         = friendly_date(topic.replied_at) + ":"
                         - if topic.replied_by
                           = t('new_reply_to')
-                          = link_to topic.name, forum_topic_url(topic.forum, topic), {:class => 'topic'}
+                          = link_to_topic(topic, :class => 'topic')
                           = t('from_reader', :name => topic.replied_by.name)
                         - else 
                           = t('new_topic')
-                          = link_to topic.name, forum_topic_url(topic.forum, topic), {:class => 'topic'}
+                          = link_to_topic(topic, :class => 'topic')
                           = t('from_reader', :name => topic.reader.name)
                 -else
                   %p

@@ -1,12 +1,13 @@
-%h2
-  = t('forums')
-%ul
-  - Forum.all.each do |forum|
-    - if topic = forum.topics.bydate.first
-      %li
-        = link_to forum.name, forum_url(forum), :class => 'title'
-        %br
-        = forum.topics.count
-        = t('topics') + ','
-        = t('most_recently')
-        = link_to topic.name, forum_topic_url(forum, topic)
+- if using_forums?
+  %h2
+    = t('forums')
+  %ul
+    - Forum.all.each do |forum|
+      - if topic = forum.topics.bydate.first
+        %li
+          = link_to forum.name, forum_url(forum), :class => 'title'
+          %br
+          = forum.topics.count
+          = t('topics') + ','
+          = t('most_recently')
+          = link_to_topic(topic)
