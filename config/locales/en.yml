@@ -23,6 +23,7 @@ en:
     attach_file: "attach a file"
     author: "author"
     begun_on: "begun on %{date}"
+    body: "body"
     by: "by"
     by_content_and_author: "by content, author or category."
     comment: "comment"
@@ -40,6 +41,7 @@ en:
     confirm_remove_topic: "Delete topic?"
     containing: "containing the phrase"
     definitely_remove_post: "Yes: delete it"
+    description: Description
     edit_forum: "Edit forum"
     edit_minimal: "e"
     edit_post: "Edit post"

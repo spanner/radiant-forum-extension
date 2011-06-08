@@ -15,7 +15,7 @@
               = t("forum_extension.add_reply")
             %p.context
               = t('forum_extension.if_you_not', :name => current_reader.name)
-              = link_to(t('forum_extension.log_out'), reader_logout_url) + '.'
+              = link_to(t('log_out'), reader_logout_url) + '.'
           = render :partial => 'posts/form', :locals => {:post => topic.posts.build, :omit_label => true}
     - else
       = render :partial => 'reader_activations/activation_required', :locals => {:purpose => t('forum_extension.to_reply')}

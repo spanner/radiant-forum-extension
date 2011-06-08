@@ -51,11 +51,11 @@
             - tbody.modify_cell do
               %td.actions
                 - if admin?
-                  = link_to image('minus') + ' ' + t('forum_extension.remove'), remove_admin_forum_url(:id => forum) , :class => 'action'
+                  = link_to image('minus') + ' ' + t('remove'), remove_admin_forum_url(:id => forum) , :class => 'action'
                 - else
                   %span.action.disabled
                     = image('minus_disabled')
-                    = " " + t('forum_extension.remove')
+                    = " " + t('remove')
 
 - render_region :bottom do |bottom|
   - bottom.buttons do

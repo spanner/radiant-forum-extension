@@ -8,7 +8,7 @@
           = f.text_field :name, :class => 'textbox', :maxlength => 100
 
       - form.edit_body do
-        - f.fields_for :posts, @topic.first_post do |pf|
+        - f.fields_for :posts, @topic.posts.first do |pf|
           %p.body
             = pf.label :body, t('forum_extension.topic_body')
             = pf.text_area :body, :class => "textarea", :style => "width: 100%"

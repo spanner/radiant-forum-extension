@@ -35,8 +35,8 @@ class ForumExtension < Radiant::Extension
     end
 
     tab("Forum") do
-      add_item 'Categories', '/admin/forum/forums'
       add_item 'Topics', '/admin/forum/topics'
+      add_item 'Categories', '/admin/forum/forums'
       add_item 'Posts', '/admin/forum/posts'
       add_item 'Settings', '/admin/reader_configuration'
     end

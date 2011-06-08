@@ -41,7 +41,7 @@
 
             - tbody.modify_cell do
               %td.actions
-                = link_to image('minus') + ' ' + t('forum_extension.remove'), remove_admin_post_url(:id => post) , :class => 'action'
+                = link_to image('minus') + ' ' + t('remove'), remove_admin_post_url(:id => post) , :class => 'action'
 
 - render_region :bottom do |bottom|
   - bottom.buttons do

@@ -54,7 +54,7 @@ module ForumHelper
   end
 
   def remove_link(post)
-    link_to t('forum_extension.delete'), topic_post_url(post.topic, post), :method => 'delete', :class => 'delete_post', :id => "delete_post_#{post.id}", :title => t("forum_extension.remove_post"), :confirm => t('forum_extension.really_remove_post')
+    link_to t('forum_extension.delete'), topic_post_url(post.topic, post), :method => 'delete', :class => 'delete_post', :id => "delete_post_#{post.id}", :title => t("remove_post"), :confirm => t('forum_extension.really_remove_post')
   end
   
   def friendly_date(datetime)
