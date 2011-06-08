@@ -3,7 +3,7 @@
 %form.friendly{:action => posts_url, :method => :get}
   - unless minimal
     %h2
-      =t('search_header')
+      =t('forum.search_header')
 
   %p
     %label{:for => "q"}
@@ -13,19 +13,19 @@
   - unless minimal
     %p
       %label{:for => "forum_id"}
-        = t('search_form.forum_label')
+        = t('forum.search_form.forum_label')
       
       %select{:name => "forum_id"}
-        %option{:value => ""}= t('anywhere')
+        %option{:value => ""}= t('forum.anywhere')
         = options_from_collection_for_select(Forum.find(:all), "id", "name", params[:forum_id].to_i)
 
     - if Radiant::Config['forum.allow_search_by_reader?']
       %p
         %label{:for => "reader_id"}
-          = t('search_form.person_label')
+          = t('forum.search_form.person_label')
         %select{:name => "reader_id"}
           %option{:value => ""}
-            =t('anyone')
+            =t('forum.anyone')
           = options_from_collection_for_select(Reader.find(:all), "id", "name", params[:reader_id].to_i)
 
   %p.buttons

@@ -1,6 +1,6 @@
 - if using_forums?
   %h2
-    = t('forums')
+    = t('forum.forums')
   %ul
     - Forum.all.each do |forum|
       - if topic = forum.topics.bydate.first
@@ -8,6 +8,6 @@
           = link_to forum.name, forum_url(forum), :class => 'title'
           %br
           = forum.topics.count
-          = t('topics') + ','
-          = t('most_recently')
+          = t('forum.topics') + ','
+          = t('forum.most_recently')
           = link_to_topic(topic)

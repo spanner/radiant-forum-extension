@@ -3,7 +3,7 @@
 - content_for :messages do
   - if @topics.empty?
     %p 
-      = t('no_topics')
+      = t('forum.no_topics')
   - else
     = render :partial => 'topics/topic', :collection => @topics
 
@@ -13,15 +13,15 @@
   = render :partial => 'topics/busiest'
 
 - content_for :pagination do
-  = pagination_and_summary_for(@topics, t('topics'))
+  = pagination_and_summary_for(@topics, t('forum.topics'))
 
 - content_for :breadcrumbs do
-  = link_to t('forum').titlecase, topics_url
-  = t('separator')
+  = link_to t('forum.forum').titlecase, topics_url
+  = t('forum.separator')
   = yield :title
 
 - content_for :title do
-  = t('topics_heading')
+  = t('forum.topics_heading')
 
 - content_for :feedurl do
   = topics_url(:format => :rss)
@@ -31,7 +31,7 @@
 
 - content_for :introduction do
   %p
-    =t('topics_introduction')
+    =t('forum.topics_introduction')
 
 #forum
   = yield :pagination if @topics.previous_page

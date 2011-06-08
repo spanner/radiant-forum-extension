@@ -7,8 +7,8 @@
   = link_to_topic(@post.topic)
 
 - content_for :breadhead do
-  = link_to t('forum').titlecase + t('separator'), topics_url
-  = link_to @post.topic.forum.name + t('separator'), forum_url(@post.topic.forum)
+  = link_to t('forum.forum').titlecase + t('forum.separator'), topics_url
+  = link_to @post.topic.forum.name + t('forum.separator'), forum_url(@post.topic.forum)
   = yield :parent
 
 - content_for :person do
@@ -16,11 +16,11 @@
 
 - content_for :title do
   -if @post.page
-    = t('comment_on') + @post.page.title
+    = t('forum.comment_on') + @post.page.title
   - elsif @post.first?
     = @post.topic.name
   - else
-    = t('reply_to') + @post.topic.name
+    = t('forum.reply_to') + @post.topic.name
 
 - content_for :sidebar do
   = render :partial => 'topics/latest'

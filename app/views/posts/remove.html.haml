@@ -7,8 +7,8 @@
   = link_to_topic(@post.topic)
 
 - content_for :breadhead do
-  = link_to t('forum').titlecase + t('separator'), topics_url
-  = link_to @post.topic.forum.name + t('separator'), forum_url(@post.topic.forum)
+  = link_to t('forum.forum').titlecase + t('forum.separator'), topics_url
+  = link_to @post.topic.forum.name + t('forum.separator'), forum_url(@post.topic.forum)
   = yield :parent
 
 - content_for :person do
@@ -16,11 +16,11 @@
 
 - content_for :title do
   - if @post.page
-    = t('confirm_remove_comment')
+    = t('forum.confirm_remove_comment')
   - elsif @post.first?
-    = t('confirm_remove_topic')
+    = t('forum.confirm_remove_topic')
   - else
-    = t('confirm_remove_post')
+    = t('forum.confirm_remove_post')
 
   
 #forum

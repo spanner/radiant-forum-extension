@@ -1,9 +1,9 @@
 - if @searching = !@term.blank? || @reader || @forum || @topic
-  - summary = [t('topics_and_posts')]
-  - summary << t('in') + ' ' + link_to(@forum.name, forum_url(@forum)) if @forum
-  - summary << t('containing') + " <strong>#{@term}</strong>" unless @term.blank?
-  - summary << t('posted_by') + ' ' + link_to(@reader.name, reader_url(@reader)) if @reader
-  - summary << t('in_topic') + ' ' + link_to_topic(@topic) if @topic
+  - summary = [t('forum.topics_and_posts')]
+  - summary << t('forum.in') + ' ' + link_to(@forum.name, forum_url(@forum)) if @forum
+  - summary << t('forum.containing') + " <strong>#{@term}</strong>" unless @term.blank?
+  - summary << t('forum.posted_by') + ' ' + link_to(@reader.name, reader_url(@reader)) if @reader
+  - summary << t('forum.in_topic') + ' ' + link_to_topic(@topic) if @topic
 
 - feed_url_parts = {:format => :rss}
 - if @searching
@@ -15,14 +15,14 @@
 = render :partial => 'forums/standard_parts'
 
 - content_for :title do
-  = t('posts_heading')
+  = t('forum.posts_heading')
 
 - content_for :introduction do
   %p
     - if @searching
       = summary.join(' ') + ":"
     - else
-      = t('posts_introduction')
+      = t('forum.posts_introduction')
   
 - content_for :sidebar do
   - unless @searching && @posts.empty?
@@ -30,11 +30,11 @@
   = render :partial => "topics/latest"
 
 - content_for :pagination do
-  = pagination_and_summary_for(@posts, t('post'))
+  = pagination_and_summary_for(@posts, t('forum.post'))
 
 - content_for :breadcrumbs do
-  = link_to t('forum').titlecase, topics_url
-  = t('separator')
+  = link_to t('forum.forum').titlecase, topics_url
+  = t('forum.separator')
   = yield :title
 
 - content_for :feedurl do
@@ -47,11 +47,11 @@
   - if @posts.empty?
     - if @searching
       %p.has_error
-        = t('no_search_results')
+        = t('forum.no_search_results')
       = render :partial => 'posts/search_form'
     - else
       %p 
-        = t('no_posts')
+        = t('forum.no_posts')
   - else
     = yield :pagination if @posts.previous_page
     = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true, :headless => false}

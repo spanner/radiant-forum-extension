@@ -1,12 +1,12 @@
 %h2
-  = t('busy_readers')
+  = t('forum.busy_readers')
 %ul
   - Reader.most_commenting(10).each do |reader|
     %li
       = link_to reader.name, reader_url(reader), :class => 'title'
       = reader.posts.count
-      = t('posts') + ','
+      = t('forum.posts') + ','
       %br
-      = t('last_seen')
+      = t('forum.last_seen')
       = time_ago_in_words(reader.posts.first.created_at)
-      = t('ago')
+      = t('forum.ago')

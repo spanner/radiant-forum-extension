@@ -1,12 +1,12 @@
 %h2
-  = t('top_topics')
+  = t('forum.top_topics')
 %ul
   - Topic.most_commented(10).each do |topic|
     %li
       = link_to_topic(topic, :class => 'title')
       %br
-      = t('started_by')
+      = t('forum.started_by')
       = link_to(topic.reader.name, reader_url(topic.reader)) + ', '
-      = t('now_has')
+      = t('forum.now_has')
       = topic.posts.count
-      = t('posts') + '.'
+      = t('forum.posts') + '.'

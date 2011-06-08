@@ -8,7 +8,7 @@
 
 - content_for :newtopic do
   .newmessage
-    = link_to t('new_topic_here'), new_post_url(:forum_id => @forum.id)
+    = link_to t('forum.new_topic_here'), new_post_url(:forum_id => @forum.id)
 
 - content_for :sidebar do
   = render :partial => 'posts/search_form'
@@ -24,18 +24,18 @@
   = feed_link(forum_path(@forum, :format => :rss))
 
 - content_for :breadhead do
-  = link_to t('forum').titlecase + t('separator'), topics_url
-  = link_to t('forums'), forums_url
+  = link_to t('forum.forum').titlecase + t('forum.separator'), topics_url
+  = link_to t('forum.forums'), forums_url
 
 - content_for :breadcrumbs do
   = yield :breadhead
-  = t('separator')
+  = t('forum.separator')
   = yield :title
 
 - content_for :messages do
   - if @topics.empty?
     %p 
-      = t('no_topics')
+      = t('forum.no_topics')
   - else
     = yield :pagination if @topics.previous_page
     = render :partial => 'topics/topic', :collection => @topics, :locals => { :with_context => false }

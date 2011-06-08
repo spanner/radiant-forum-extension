@@ -2,7 +2,7 @@
 
 - if topic.locked?
   %p.administrative
-    = t("topic_locked")
+    = t("forum.topic_locked")
 - else
   - if current_reader
     - if current_reader.activated?
@@ -12,12 +12,12 @@
             .speaker
               = standard_gravatar_for(current_reader)
             %h2.person
-              = t("add_reply")
+              = t("forum.add_reply")
             %p.context
-              = t('if_you_not', :name => current_reader.name)
-              = link_to(t('log_out'), reader_logout_url) + '.'
+              = t('forum.if_you_not', :name => current_reader.name)
+              = link_to(t('forum.log_out'), reader_logout_url) + '.'
           = render :partial => 'posts/form', :locals => {:post => topic.posts.build, :omit_label => true}
     - else
-      = render :partial => 'reader_activations/activation_required', :locals => {:purpose => t('to_reply')}
+      = render :partial => 'reader_activations/activation_required', :locals => {:purpose => t('forum.to_reply')}
   - else
-    = render :partial => 'reader_sessions/login_form', :locals => {:purpose => t('to_reply')}
+    = render :partial => 'reader_sessions/login_form', :locals => {:purpose => t('forum.to_reply')}

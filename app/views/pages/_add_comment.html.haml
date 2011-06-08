@@ -9,15 +9,15 @@
             .speaker
               = standard_gravatar_for(current_reader)
             %h2.person
-              = t("add_comment")
+              = t("forum.add_comment")
             %p.context
-              = t('if_you_not', :name => current_reader.name)
-              = link_to(t('log_out'), reader_logout_url) + '.'
+              = t('forum.if_you_not', :name => current_reader.name)
+              = link_to(t('forum.log_out'), reader_logout_url) + '.'
           = render :partial => 'posts/form', :locals => {:post => page.posts.build, :omit_label => true}
     - else
-      = render :partial => 'reader_activations/activation_required', :locals => {:purpose => t('to_reply')}
+      = render :partial => 'reader_activations/activation_required', :locals => {:purpose => t('forum.to_reply')}
   - else
-    = render :partial => 'reader_sessions/login_form', :locals => {:purpose => t('to_reply')}
+    = render :partial => 'reader_sessions/login_form', :locals => {:purpose => t('forum.to_reply')}
 - else
   %p.administrative
-    = t("page_locked")
+    = t("forum.page_locked")

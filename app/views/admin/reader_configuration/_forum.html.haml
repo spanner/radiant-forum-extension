@@ -1,8 +1,8 @@
 #forum_settings.box
   %h3
     .actions
-      = button_to t("edit"), edit_admin_reader_configuration_url, :method => :get
-    =t("forum_configuration")
+      = button_to t("forum.edit"), edit_admin_reader_configuration_url, :method => :get
+    =t("forum.forum_configuration")
   %p.ruled
     = show_config 'forum.public?'
   %p.ruled

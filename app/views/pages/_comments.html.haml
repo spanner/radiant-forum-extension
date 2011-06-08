@@ -3,11 +3,11 @@
 
 #forum
   %h2
-    = t('comments_on')
+    = t('forum.comments_on')
     = page.title
 
 - if posts.empty?
   %p 
-    = t('none_yet')
+    = t('forum.none_yet')
 - else
   = render :partial => 'posts/post', :collection => posts

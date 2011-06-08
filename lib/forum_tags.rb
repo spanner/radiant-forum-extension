@@ -126,10 +126,10 @@ module ForumTags
     output = []
     topic = tag.locals.topic
     if tag.locals.topic.has_replies?
-      output << I18n.t('reply_from')
+      output << I18n.t('forum.reply_from')
       output << %{<a href="#{reader_path(tag.locals.topic.replied_by)}">#{tag.locals.topic.replied_by.name}</a>}
     else
-      output << I18n.t('started_by')
+      output << I18n.t('forum.started_by')
       output << %{<a href="#{reader_path(tag.locals.topic.reader)}">#{tag.render('forum:topic:author')}</a>}
     end
     output.join(' ')
@@ -250,11 +250,11 @@ module ForumTags
     output = []
     post = tag.locals.post
     if post.page
-      output << I18n.t('new_comment_from')
+      output << I18n.t('forum.new_comment_from')
     elsif post.first?
-      output << I18n.t('new_reply_from')
+      output << I18n.t('forum.new_reply_from')
     else
-      output << I18n.t('new_topic_from')
+      output << I18n.t('forum.new_topic_from')
     end
     output << %{<a href="#{reader_path(tag.locals.post.reader)}">#{tag.render('forum:post:author')}</a>}
     output << tag.render('forum:post:date')
@@ -284,10 +284,10 @@ module ForumTags
     options = tag.attr.dup
     if tag.locals.page.still_commentable?
       attributes = options.inject('') { |s, (k, v)| s << %{#{k.to_s.downcase}="#{v}" } }.strip
-      text = tag.double? ? tag.expand : I18n.t("add_comment")
+      text = tag.double? ? tag.expand : I18n.t("forum.add_comment")
       %{<a href="#{tag.render('comment_url')}" #{attributes}>#{text}</a>}
     else
-      I18n.t("comments_closed")
+      I18n.t("forum.comments_closed")
     end
   end
 
@@ -317,9 +317,9 @@ module ForumTags
   }
   tag 'comments:summary' do |tag|
     if tag.locals.posts.respond_to? :total_entries
-      I18n.t("comment_count", :count =>  tag.locals.posts.total_entries)
+      I18n.t("forum.comment_count", :count =>  tag.locals.posts.total_entries)
     else
-      I18n.t("comment_count", :count =>  tag.locals.posts.length)
+      I18n.t("forum.comment_count", :count =>  tag.locals.posts.length)
     end
   end
 

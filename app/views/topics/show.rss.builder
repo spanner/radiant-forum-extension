@@ -5,7 +5,7 @@ xml.channel do
   }
 
   xml.title "#{@site_title} : #{@topic.name}"
-  xml.description "#{@posts.length} #{t('posts')}, #{t('most_recently')} #{t('from_reader', :name => @posts.last.reader.name)} #{t('on_date', :date => friendly_date(@posts.last.created_at))}"
+  xml.description "#{@posts.length} #{t('forum.posts')}, #{t('forum.most_recently')} #{t('forum.from_reader', :name => @posts.last.reader.name)} #{t('forum.on_date', :date => friendly_date(@posts.last.created_at))}"
   xml.link topic_url(@topic)
   xml.language I18n.locale.to_s
   xml.ttl "60"

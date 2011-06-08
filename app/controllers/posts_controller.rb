@@ -52,7 +52,7 @@ class PostsController < ForumBaseController
       format.js { render :partial => 'post' }
     end
   rescue ActiveRecord::RecordInvalid
-    flash[:error] = t("validation_failure")
+    flash[:error] = t("forum.validation_failure")
     respond_to do |format|
       format.html { render :action => 'new' }
       format.js { render :template => 'posts/new', :layout => false }
@@ -75,7 +75,7 @@ class PostsController < ForumBaseController
       format.js { render :partial => 'post' }
     end
   rescue ActiveRecord::RecordInvalid
-    flash[:error] = t("validation_failure")
+    flash[:error] = t("forum.validation_failure")
     respond_to do |format|
       format.html { render :action => 'edit' }
       format.js { render :template => 'posts/edit', :layout => false }
@@ -92,13 +92,13 @@ class PostsController < ForumBaseController
   def destroy
     if @post.first?
       @post.topic.destroy
-      flash[:notice] = t("topic_removed")
+      flash[:notice] = t("forum.topic_removed")
       redirect_to_forum
     else
       @post.destroy
       respond_to do |format|
         format.html { 
-          flash[:notice] = t("post_removed")
+          flash[:notice] = t("forum.post_removed")
           redirect_to_page_or_topic 
         }
         format.js { render :partial => 'post' }

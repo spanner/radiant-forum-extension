@@ -1,5 +1,5 @@
 %h2
-  = t('recent_topics')
+  = t('forum.recent_topics')
 %ul
   - Topic.latest(5).each do |topic|
     = render :partial => 'topics/minimal', :locals => {:topic => topic}

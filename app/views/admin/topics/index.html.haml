@@ -8,15 +8,15 @@
         - render_region :thead do |thead|
           - thead.title_header do
             %th.topic 
-              = t('topic')
+              = t('forum.topic')
           - thead.date_header do
             %th.date 
           - thead.author_header do
             %th.author 
-              = t('author')
+              = t('forum.author')
           - thead.body_header do
             %th.body
-              = t('body')
+              = t('forum.body')
           - thead.modify_header do
             %th.action
     %tbody
@@ -41,7 +41,7 @@
 
             - tbody.modify_cell do
               %td.actions
-                = link_to image('minus') + ' ' + t('remove'), remove_admin_topic_url(:id => topic) , :class => 'action'
+                = link_to image('minus') + ' ' + t('forum.remove'), remove_admin_topic_url(:id => topic) , :class => 'action'
 
 - render_region :bottom do |bottom|
   - bottom.buttons do

@@ -4,13 +4,13 @@
     - render_region :form do |form|
       - form.edit_name do
         %p.title
-          = f.label :name, t('topic_name')
+          = f.label :name, t('forum.topic_name')
           = f.text_field :name, :class => 'textbox', :maxlength => 100
 
       - form.edit_body do
         - f.fields_for :posts, @topic.first_post do |pf|
           %p.body
-            = pf.label :body, t('topic_body')
+            = pf.label :body, t('forum.topic_body')
             = pf.text_area :body, :class => "textarea", :style => "width: 100%"
   
   - render_region :form_bottom do |form_bottom|
