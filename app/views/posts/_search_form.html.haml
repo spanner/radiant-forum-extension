@@ -7,7 +7,7 @@
 
   %p
     %label{:for => "q"}
-      = t(minimal ? 'search_form.minimal_query_label' : 'search_form.query_label')
+      = t(minimal ? 'forum.search_form.minimal_query_label' : 'forum.search_form.query_label')
     = text_field_tag "q", params[:q]
 
   - unless minimal

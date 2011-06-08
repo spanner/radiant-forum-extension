@@ -38,6 +38,6 @@
   %p.buttons
     = f.submit t('forum.save_post')
     - unless post.new_record?
-      = t('forum.or')
-      = link_to t("forum.cancel"), paginated_post_url(post), :class => 'cancel'
+      = t('or')
+      = link_to t("cancel"), paginated_post_url(post), :class => 'cancel'
 
