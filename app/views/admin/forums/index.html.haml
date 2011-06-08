@@ -8,13 +8,13 @@
         - render_region :thead do |thead|
           - thead.title_header do
             %th.forum 
-              =t('forum.forum').titlecase
+              =t('forum_extension.forum').titlecase
           - thead.description_header do
             %th.description
-              =t('forum.description').titlecase
+              =t('forum_extension.description').titlecase
           - thead.latest_header do
             %th.forum_latest 
-              =t('forum.latest_activity').titlecase
+              =t('forum_extension.latest_activity').titlecase
           - thead.modify_header do
             %th.action
     %tbody
@@ -37,29 +37,29 @@
                       %li.topic
                         = friendly_date(topic.replied_at) + ":"
                         - if topic.replied_by
-                          = t('forum.new_reply_to')
+                          = t('forum_extension.new_reply_to')
                           = link_to_topic(topic, :class => 'topic')
-                          = t('forum.from_reader', :name => topic.replied_by.name)
+                          = t('forum_extension.from_reader', :name => topic.replied_by.name)
                         - else 
-                          = t('forum.new_topic')
+                          = t('forum_extension.new_topic')
                           = link_to_topic(topic, :class => 'topic')
-                          = t('forum.from_reader', :name => topic.reader.name)
+                          = t('forum_extension.from_reader', :name => topic.reader.name)
                 -else
                   %p
-                    = t('forum.no_topics')
+                    = t('forum_extension.no_topics')
 
             - tbody.modify_cell do
               %td.actions
                 - if admin?
-                  = link_to image('minus') + ' ' + t('forum.remove'), remove_admin_forum_url(:id => forum) , :class => 'action'
+                  = link_to image('minus') + ' ' + t('forum_extension.remove'), remove_admin_forum_url(:id => forum) , :class => 'action'
                 - else
                   %span.action.disabled
                     = image('minus_disabled')
-                    = " " + t('forum.remove')
+                    = " " + t('forum_extension.remove')
 
 - render_region :bottom do |bottom|
   - bottom.buttons do
     #actions
       = pagination_for @forums
       %ul
-        %li= link_to image('plus') + " " + t("forum.new_forum"), new_admin_forum_url
+        %li= link_to image('plus') + " " + t("forum_extension.new_forum"), new_admin_forum_url

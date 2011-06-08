@@ -6,12 +6,12 @@
       - form.show_name do
         %p.title
           %label
-            = t('forum.topic_name') + ":"
+            = t('forum_extension.topic_name') + ":"
           = @post.topic.name
 
       - form.edit_body do
         %p.content
-          = f.label :body, t('forum.post_body')
+          = f.label :body, t('forum_extension.post_body')
           = f.text_area :body, :class => "textarea", :style => "width: 100%"
   
   - render_region :form_bottom do |form_bottom|

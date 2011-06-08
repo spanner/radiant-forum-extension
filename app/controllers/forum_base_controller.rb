@@ -72,7 +72,7 @@ protected
     respond_to do |format|
       format.html { 
         expires_now
-        flash[:error] = t('forum.topic_locked')
+        flash[:error] = t('forum_extension.topic_locked')
         redirect_to_page_or_topic 
       }
       format.js { render :partial => 'topics/locked' }

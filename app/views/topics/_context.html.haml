@@ -1,12 +1,12 @@
 - topic ||= @topic
 - post = topic.posts.first
 
-= t('forum.new_topic_started')
-= t('forum.on_date', :date => friendly_date(post.created_at))
+= t('forum_extension.new_topic_started')
+= t('forum_extension.on_date', :date => friendly_date(post.created_at))
 - if topic.reader
-  = t('forum.by')
+  = t('forum_extension.by')
   = link_to post.reader.name, reader_url(post.reader), :class => 'person'
 - if topic.forum
-  = t('forum.under')
+  = t('forum_extension.under')
   = link_to(topic.forum.name, forum_url(topic.forum), :class => 'forum')
 

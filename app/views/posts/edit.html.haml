@@ -13,11 +13,11 @@
 
 - content_for :title do
   - if @post.page
-    = t('forum.edit_comment')
+    = t('forum_extension.edit_comment')
   - elsif @post.first? 
-    = t('forum.edit_topic')
+    = t('forum_extension.edit_topic')
   - else
-    = t('forum.edit_reply')
+    = t('forum_extension.edit_reply')
 
 - content_for :breadhead do
   - if @post.page

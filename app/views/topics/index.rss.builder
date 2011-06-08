@@ -4,8 +4,8 @@ xml.channel do
     :rel => 'self', :type => 'application/rss+xml'
   }
 
-  xml.title "#{@site_title} : #{t('forum.latest_topics')}"
-  xml.description t("forum.latest_topics_description")
+  xml.title "#{@site_title} : #{t('forum_extension.latest_topics')}"
+  xml.description t("forum_extension.latest_topics_description")
   xml.link topics_url
   xml.language I18n.locale.to_s
   xml.ttl "60"

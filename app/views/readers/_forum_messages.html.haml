@@ -3,13 +3,13 @@
 
 #forum
   %h2
-    =t('forum.forum_messages', :name => reader.name)
+    =t('forum_extension.forum_messages', :name => reader.name)
 
   - if posts.empty?
     %p 
-      = t('forum.no_posts')
+      = t('forum_extension.no_posts')
   - else
-    = pagination_and_summary_for(posts, t('forum.post')) if posts.previous_page
+    = pagination_and_summary_for(posts, t('forum_extension.post')) if posts.previous_page
     - posts.each do |post|
       - if post.comment?
         = render :partial => 'posts/post', :object => post, :locals => {:with_context => true}
@@ -17,4 +17,4 @@
         = render :partial => 'topics/topic', :object => post.topic
       - else
         = render :partial => 'posts/post', :object => post, :locals => {:with_context => true}
-    = pagination_and_summary_for(posts, t('forum.post')) if posts.next_page
+    = pagination_and_summary_for(posts, t('forum_extension.post')) if posts.next_page

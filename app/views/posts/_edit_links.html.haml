@@ -2,8 +2,8 @@
 - unless post.frozen?
   - if post.editable_by?(current_reader)
     - if post.editable_interval
-      = t('forum.time_remaining_to_edit', :time => distance_of_time_in_words(post.still_editable_for))
-    = link_to t('forum.edit_your_post'), edit_topic_post_url(post.topic, post), :class => 'remote', :id => "revise_post_#{post.id}"
+      = t('forum_extension.time_remaining_to_edit', :time => distance_of_time_in_words(post.still_editable_for))
+    = link_to t('forum_extension.edit_your_post'), edit_topic_post_url(post.topic, post), :class => 'remote', :id => "revise_post_#{post.id}"
   - elsif admin?
-    = link_to t("forum.edit_minimal"), edit_topic_post_url(post.topic, post), :class => 'edit_post remote', :id => "revise_post_#{post.id}", :title => "edit post"
-    = link_to t("forum.remove_minimal"), remove_post_url(post), :class => 'delete_post remote', :id => "delete_post_#{post.id}", :title => "remove post"
+    = link_to t("forum_extension.edit_minimal"), edit_topic_post_url(post.topic, post), :class => 'edit_post remote', :id => "revise_post_#{post.id}", :title => "edit post"
+    = link_to t("forum_extension.remove_minimal"), remove_post_url(post), :class => 'delete_post remote', :id => "delete_post_#{post.id}", :title => "remove post"

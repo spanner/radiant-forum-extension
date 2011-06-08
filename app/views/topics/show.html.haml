@@ -1,7 +1,7 @@
 = render :partial => 'forums/standard_parts'
 
 - content_for :pagination do
-  = pagination_and_summary_for(@posts, t('forum.post'))
+  = pagination_and_summary_for(@posts, t('forum_extension.post'))
 
 - content_for :title do
   = @topic.name
@@ -27,12 +27,12 @@
     = link_to @topic.forum.name + ':', forum_url(@topic.forum)
 
 - content_for :breadhead do
-  = link_to t('forum.forum').titlecase + t('forum.separator'), topics_url
+  = link_to t('forum_extension.forum').titlecase + t('forum_extension.separator'), topics_url
   = yield :parent
 
 - content_for :breadcrumbs do
   = yield :breadhead
-  = t('forum.separator')
+  = t('forum_extension.separator')
   = yield :title
 
 - content_for :messages do

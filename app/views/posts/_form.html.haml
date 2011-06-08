@@ -7,20 +7,20 @@
   - elsif post.first?
     - f.fields_for :topic do |tf|
       %p
-        = tf.label :name, t('forum.label.topic.name'), :class => 'required'
+        = tf.label :name, t('forum_extension.label.topic.name'), :class => 'required'
         %br
         = tf.text_field :name, :class => 'titular'
         - if admin?
           %br
           %span.quiet
             = tf.check_box :sticky
-            = tf.label :sticky, t('forum.label.topic.sticky'), :class => 'minor'
+            = tf.label :sticky, t('forum_extension.label.topic.sticky'), :class => 'minor'
             = tf.check_box :locked
-            = tf.label :locked, t('forum.label.topic.locked'), :class => 'minor'
+            = tf.label :locked, t('forum_extension.label.topic.locked'), :class => 'minor'
 
       - if using_forums?
         %p
-          = tf.label :forum_id, t('forum.label.topic.forum'), :class => "required"
+          = tf.label :forum_id, t('forum_extension.label.topic.forum'), :class => "required"
           %br
           = tf.select :forum_id, Forum.all.collect {|forum| [ forum.name, forum.id ] }, :class=> 'standard'
 
@@ -29,14 +29,14 @@
 
   %p
     - unless omit_label
-      = f.label :body, t('forum.label.post.body'), :class => 'required'
+      = f.label :body, t('forum_extension.label.post.body'), :class => 'required'
       %br
     = f.text_area :body, :rows => 12, :class => Radiant::Config['forum.toolbar?'] ? 'toolbarred' : ''
 
   = render :partial => 'posts/uploader', :locals => {:post => post, :f => f}
 
   %p.buttons
-    = f.submit t('forum.save_post')
+    = f.submit t('forum_extension.save_post')
     - unless post.new_record?
       = t('or')
       = link_to t("cancel"), paginated_post_url(post), :class => 'cancel'

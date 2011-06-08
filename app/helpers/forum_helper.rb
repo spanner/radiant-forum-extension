@@ -10,7 +10,7 @@ module ForumHelper
   end
   
   def feed_link(url)
-    link_to image_tag('/images/furniture/feed_14.png', :alt => t('forum.rss_feed')), url, :class => "rssfeed"
+    link_to image_tag('/images/furniture/feed_14.png', :alt => t('forum_extension.rss_feed')), url, :class => "rssfeed"
   end
 
   def clean_textilize(text) # adding smilies to the default reader method
@@ -50,11 +50,11 @@ module ForumHelper
   end
 
   def edit_link(post)
-    link_to t('forum.edit'), edit_topic_post_url(post.topic, post), :class => 'edit_post', :id => "edit_post_#{post.id}", :title => t("forum.edit_post")
+    link_to t('forum_extension.edit'), edit_topic_post_url(post.topic, post), :class => 'edit_post', :id => "edit_post_#{post.id}", :title => t("forum_extension.edit_post")
   end
 
   def remove_link(post)
-    link_to t('forum.delete'), topic_post_url(post.topic, post), :method => 'delete', :class => 'delete_post', :id => "delete_post_#{post.id}", :title => t("forum.remove_post"), :confirm => t('forum.really_remove_post')
+    link_to t('forum_extension.delete'), topic_post_url(post.topic, post), :method => 'delete', :class => 'delete_post', :id => "delete_post_#{post.id}", :title => t("forum_extension.remove_post"), :confirm => t('forum_extension.really_remove_post')
   end
   
   def friendly_date(datetime)

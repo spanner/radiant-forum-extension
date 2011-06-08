@@ -7,15 +7,15 @@ xml.channel do
   }
 
   if @searching
-    summary = [t('forum.topics_and_posts')]
-    summary << t('forum.matching') + " '#{@term}'" unless @term.blank?
-    summary << t('forum.posted_by') + " #{@reader.name}" if @reader
-    summary << t('forum.in_forum') + " #{@forum.name}" if @forum
+    summary = [t('forum_extension.topics_and_posts')]
+    summary << t('forum_extension.matching') + " '#{@term}'" unless @term.blank?
+    summary << t('forum_extension.posted_by') + " #{@reader.name}" if @reader
+    summary << t('forum_extension.in_forum') + " #{@forum.name}" if @forum
     xml.title Radiant::Config['site.name'] + ': ' + summary.join(' ')
     xml.description summary.join(' ')
   else
-    xml.title Radiant::Config['site.name'] + ': ' + t('forum.latest_posts')
-    xml.description t('forum.latest_posts_description')
+    xml.title Radiant::Config['site.name'] + ': ' + t('forum_extension.latest_posts')
+    xml.description t('forum_extension.latest_posts_description')
   end
   
   url_parts = {}

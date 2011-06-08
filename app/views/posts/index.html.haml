@@ -1,9 +1,9 @@
 - if @searching = !@term.blank? || @reader || @forum || @topic
-  - summary = [t('forum.topics_and_posts')]
-  - summary << t('forum.in') + ' ' + link_to(@forum.name, forum_url(@forum)) if @forum
-  - summary << t('forum.containing') + " <strong>#{@term}</strong>" unless @term.blank?
-  - summary << t('forum.posted_by') + ' ' + link_to(@reader.name, reader_url(@reader)) if @reader
-  - summary << t('forum.in_topic') + ' ' + link_to_topic(@topic) if @topic
+  - summary = [t('forum_extension.topics_and_posts')]
+  - summary << t('forum_extension.in') + ' ' + link_to(@forum.name, forum_url(@forum)) if @forum
+  - summary << t('forum_extension.containing') + " <strong>#{@term}</strong>" unless @term.blank?
+  - summary << t('forum_extension.posted_by') + ' ' + link_to(@reader.name, reader_url(@reader)) if @reader
+  - summary << t('forum_extension.in_topic') + ' ' + link_to_topic(@topic) if @topic
 
 - feed_url_parts = {:format => :rss}
 - if @searching
@@ -15,14 +15,14 @@
 = render :partial => 'forums/standard_parts'
 
 - content_for :title do
-  = t('forum.posts_heading')
+  = t('forum_extension.posts_heading')
 
 - content_for :introduction do
   %p
     - if @searching
       = summary.join(' ') + ":"
     - else
-      = t('forum.posts_introduction')
+      = t('forum_extension.posts_introduction')
   
 - content_for :sidebar do
   - unless @searching && @posts.empty?
@@ -30,11 +30,11 @@
   = render :partial => "topics/latest"
 
 - content_for :pagination do
-  = pagination_and_summary_for(@posts, t('forum.post'))
+  = pagination_and_summary_for(@posts, t('forum_extension.post'))
 
 - content_for :breadcrumbs do
-  = link_to t('forum.forum').titlecase, topics_url
-  = t('forum.separator')
+  = link_to t('forum_extension.forum').titlecase, topics_url
+  = t('forum_extension.separator')
   = yield :title
 
 - content_for :feedurl do
@@ -47,11 +47,11 @@
   - if @posts.empty?
     - if @searching
       %p.has_error
-        = t('forum.no_search_results')
+        = t('forum_extension.no_search_results')
       = render :partial => 'posts/search_form'
     - else
       %p 
-        = t('forum.no_posts')
+        = t('forum_extension.no_posts')
   - else
     = yield :pagination if @posts.previous_page
     = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true, :headless => false}

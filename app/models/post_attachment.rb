@@ -40,7 +40,7 @@ class PostAttachment < ActiveRecord::Base
     :path => ":rails_root/:class/:id/:basename:no_original_style.:extension"      # attachments can only be accessed through the PostAttachments controller, in case file security is required
 
   attr_protected :file_file_name, :file_content_type, :file_file_size
-  validates_attachment_presence :file, :message => t('forum.error.no_file')
+  validates_attachment_presence :file, :message => t('forum_extension.error.no_file')
   validates_attachment_content_type :file, :content_type => Radiant::Config["forum.attachment.content_types"].split(', ') if Radiant::Config.table_exists? && !Radiant::Config["forum.attachment.content_types"].blank?
   validates_attachment_size :file, :less_than => Radiant::Config["forum.attachment.max_size"].to_i.megabytes if Radiant::Config.table_exists? && Radiant::Config["forum.attachment.max_size"]
 

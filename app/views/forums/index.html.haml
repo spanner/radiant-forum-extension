@@ -1,11 +1,11 @@
 = render :partial => 'forums/standard_parts'
 
 - content_for :title do
-  = t('forum.forums_heading')
+  = t('forum_extension.forums_heading')
 
 - content_for :introduction do
   %p
-    = t('forum.forums_introduction')
+    = t('forum_extension.forums_introduction')
 
 - content_for :sidebar do
   = render :partial => 'posts/search_form', :locals => {:minimal => true}
@@ -15,14 +15,14 @@
 - content_for :messages do
   - if @forums.empty?
     %p 
-      = t('forum.no_forums')
+      = t('forum_extension.no_forums')
   - else
     = yield :pagination if @forums.previous_page
     = render :partial => 'forums/forum', :collection => @forums
     = yield :pagination if @forums.next_page
 
 - content_for :pagination do
-  = pagination_and_summary_for(@forums, t('forum.forum'))
+  = pagination_and_summary_for(@forums, t('forum_extension.forum'))
 
 - content_for :feedurl do
   = forums_path(:format => :rss)
@@ -31,8 +31,8 @@
   = feed_link(forums_path(:format => :rss))
 
 - content_for :breadcrumbs do
-  = link_to t('forum.forum').titlecase, topics_url
-  = t('forum.separator')
+  = link_to t('forum_extension.forum').titlecase, topics_url
+  = t('forum_extension.separator')
   = yield :title
 
 

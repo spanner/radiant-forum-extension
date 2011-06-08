@@ -10,7 +10,7 @@ en:
       editable_period: "Posts editable for"
       layout: "Forum layout"
       public?: "Forum public?"
-  forum:
+  forum_extension:
     a_reply_to: "A reply to"
     add_post: "Add a %{message_type}"
     add_comment: "Add a comment"

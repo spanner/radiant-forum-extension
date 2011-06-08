@@ -22,14 +22,14 @@
   = yield :toolbar_js
 
 - content_for :section_navigation do
-  = link_to t('forum.navigation.forum'), topics_url, :class => 'section'
+  = link_to t('forum_extension.navigation.forum'), topics_url, :class => 'section'
   - if using_forums?
-    = link_to t('forum.navigation.forums'), forums_url
-  = link_to t('forum.navigation.search'), posts_url
+    = link_to t('forum_extension.navigation.forums'), forums_url
+  = link_to t('forum_extension.navigation.search'), posts_url
   - if current_reader
-    = link_to t('forum.navigation.new_topic'), new_post_url
+    = link_to t('forum_extension.navigation.new_topic'), new_post_url
   - if Radiant::Config['forum.help_url']
-    = link_to t('forum.navigation.forum_help'), Radiant::Config['forum.help_url']
+    = link_to t('forum_extension.navigation.forum_help'), Radiant::Config['forum.help_url']
 
 - content_for :controls do
   = render :partial => 'readers/controls'
@@ -55,7 +55,7 @@
 - content_for :newtopic do
   .newmessage
     - if using_forums? && @forum
-      = link_to t('forum.new_topic_here'), new_post_url(:forum_id => @forum.id)
+      = link_to t('forum_extension.new_topic_here'), new_post_url(:forum_id => @forum.id)
     - else
-      = link_to t('forum.new_topic'), new_post_url()
+      = link_to t('forum_extension.new_topic'), new_post_url()
 

@@ -2,15 +2,15 @@
 
 - if post
   - if post.comment?
-    = t('forum.comment_on')
+    = t('forum_extension.comment_on')
     = link_to post.page.title, post.page.url
-    = t('forum.posted')
+    = t('forum_extension.posted')
   - elsif post.first?
-    = t('forum.new_topic_started')
+    = t('forum_extension.new_topic_started')
   - else
-    = t('forum.reply_posted')
+    = t('forum_extension.reply_posted')
   - if post.reader
-    = t('forum.by')
+    = t('forum_extension.by')
     = link_to post.reader.name, reader_url(post.reader)
 - else
   No post!
