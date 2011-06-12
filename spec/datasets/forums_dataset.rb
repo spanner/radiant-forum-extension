@@ -1,48 +1,57 @@
 class ForumsDataset < Dataset::Base
-  uses :forum_readers, :home_page, :users
+  uses :readers
   
   def load  
     create_layout "Forum"
 
     create_forum "Public" do
+      create_topic "sticky", :reader => readers(:normal), :replied_at => 3.days.ago, :sticky => true
       create_topic "older", :reader => readers(:normal), :replied_at => 2.days.ago do
-        add_post "First", :created_at => 2.days.ago, :body => 'original topic message'
-        add_post "Second", :created_at => 1.day.ago, :body => 'first reply to public topic'
+        create_post "First", :created_at => 2.days.ago, :body => 'original topic message'
+        create_post "Second", :created_at => 1.day.ago, :body => 'first reply to public topic'
       end
       create_topic "newer", :reader => readers(:normal), :replied_at => 1.day.ago
     end
       
-    create_forum "Private" do
-      create_topic "sticky", :reader => readers(:normal), :replied_at => 3.days.ago, :sticky => true
+    create_forum "Other" do
       create_topic "locked", :reader => readers(:normal), :locked => true, :replied_at => 1.year.ago
-      create_topic "private", :reader => readers(:normal), :replied_at => 1.day.ago do
-        add_post "Third", :created_at => 4.hours.ago, :body => 'Reply to private topic'
+      create_topic "another", :reader => readers(:normal), :replied_at => 1.day.ago do
+        create_post "Third", :created_at => 4.hours.ago, :body => 'Reply to another topic'
       end
     end
     
     create_forum "Misc" do
-      create_topic "empty", :reader => readers(:notable)
+      create_topic "empty", :reader => readers(:another)
+      create_topic "busy", :reader => readers(:another) do
+        60.times do |i|
+          create_post "test_#{i}", :body => "test #{i}", :reader => readers(:normal), :created_at => (100-i).minutes.ago
+        end
+        create_post "nearly", :body => "test by visible", :reader => readers(:visible)
+        create_post "finally", :body => "test by another", :reader => readers(:another)
+      end
+    end
+    
+    create_forum "Grouped" do
+      create_topic "grouped", :reader => readers(:another)
     end
     
     create_page "Commentable", :commentable => true, :comments_closed => false, :created_by => users(:admin) do
-      add_post "Comment", :created_at => 2.days.ago, :body => 'first comment on page'
-      add_post "Recomment", :created_at => 1.day.ago, :body => 'second comment on page'
+      create_post "Comment", :created_at => 2.days.ago, :body => 'first comment on page'
+      create_post "Recomment", :created_at => 1.day.ago, :body => 'second comment on page'
     end
 
     create_page "Uncommented", :commentable => true, :comments_closed => false, :created_by => users(:admin)
     create_page "Uncommentable", :commentable => false, :comments_closed => false, :created_by => users(:admin)
     create_page "Comments closed", :commentable => true, :comments_closed => true, :created_by => users(:admin)
+
+    
+    restrict_to_group :special, [forums(:grouped)]
   end
   
   helpers do
-    def create_layout(name, attributes={})
-      create_model :layout, name.symbolize, attributes.update(:name => name)
-    end
-
     def create_forum(name, attributes={})
-      attributes = forum_attributes(attributes.update(:name => name))
       symbol = name.symbolize
-      create_model :forum, symbol, attributes
+      create_model :forum, symbol, default_forum_attributes(name).merge(attributes)
       if block_given?
         @forum_id = forum_id(symbol)
         yield
@@ -51,20 +60,18 @@ class ForumsDataset < Dataset::Base
     end
     
     def create_topic(name, attributes={})
-      attributes = topic_attributes(attributes.update(:name => name))
       symbol = name.symbolize
       reader = attributes.delete(:reader)
-      create_model :topic, symbol, attributes
+      create_model :topic, symbol, default_topic_attributes(name).merge(attributes)
       @topic_id = topic_id(symbol)
-      add_post("#{name}_first_post", :reader => reader)
+      create_post("#{name}_first_post", :reader => reader)
       yield if block_given?
       @topic_id = nil
     end
   
-    def add_post(name, attributes={})
-      attributes = post_attributes(attributes)
+    def create_post(name, attributes={})
       symbol = name.symbolize
-      create_model :post, symbol, attributes
+      create_model :post, name.symbolize, default_post_attributes.merge(attributes)
       if block_given?
         @post_id = post_id(symbol)
         yield
@@ -72,37 +79,28 @@ class ForumsDataset < Dataset::Base
       end
     end
  
-    def forum_attributes(attributes={})
-      name = attributes[:name] || "Forum"
-      symbol = name.symbolize
-      attributes = { 
+    def default_forum_attributes(name="Forum")
+      { 
         :name => name,
         :created_at => Time.now
-      }.merge(attributes)
-      attributes[:site_id] = site_id(:test) if Forum.reflect_on_association(:site)
-      attributes
+      }
     end
 
-    def topic_attributes(attributes={})
-      name = attributes[:name] || "A topic"
-      att = {
+    def default_topic_attributes(name="A topic")
+      {
         :name => name,
         :forum_id => @forum_id
-      }.merge(attributes)
-      attributes[:site_id] ||= site_id(:test) if Topic.reflect_on_association(:site)
-      att
+      }
     end
   
-    def post_attributes(attributes={})
-      att = {
+    def default_post_attributes
+      {
         :body => "Message body",
         :reader => readers(:normal),
         :created_at => 1.day.ago,
         :topic_id => @topic_id,
         :page_id => @current_page_id
-      }.merge(attributes)
-      att[:site_id] ||= site_id(:test) if Post.reflect_on_association(:site)
-      att
+      }
     end
   end
   

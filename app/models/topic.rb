@@ -14,18 +14,34 @@ class Topic < ActiveRecord::Base
   named_scope :latest, lambda { |count|
     { :order => 'replied_at DESC', :limit => count }
   }
-
-  # other extensions can attach chains here to limit access
-  def self.visible_to(reader)
-    self.scoped
-  end
+  # adapted from the usual scope defined in has_groups, since here visibility is set at the forum level
+  named_scope :visible_to, lambda { |reader| 
+    conditions = "forums.id IS NULL OR pp.group_id IS NULL"
+    if reader && reader.group_ids.any?
+      ids = reader.group_ids
+      conditions = ["#{conditions} OR pp.group_id IN(#{ids.map{"?"}.join(',')})", *ids]
+    end
+    Rails.logger.warn "::: Topic#visible_to! Conditions: #{conditions.inspect}"
+    {
+      :joins => "INNER JOIN forums on topics.forum_id = forums.id LEFT OUTER JOIN permissions as pp on pp.permitted_id = forums.id AND pp.permitted_type = 'Forum'",
+      :conditions => conditions,
+      :group => column_names.map { |n| self.table_name + '.' + n }.join(','),
+      :readonly => false
+    } 
+  }
 
   def dom_id
     "topic_#{self.id}"
   end
 
   def visible_to?(reader=nil)
-    return true if reader || Radiant::Config['forum.public?']
+    if forum && !forum.visible_to?(reader)
+      false
+    elsif !reader && !Radiant::Config['forum.public?']
+      false
+    else
+      true
+    end
   end
   
   def reader

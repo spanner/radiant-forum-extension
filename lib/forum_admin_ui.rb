@@ -23,10 +23,10 @@ module ForumAdminUI
       protected
 
         def load_default_forum_regions
-          returning OpenStruct.new do |forum|
+          OpenStruct.new.tap do |forum|
             forum.edit = Radiant::AdminUI::RegionSet.new do |edit|
               edit.main.concat %w{edit_header edit_form}
-              edit.form.concat %w{edit_name edit_description}
+              edit.form.concat %w{edit_name edit_description edit_group}
               edit.form_bottom.concat %w{edit_buttons}
             end
             forum.index = Radiant::AdminUI::RegionSet.new do |index|
@@ -40,11 +40,11 @@ module ForumAdminUI
         end
 
         def load_default_topic_regions
-          returning OpenStruct.new do |topic|
+          OpenStruct.new.tap do |topic|
             topic.edit = Radiant::AdminUI::RegionSet.new do |edit|
               edit.main.concat %w{edit_header edit_form}
               edit.form.concat %w{edit_name edit_body}
-              edit.form_bottom.concat %w{edit_timestamp edit_buttons}
+              edit.form_bottom.concat %w{edit_buttons}
             end
             topic.index = Radiant::AdminUI::RegionSet.new do |index|
               index.thead.concat %w{title_header date_header author_header body_header modify_header}
@@ -57,11 +57,11 @@ module ForumAdminUI
         end
 
         def load_default_post_regions
-          returning OpenStruct.new do |post|
+          OpenStruct.new.tap do |post|
             post.edit = Radiant::AdminUI::RegionSet.new do |edit|
               edit.main.concat %w{edit_header edit_form}
               edit.form.concat %w{show_name edit_body}
-              edit.form_bottom.concat %w{edit_timestamp edit_buttons}
+              edit.form_bottom.concat %w{edit_buttons}
             end
             post.index = Radiant::AdminUI::RegionSet.new do |index|
               index.thead.concat %w{body_header author_header topic_header modify_header}

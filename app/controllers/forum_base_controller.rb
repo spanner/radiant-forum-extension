@@ -4,12 +4,27 @@ class ForumBaseController < ReaderActionController
   radiant_layout { |c| Radiant::Config['forum.layout'] || Radiant::Config['reader.layout'] }
   before_filter :require_login_unless_public
   before_filter :establish_context
+  before_filter :require_visibility_to_reader
   helper :forum, :reader
 
 protected
 
   def require_login_unless_public
     return false unless Radiant::Config['forum.public?'] || require_reader && require_activated_reader
+  end
+  
+  def require_visibility_to_reader
+    if @page && !@page.visible_to?(current_reader)
+      flash[:error] = t("page_not_public")
+      redirect_to reader_permission_denied_url
+      return false
+    end
+    
+    if @forum && !@forum.visible_to?(current_reader)
+      flash[:error] = "forum_not_public"
+      redirect_to reader_permission_denied_url
+      return false
+    end
   end
   
   def establish_context

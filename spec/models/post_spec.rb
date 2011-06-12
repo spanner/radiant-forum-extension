@@ -23,12 +23,12 @@ describe Post do
     describe "when added to a topic" do
       before do
         Rails.logger.warn ">>"
-        post = topics(:older).posts.create!(:body => 'newly added', :reader => readers(:idle))
+        post = topics(:older).posts.create!(:body => 'newly added', :reader => readers(:normal))
       end
       
       it "should update topic reply data" do
         topic = Topic.find(topic_id(:older))
-        topic.replied_by.should == readers(:idle)
+        topic.replied_by.should == readers(:normal)
         topic.replied_at.should be_close(Time.now, 10.seconds)
       end
     end
@@ -45,7 +45,7 @@ describe Post do
     end
 
     it "should not be editable by anyone else" do 
-      @post.editable_by?(readers(:idle)).should be_false
+      @post.editable_by?(readers(:another)).should be_false
     end
   end
   
@@ -60,14 +60,14 @@ describe Post do
     end
 
     it "should not be editable by anyone else" do 
-      @post.editable_by?(readers(:idle)).should be_false
+      @post.editable_by?(readers(:another)).should be_false
     end
   end
 
   describe "on removal" do
     before do
       @last = topics(:older).posts.last
-      @post = topics(:older).posts.create!(:body => 'uh oh', :reader => readers(:idle))
+      @post = topics(:older).posts.create!(:body => 'uh oh', :reader => readers(:normal))
     end
     it "should revert topic reply data" do
       @post.destroy
@@ -84,7 +84,7 @@ describe Post do
     55.times do |i| 
       topics(:older).posts.create!(:body => 'rhubarb', :reader => readers(:normal))
     end
-    lastpost = topics(:older).posts.create!(:body => 'bar', :reader => readers(:idle))
+    lastpost = topics(:older).posts.create!(:body => 'bar', :reader => readers(:normal))
     firstpost.page_when_paginated.should == 1
     lastpost.page_when_paginated.should == 3
   end

@@ -20,6 +20,7 @@ Radiant::Config['site.title'] = 'Test Site'
 Radiant::Config['site.url'] = 'www.example.com'
 Radiant::Config['readers.layout'] = 'Main'
 Dataset::Resolver.default << (File.dirname(__FILE__) + "/datasets")
+Dataset::Resolver.default << (ReaderExtension.root + "/spec/datasets")
 
 if File.directory?(File.dirname(__FILE__) + "/matchers")
   Dir[File.dirname(__FILE__) + "/matchers/*.rb"].each {|file| require file }

@@ -38,11 +38,21 @@ class Post < ActiveRecord::Base
       :joins => "LEFT OUTER JOIN topics on posts.topic_id = topics.id"
     }
   }
+  # adapted from the usual scope defined in has_groups, since here visibility is set at the forum level
+  named_scope :visible_to, lambda { |reader| 
+    conditions = "topics.id IS NULL OR forums.id IS NULL OR pp.group_id IS NULL"
+    if reader && reader.group_ids.any?
+      ids = reader.group_ids
+      conditions = ["#{conditions} OR pp.group_id IN(#{ids.map{"?"}.join(',')})", *ids]
+    end
+    {
+      :joins => "INNER JOIN topics on posts.topic_id = topics.id INNER JOIN forums on topics.forum_id = forums.id LEFT OUTER JOIN permissions as pp on pp.permitted_id = forums.id AND pp.permitted_type = 'Forum'",
+      :conditions => conditions,
+      :group => column_names.map { |n| self.table_name + '.' + n }.join(','),
+      :readonly => false
+    } 
+  }
 
-  # other extensions can attach chains here to limit access
-  def self.visible_to(reader)
-    self.scoped
-  end
 
   def self.in_forum(forum)
     in_topics(forum.topics)
@@ -98,9 +108,17 @@ class Post < ActiveRecord::Base
   end
 
   def visible_to?(reader=nil)
-    return true if reader || Radiant::Config['forum.public?']
+    if topic && !topic.visible_to?(reader)
+      false
+    elsif page && !page.visible_to?(reader)
+      false
+    elsif !reader && !Radiant::Config['forum.public?']
+      false
+    else
+      true
+    end
   end
-  
+
   # so that page comments can be rendered from a radius tag
   def body_html
     if body

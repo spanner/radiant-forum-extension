@@ -33,7 +33,7 @@
 
             - tbody.author_cell do
               %td.topic_author
-                = link_to topic.reader.name, admin_reader_url(topic.reader)
+                = link_to topic.reader.name, edit_admin_reader_url(topic.reader)
                     
             - tbody.body_cell do
               %td.topic_body
