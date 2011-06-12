@@ -1,13 +1,10 @@
 require_dependency 'application_controller'
+require 'radiant-forum-extension/version'
 
 class ForumExtension < Radiant::Extension
-  version "2.1.6"
+  version RadiantForumExtension::VERSION
   description "Nice clean forums and page comments for inclusion in your radiant site. Requires the reader extension and share_layouts."
   url "http://spanner.org/radiant/forum"
-
-  extension_config do |config|
-    config.gem "paperclip", "~> 2.3"
-  end
 
   def activate
     ActiveRecord::Base.send :include, CommentableModel                         # provides has_comments class method that is used here by topics and pages but can be called from any model

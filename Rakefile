@@ -1,19 +1,3 @@
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "radiant-forum-extension"
-    gem.summary = %Q{Forum and Comment Extension for Radiant CMS}
-    gem.description = %Q{Nice clean forums and page comments for inclusion in your radiant site. Derived long ago from beast. Requires the reader extension and share_layouts.}
-    gem.email = "will@spanner.org"
-    gem.homepage = "http://github.com/spanner/radiant-forum-extension"
-    gem.authors = ["spanner"]
-    gem.add_dependency "radiant", ">= 0.9.0"
-    gem.add_dependency 'radiant-reader-extension', "~> 1.3.0"
-  end
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. This is only required if you plan to package forum as a gem."
-end
-
 # In rails 1.2, plugins aren't available in the path until they're loaded.
 # Check to see if the rspec plugin is installed first and require
 # it if it is.  If not, use the gem version.
