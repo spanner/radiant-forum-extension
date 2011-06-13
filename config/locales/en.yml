@@ -57,7 +57,7 @@ en:
     forum: "Forum"
     forums: "Discussion categories"
     forum_configuration: "Forum settings"
-    forum_messages: "Forum messages"
+    forum_messages: "Forum messages from %{name}"
     forum_search: "Forum Search"
     forum_show_introduction: ""
     forums_heading: "Forum categories"

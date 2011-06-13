@@ -2,7 +2,7 @@
 - posts ||= reader.posts.paginate(pagination_parameters)
 
 #forum
-  %h2
+  %h3
     =t('forum_extension.forum_messages', :name => reader.name)
 
   - if posts.empty?
