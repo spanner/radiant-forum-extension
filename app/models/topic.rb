@@ -21,9 +21,8 @@ class Topic < ActiveRecord::Base
       ids = reader.group_ids
       conditions = ["#{conditions} OR pp.group_id IN(#{ids.map{"?"}.join(',')})", *ids]
     end
-    Rails.logger.warn "::: Topic#visible_to! Conditions: #{conditions.inspect}"
     {
-      :joins => "INNER JOIN forums on topics.forum_id = forums.id LEFT OUTER JOIN permissions as pp on pp.permitted_id = forums.id AND pp.permitted_type = 'Forum'",
+      :joins => "LEFT OUTER JOIN forums on topics.forum_id = forums.id LEFT OUTER JOIN permissions as pp on pp.permitted_id = forums.id AND pp.permitted_type = 'Forum'",
       :conditions => conditions,
       :group => column_names.map { |n| self.table_name + '.' + n }.join(','),
       :readonly => false

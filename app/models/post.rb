@@ -46,7 +46,7 @@ class Post < ActiveRecord::Base
       conditions = ["#{conditions} OR pp.group_id IN(#{ids.map{"?"}.join(',')})", *ids]
     end
     {
-      :joins => "INNER JOIN topics on posts.topic_id = topics.id INNER JOIN forums on topics.forum_id = forums.id LEFT OUTER JOIN permissions as pp on pp.permitted_id = forums.id AND pp.permitted_type = 'Forum'",
+      :joins => "INNER JOIN topics on posts.topic_id = topics.id LEFT OUTER JOIN forums on topics.forum_id = forums.id LEFT OUTER JOIN permissions as pp on pp.permitted_id = forums.id AND pp.permitted_type = 'Forum'",
       :conditions => conditions,
       :group => column_names.map { |n| self.table_name + '.' + n }.join(','),
       :readonly => false

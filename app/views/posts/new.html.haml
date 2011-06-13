@@ -10,7 +10,7 @@
           = current_reader.name
         %p.context
           = t('forum_extension.if_you_not', :name => current_reader.name)
-          = link_to(t('forum_extension.log_out'), reader_logout_url) + '.'
+          = link_to(t('reader_extension.log_out'), reader_logout_url) + '.'
       = render :partial => 'form', :locals => {:post => @post}
 
 - content_for :person do
