@@ -11,11 +11,11 @@ class Post < ActiveRecord::Base
   accepts_nested_attributes_for :attachments, :allow_destroy => true
   validates_presence_of :reader, :body
 
+  before_save :update_search_text
   after_create :notify_holder_of_creation
   after_destroy :notify_holder_of_destruction
-  
+
   default_scope :order => "posts.created_at DESC"
-  
   named_scope :comments, :conditions => "page_id IS NOT NULL"
   named_scope :non_comments, :conditions => "page_id IS NULL"
   named_scope :imported, :conditions => "old_id IS NOT NULL"
@@ -32,12 +32,6 @@ class Post < ActiveRecord::Base
       self.length  # replacing a SQL shortcut that omits the distinct clause
     end
   end
-  named_scope :containing, lambda { |term|
-    { 
-      :conditions => ["posts.body LIKE :term OR topics.name LIKE :term", {:term => "%#{term}%"}],
-      :joins => "LEFT OUTER JOIN topics on posts.topic_id = topics.id"
-    }
-  }
   # adapted from the usual scope defined in has_groups, since here visibility is set at the forum level
   named_scope :visible_to, lambda { |reader| 
     conditions = "topics.id IS NULL OR forums.id IS NULL OR pp.group_id IS NULL"
@@ -52,7 +46,11 @@ class Post < ActiveRecord::Base
       :readonly => false
     } 
   }
-
+  named_scope :matching, lambda { |term|
+    {
+      :conditions => ["posts.search_text LIKE ?", "%#{stopped(term)}%"] 
+    }
+  }
 
   def self.in_forum(forum)
     in_topics(forum.topics)
@@ -61,9 +59,17 @@ class Post < ActiveRecord::Base
   def holder
     page || topic
   end
+  
+  def title
+    holder.title if holder
+  end
     
   def comment?
     !!page
+  end
+  
+  def reply?
+    !comment? && !first?
   end
   
   def page_when_paginated
@@ -147,6 +153,21 @@ class Post < ActiveRecord::Base
 
   def dom_id
     "post_#{self.id}"
+  end
+
+private
+
+  # this is  rather crude, but it's database-agnostic, doesn't require 
+  # any external indexing, and works well enough for most purposes.
+  # for a more satisfactory search, tell sphinx to index the search_text field.
+
+  def update_search_text
+    self.search_text = self.class.stopped("#{self.title} #{self.body}")
+  end
+
+  def self.stopped(text="")
+    stops = I18n.t('forum_extension.stopwords').split.join('|')
+    text.downcase.gsub(/\b(#{stops})\b/, '').gsub(/(\W+)/, ' ')
   end
 
 end

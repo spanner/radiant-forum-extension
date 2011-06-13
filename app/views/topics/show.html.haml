@@ -13,7 +13,6 @@
   = render :partial => 'posts/post', :locals => {:post => @topic.posts.first, :headless => true, :with_context => true}
 
 - content_for :sidebar do
-  = render :partial => 'posts/search_form', :locals => {:minimal => true}
   = render :partial => 'topics/latest'
 
 - content_for :feedurl do

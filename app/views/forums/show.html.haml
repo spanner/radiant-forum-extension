@@ -6,10 +6,6 @@
 - content_for :introduction do
   = clean_textilize(@forum.description)
 
-- content_for :newtopic do
-  .newmessage
-    = link_to t('forum_extension.new_topic_here'), new_post_url(:forum_id => @forum.id)
-
 - content_for :sidebar do
   = render :partial => 'posts/search_form'
   = render :partial => "topics/latest"

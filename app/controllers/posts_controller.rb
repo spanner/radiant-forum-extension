@@ -9,7 +9,7 @@ class PostsController < ForumBaseController
   def index
     @term = params[:q]
     posts = Post.visible_to(current_reader)
-    posts = posts.containing(@term) unless @term.blank?
+    posts = posts.matching(@term) unless @term.blank?
     posts = posts.from_reader(@reader) if @reader
     posts = posts.in_forum(@forum) if @forum
     posts = posts.in_topic(@topic) if @topic

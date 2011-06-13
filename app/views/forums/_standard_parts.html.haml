@@ -50,7 +50,7 @@
     = standard_gravatar_for(@reader)
 
 - content_for :search do
-  = render :partial => 'posts/search_form'
+  = render :partial => 'posts/search_form', :locals => {:minimal => true}
 
 - content_for :newtopic do
   .newmessage

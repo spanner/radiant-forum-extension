@@ -4,13 +4,23 @@
       .forum_header
         %h2
           = link_to forum.name, forum_url(forum), :class => 'main'
-        %p.context
-          = forum.description
-      .forum_contents
-        - if forum.topics.any?
+        - if forum.description
+          %p.context
+            = forum.description
+      - if forum.topics.any?
+        .forum_contents
           %ul
             - forum.topics.latest(3).each do |topic|
               = render :partial => 'topics/minimal', :locals => {:topic => topic}
 
-
+      - else
+        %p
+          No topics. forum is 
+          = forum.inspect
+          forum.topics.any? is 
+          = forum.topics.any?.inspect
+          and forum.topics is
+        %pre
+          = forum.topics.inspect
+          
     

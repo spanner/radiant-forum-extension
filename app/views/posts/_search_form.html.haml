@@ -8,16 +8,16 @@
   %p
     %label{:for => "q"}
       = t(minimal ? 'forum_extension.search_form.minimal_query_label' : 'forum_extension.search_form.query_label')
-    = text_field_tag "q", params[:q]
+    %input{:name => 'q', :type => 'search', :value => params[:q], :placeholder => 'Search', :class => 'standard search'}
 
   - unless minimal
-    %p
-      %label{:for => "forum_id"}
-        = t('forum_extension.search_form.forum_label')
-      
-      %select{:name => "forum_id"}
-        %option{:value => ""}= t('forum_extension.anywhere')
-        = options_from_collection_for_select(Forum.find(:all), "id", "name", params[:forum_id].to_i)
+    - if using_forums?
+      %p
+        %label{:for => "forum_id"}
+          = t('forum_extension.search_form.forum_label')
+        %select{:name => "forum_id"}
+          %option{:value => ""}= t('forum_extension.anywhere')
+          = options_from_collection_for_select(Forum.find(:all), "id", "name", params[:forum_id].to_i)
 
     - if Radiant::Config['forum.allow_search_by_reader?']
       %p

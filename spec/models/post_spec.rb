@@ -23,9 +23,13 @@ describe Post do
     describe "when added to a topic" do
       before do
         Rails.logger.warn ">>"
-        post = topics(:older).posts.create!(:body => 'newly added', :reader => readers(:normal))
+        @post = topics(:older).posts.create!(:body => 'and its my post about new marmalade', :reader => readers(:normal))
       end
       
+      it "should update its indexable form" do
+        @post.search_text.should == "older post new marmalade"
+      end
+
       it "should update topic reply data" do
         topic = Topic.find(topic_id(:older))
         topic.replied_by.should == readers(:normal)

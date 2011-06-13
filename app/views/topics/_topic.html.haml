@@ -15,7 +15,7 @@
           = render :partial => 'posts/edit_links', :locals => {:post => post}
 
       .post_body
-        = truncate_and_textilize(post.body, 100)
+        = truncate_and_textilize(post.body, 30)
         = render :partial => 'posts/attachments', :locals => {:post => post}
 
       - if topic.has_replies?
