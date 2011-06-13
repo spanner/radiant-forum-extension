@@ -10,7 +10,9 @@ module ForumHelper
   end
   
   def feed_link(url)
-    link_to image_tag('/images/furniture/feed_14.png', :alt => t('forum_extension.rss_feed')), url, :class => "rssfeed"
+    if Radiant.config['forum.offer_rss?']
+      link_to image_tag('/images/furniture/feed_14.png', :alt => t('forum_extension.rss_feed')), url, :class => "rssfeed"
+    end
   end
 
   def clean_textilize(text) # adding smilies to the default reader method

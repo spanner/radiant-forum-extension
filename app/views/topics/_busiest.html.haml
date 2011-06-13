@@ -5,8 +5,9 @@
     %li
       = link_to_topic(topic, :class => 'title')
       %br
-      = t('forum_extension.started_by')
-      = link_to(topic.reader.name, reader_url(topic.reader)) + ', '
-      = t('forum_extension.now_has')
-      = topic.posts.count
-      = t('forum_extension.posts') + '.'
+      %span.context
+        = t('forum_extension.started_by')
+        = link_to(topic.reader.name, reader_url(topic.reader)) + ', '
+        = t('forum_extension.now_has')
+        = topic.posts.count
+        = t('forum_extension.posts') + '.'

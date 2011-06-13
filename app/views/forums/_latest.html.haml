@@ -7,7 +7,8 @@
         %li
           = link_to forum.name, forum_url(forum), :class => 'title'
           %br
-          = forum.topics.count
-          = t('forum_extension.topics') + ','
-          = t('forum_extension.most_recently')
-          = link_to_topic(topic)
+          %span.context
+            = forum.topics.count
+            = t('forum_extension.topics') + ','
+            = t('forum_extension.most_recently')
+            = link_to_topic(topic)

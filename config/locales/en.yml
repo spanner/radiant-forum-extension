@@ -9,7 +9,9 @@ en:
       commentable_period: "Pages commentable for"
       editable_period: "Posts editable for"
       layout: "Forum layout"
+      offer_rss?: "Show RSS links"
       public?: "Forum public?"
+      toolbar?: "Enable editing toolbar"
   forum_extension:
     a_reply_to: "A reply to"
     add_post: "Add a %{message_type}"

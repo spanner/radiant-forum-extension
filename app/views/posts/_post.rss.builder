@@ -8,6 +8,6 @@ xm.item do
   end
   xm.description clean_textilize(truncate_words(post.body, 64))
   xm.pubDate post.created_at.to_s(:rfc822)
-  xm.guid [ActionController::Base.session_options[:session_key], post.forum_id.to_s, post.topic_id.to_s, post.id.to_s].join(":"), "isPermaLink" => "false"
+  xm.guid UUIDTools::UUID.timestamp_create(post.created_at).to_s, "isPermaLink" => "false"
   xm.link paginated_post_url(post)
 end

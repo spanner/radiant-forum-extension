@@ -7,8 +7,8 @@
   = link_to_topic(@post.topic)
 
 - content_for :breadhead do
-  = link_to t('forum_extension.forum').titlecase + t('forum_extension.separator'), topics_url
-  = link_to @post.topic.forum.name + t('forum_extension.separator'), forum_url(@post.topic.forum)
+  = link_to t('forum_extension.forum').titlecase + t('reader_extension.separator'), topics_url
+  = link_to @post.topic.forum.name + t('reader_extension.separator'), forum_url(@post.topic.forum)
   = yield :parent
 
 - content_for :person do
