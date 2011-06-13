@@ -6,6 +6,7 @@ div#forum
   h2
     line-height: 1
     margin: 0
+    font-size: 200%
   div.forum
     div.forum_wrapper
       margin: 2em 0
@@ -21,6 +22,8 @@ div#forum
       color: $mid
     div.wrapper
       margin: 1em 0 2em 0
+      padding-bottom: 1em
+      border-bottom: 3px dotted $mid
       div.post_header
         h2.reply
           a
@@ -65,11 +68,6 @@ div#forum
         color: $paler
         a
           color: $pale
-    &.first
-      div.wrapper
-        margin-top: 0
-        padding-bottom: 1em
-        border-bottom: 3px dotted $mid
 
     div.remote_form
       margin: 0
@@ -88,9 +86,9 @@ div#forum
         font-size: 1.4
 
   p.context
-    +functional
+    +small
     line-height: 1.2
-    margin: 0 0 10px 0
+    margin: 5px 0 10px 0
 
   div#search
     overflow: hidden
@@ -178,7 +176,8 @@ a.rssfeed
   width: 14px
 
 .context, .updatenote
-  +functional
+  +small
+  line-height: 1.2
   color: $pale
 
 p.waiting, span.waiting, a.waiting
@@ -196,6 +195,7 @@ div.speaker
   width: 50px
   height: 50px
   margin-right: 8px
+  margin-top: 5px
   
 p.add_comment, p.add_reply
   font-size: 200%

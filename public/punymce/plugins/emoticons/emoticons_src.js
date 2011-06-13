@@ -12,12 +12,12 @@
 		this.settings = st = extend({
 			emoticons : {
 				happy : [':)', '=)'],
-				unhappy : [':|', '=|'],
+				neutral:[":|"],
 				sad : [':(','=('],
 				grin : [':D', '=D'],
 				surprised : [':o',':O','=o', '=O'],
 				wink : [';)'],
-				halfhappy : [':/', '=/'],
+				devil: ["}:)"],
 				tongue : [':P', ':p', '=P', '=p'],
 				lol : [':0'],
 				mad : [':['],
