@@ -4,7 +4,7 @@
   = @forum.name
 
 - content_for :introduction do
-  = clean_textilize(@forum.description)
+  = clean(@forum.description)
 
 - content_for :sidebar do
   = render :partial => 'posts/search_form'

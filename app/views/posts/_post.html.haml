@@ -33,5 +33,5 @@
         = render :partial => 'posts/edit_links', :locals => {:post => post}
 
     .post_body
-      = clean_textilize(post.body)
+      = clean(post.body)
       = render :partial => 'posts/attachments', :locals => {:post => post}

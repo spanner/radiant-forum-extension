@@ -3,7 +3,7 @@ require 'radiant-forum-extension/version'
 
 class ForumExtension < Radiant::Extension
   version RadiantForumExtension::VERSION
-  description "Nice clean forums and page comments for inclusion in your radiant site. Requires the reader extension and share_layouts."
+  description "Nice clean forums and page comments for inclusion in your radiant site."
   url "http://spanner.org/radiant/forum"
 
   def activate

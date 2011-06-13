@@ -37,7 +37,7 @@
                     
             - tbody.body_cell do
               %td.topic_body
-                = truncate(topic.body, :length => 64)
+                = truncate_words(scrub(topic.body), 12)
 
             - tbody.modify_cell do
               %td.actions

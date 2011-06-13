@@ -14,16 +14,6 @@ module ForumHelper
       link_to image_tag('/images/furniture/feed_14.png', :alt => t('forum_extension.rss_feed')), url, :class => "rssfeed"
     end
   end
-
-  def clean_textilize(text) # adding smilies to the default reader method
-    if text.blank?
-      ""
-    else
-      textilized = RedCloth.new(text, [ :hard_breaks ])
-      textilized.hard_breaks = true if textilized.respond_to?("hard_breaks=")
-      Sanitize.clean(textilized.to_html(:textile, :smilies), Sanitize::Config::FORUM)
-    end
-  end
   
   def paginated_post_url(post)
     param_name = WillPaginate::ViewHelpers.pagination_options[:param_name]

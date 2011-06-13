@@ -6,7 +6,7 @@ xm.item do
   else
     xm.title "Reply to '#{h(post.topic.name)}' (from #{h post.reader.name})"
   end
-  xm.description clean_textilize(truncate_words(post.body, 64))
+  xm.description clean(truncate_words(post.body, 64))
   xm.pubDate post.created_at.to_s(:rfc822)
   xm.guid UUIDTools::UUID.timestamp_create(post.created_at).to_s, "isPermaLink" => "false"
   xm.link paginated_post_url(post)

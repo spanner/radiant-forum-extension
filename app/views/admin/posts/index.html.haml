@@ -25,7 +25,7 @@
           - render_region :tbody do |tbody|
             - tbody.body_cell do
               %td.post_body
-                = link_to truncate(post.body, :length => 64), edit_admin_post_url(post)
+                = link_to truncate_words(scrub(post.body), 8), edit_admin_post_url(post)
 
             - tbody.author_cell do
               %td.post_author
