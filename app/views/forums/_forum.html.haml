@@ -7,20 +7,11 @@
         - if forum.description
           %p.context
             = forum.description
-      - if forum.topics.any?
-        .forum_contents
+      .forum_contents
+        - if forum.topics.any?
           %ul
             - forum.topics.latest(3).each do |topic|
               = render :partial => 'topics/minimal', :locals => {:topic => topic}
-
-      - else
-        %p
-          No topics. forum is 
-          = forum.inspect
-          forum.topics.any? is 
-          = forum.topics.any?.inspect
-          and forum.topics is
-        %pre
-          = forum.topics.inspect
-          
-    
+        - else
+          %p.note
+            = t('forum_extension.no_topics')
