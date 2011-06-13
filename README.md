@@ -2,9 +2,9 @@
 
 This is a tidy but comprehensive forum implementation that plugs into radiant and supports both discussion forums and page comments. 
 
-This new (as I write) version 2 is a complete rewrite with a lot of internal clarification in preparation for rails 3. It's in late beta at the moment: bug fixes, documentation and packaging for public release.
+This new (as I write) version 2 is a complete rewrite with a lot of internal clarification in preparation for rails 3. It's only a release candidate at this stage: I'm working on bug fixes, documentation and packaging for public release. There is also a developing demo and documentation site that you can use as a starting point. Code is at [https://github.com/spanner/radiant-forum-demo](https://github.com/spanner/radiant-forum-demo) and the site will be public soon.
 
-The forum is designed to be pick-and-mixed with other radiant extensions, so it's very focused on being an excellent forum and doesn't do anything else. I hope you will find it's very good at what it does do:
+The forum is designed to be pick-and-mixed with other radiant extensions, so it's focused on being a good forum and doesn't do anything else. I hope you will find it's good at what it does do:
 
 * forums, topics, posts etc
 * page comments
@@ -17,14 +17,20 @@ The forum is designed to be pick-and-mixed with other radiant extensions, so it'
 
 I've tried to keep it simple and tidy both inside and out. This is helped by the fact that all the user-management is in the reader extension, so you should find this is easy to adapt and extend. The admin interface on the other hand is pretty basic: we expect most administration to happen through the public pages but there does need to be at least a dashboard to give a better overview. That will come soon.
 
-As far as I know this is the best forum software available for rails. I look forward to finding out that it's not.
+As far as I know this is the only decent forum software available for rails. If I can't find a better alternative, I will spin this off as a separate rails 3 engine that works alongside radiant but does not require it.
+
+## Demo and documentation
+
+You can find a standard radiant forum installation at [https://github.com/spanner/radiant-forum-demo](https://github.com/spanner/radiant-forum-demo). It serves many purposes: integration test target, reference platform, documentation and demo site and starting point for larger projects. There is some way to go on the documentation front but it should already serve as a useful starting point.
 
 ## Status
 
-This code has been surviving in the world for four or five years (and more, since some it originally came from Beast), but this version is about 75% new and you know what that means: new bugs. Github issues are always welcome.
+This code has been surviving in the world for five or six years (and more, since some it originally came from Beast), but this version is about 75% new and you know what that means: new bugs. Github issues are always welcome.
 
 ## Latest
 
+* Tidied up and made compatible with radiant 1
+* Group-visibility folded in
 * Inline editing with editable-for-interval setting
 * Punymce-based wysiwig editing.
 * Page comments data structure simplified. Migration required.
@@ -34,7 +40,7 @@ This code has been surviving in the world for four or five years (and more, sinc
 * Basic admin interface as well as readerland administration
 * Editable interval for messages
 
-This version is not wholly multi-site compatible at the moment, since it relies heavily on configuration items that are not yet site-scoped. They will be soon.
+This version is not multi-site compatible. It relies heavily on configuration items that are not yet site-scoped. That's next on the list after radiant 1 comes out.
 
 ## Still to do
 
@@ -46,13 +52,9 @@ This version is not wholly multi-site compatible at the moment, since it relies 
 
 Radiant 0.9.2 (we're using the new configuration interface) with the [reader](http://github.com/spanner/radiant-reader-extension) extension. Reader has a few requirements of its own so it's best to install that one first, make sure it's testing clean and then install the forum.
 
-We also require [will_paginate](http://github.com/mislav/will_paginate/) and [paperclip](http://github.com/thoughtbot/paperclip/) as gems but you will already have those.
-
 	sudo rake gems:install
 	
 should get everything you need. 
-
-The forum is compatible with multi_site but you should use [sites](https://github.com/spanner/radiant-sites-extension) instead if you want forums and readers site-scoped.
 	
 ## Administration
 
@@ -61,6 +63,10 @@ The forum is easy to use and almost entirely separate from your page hierarchy. 
 ## Configuration
 
 There is now a configuration panel for the forum and you shouldn't have to do any console-tinkering.
+
+## Changing forum text
+
+Every string used in the public-facing forum (and reader) pages comes from the locale file. They are labelled functionally rather than literally, with keys like `forum_extension.no_search_results`. To change the wording, either edit or override the locale.
 
 ## Layouts
 
@@ -93,13 +99,11 @@ Have a look at the included sample layout for a starting point.
 
 ## Speed and caching
 
-This version of the forum is designed to work from behind radiant's main cache. There is no context-specific material in any of the pages or page parts visible to a normal browsing user and the comment and reply forms are normally retrieved by ajax calls after the pages have loaded. For that you need to use the provided (jquery-based) forum.js, or write your own equivalent (or for a more robust but less helpful forum, skip the ajax and let people click through to the comment or reply form).
-
-The intention is to make this behaviour configurable but at the moment I'm finding the forum pages too slow if uncached. Most of the wait comes from the shared_layouts/radius template machinery but there are some slow queries too. With optimisation a live forum should be viable.
+Forum and reader views are not cached, by default, but commented pages are. It is possible to cache the forum if you omit any dynamic content (such as the reply form), but at some cost to ease of use.
 
 ## Private discussion
 
-If you install the [reader_group](http://github.com/spanner/radiant-reader_group-extension) and [group_forum](http://github.com/spanner/radiant-group_forum-extension) extensions then your forums can be made visible only to designated groups, as with pages and other groupable items.
+Group functionality has recently been folded into the reader and forum extensions, so you don't need to install a whole tree of tiny changes any more. The interface hasn't quite settled down, but the functionality is solid: associate a forum with a group, and all of its contents are visible only to members of that group.
 
 ## Searching the forum
 
@@ -128,15 +132,15 @@ The forum comes with some jquery-based scripting to handle inline administration
 
 ## Smilies
 
-Included here is a redcloth extension to handle emoticons of the type inserted by the punymce toolbar we're using. Since we have control of both ends I've customised the set to make accidental emoticons less likely. There will soon be an option to disable them completely.
+Included here is a redcloth extension to handle emoticons of the type inserted by the punymce toolbar we're using. I've customised the set to make accidental emoticons less likely. There will soon be an option to disable them completely.
 
 ## Bugs
 
-In the short term, quite likely. [Github issues](http://github.com/spanner/radiant-forum-extension/issues), please, or for little things an email or github message is fine.
+In the short term, very likely. [Github issues](http://github.com/spanner/radiant-forum-extension/issues), please, or for little things an email or github message is fine.
 
 ## Author & Copyright
 
 * William Ross, for spanner. will at spanner.org
-* Originally based on dear old Beast, currently not visible at [http://beast.caboo.se](http://beast.caboo.se)
+* Originally based on dear old Beast
 * Copyright 2007-11 spanner ltd
 * released under the same terms as Rails and/or Radiant
