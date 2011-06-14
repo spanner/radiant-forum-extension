@@ -1,10 +1,11 @@
-= render :partial => 'forums/standard_parts'
-
 - content_for :pagination do
   = pagination_and_summary_for(@posts, t('forum_extension.post'))
 
 - content_for :title do
   = @topic.name
+
+- content_for :context do
+  = render :partial => 'topics/context'
 
 - content_for :person do
   = standard_gravatar_for(@topic.reader)
@@ -26,13 +27,18 @@
     = link_to @topic.forum.name + ':', forum_url(@topic.forum)
 
 - content_for :breadhead do
-  = link_to t('forum_extension.forum').titlecase + t('reader_extension.separator'), topics_url
-  = yield :parent
+  %span.breadhead
+    = link_to t('forum_extension.forum').titlecase, topics_url
+    = t('reader_extension.separator')
+    = yield :parent
 
 - content_for :breadcrumbs do
-  = yield :breadhead
-  = t('reader_extension.separator')
-  = yield :title
+  %p.breadcrumbs
+    = link_to t('forum_extension.forum').titlecase, topics_url
+    = t('reader_extension.separator')
+    = yield :parent
+    = t('reader_extension.separator')
+    = yield :title
 
 - content_for :messages do
   = yield :pagination if @posts.previous_page
@@ -42,8 +48,11 @@
 - content_for :reply_form do
   = render :partial => 'topics/reply'
 
+- content_for :body do
+  .forum
+    = yield :first_post
+    = yield :messages
+    = yield :reply_form unless @posts.next_page
 
-#forum
-  = yield :first_post
-  = yield :messages
-  = yield :reply_form unless @posts.next_page
+= render :partial => 'shared/standard_forum_parts'
+

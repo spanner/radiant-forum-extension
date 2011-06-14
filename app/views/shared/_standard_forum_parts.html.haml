@@ -32,26 +32,28 @@
   - if Radiant::Config['forum.help_url']
     = link_to t('forum_extension.navigation.forum_help'), Radiant::Config['forum.help_url']
 
-- content_for :controls do
-  = render :partial => 'readers/controls'
+- content_for :header do
+  .header
+    = yield :person
+    %h1.title
+      = yield :breadhead
+      = yield :title
 
-- content_for :signals do
-  = render :partial => 'readers/flasher'
-
-- content_for :reader_css do
-  - reader_css_paths.each do |path|
-    %link{:rel => 'stylesheet', :href => path, :type => 'text/css'}
-
-- content_for :reader_js do
-  - reader_js_paths.each do |path|
-    %script{:src => path, :type => 'text/javascript'}
-
-- content_for :person do
-  - if @reader
-    = standard_gravatar_for(@reader)
+- content_for :footer do
+  .footer
+    = yield :controls
 
 - content_for :search do
   = render :partial => 'posts/search_form', :locals => {:minimal => true}
+
+- content_for :latest do
+  = render :partial => 'topics/latest'
+
+- content_for :busiest do
+  = render :partial => 'topics/busiest'
+
+- content_for :forums do
+  = render :partial => 'forums/latest'
 
 - content_for :newtopic do
   .newmessage
@@ -60,3 +62,4 @@
     - else
       = link_to t('forum_extension.new_topic'), new_post_url()
 
+= render :partial => 'shared/standard_reader_parts'

@@ -1,15 +1,15 @@
-= render :partial => 'forums/standard_parts'
-
-- content_for :messages do
-  = render :partial => 'confirm_delete', :locals => {:post => @post}
-
 - content_for :parent do
   = link_to_topic(@post.topic)
 
 - content_for :breadhead do
-  = link_to t('forum_extension.forum').titlecase + t('reader_extension.separator'), topics_url
-  = link_to @post.topic.forum.name + t('reader_extension.separator'), forum_url(@post.topic.forum)
-  = yield :parent
+  %span.breadhead
+    = link_to t('forum_extension.forum').titlecase + t('reader_extension.separator'), topics_url
+    = link_to @post.topic.forum.name + t('reader_extension.separator'), forum_url(@post.topic.forum)
+    = yield :parent
+
+- content_for :context do
+  %p.context
+    = render :partial => 'posts/context'
 
 - content_for :person do
   = standard_gravatar_for(@post.reader)
@@ -22,6 +22,8 @@
   - else
     = t('forum_extension.confirm_remove_post')
 
-  
-#forum
-  = yield :messages
+- content_for :body do
+  = render :partial => 'confirm_delete', :locals => {:post => @post}
+
+= render :partial => 'shared/standard_forum_parts'
+

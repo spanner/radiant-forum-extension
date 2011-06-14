@@ -1,6 +1,7 @@
 - topic ||= @topic
 
 - if topic.replied_by
-  = t('forum_extension.post_count_from', :count => topic.posts.count - 1)
-  = link_to topic.replied_by.name, reader_url(topic.replied_by)
-  = t('forum_extension.on_date', :date => friendly_date(topic.replied_at))
+  - reply_count = topic.posts.count - 1
+  = t('forum_extension.post_count', :count => reply_count) + ','
+  = link_to "#{t('forum_extension.most_recently') if reply_count > 1} #{t('forum_extension.from')} #{topic.replied_by.name}" , post_url(topic.posts.last)
+  = friendly_date(topic.replied_at)

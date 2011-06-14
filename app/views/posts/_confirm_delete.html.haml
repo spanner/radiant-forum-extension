@@ -1,10 +1,15 @@
 - post ||= @post
 .post_removal
   %p.warning
-    = t('forum_extension.confirm_removal_of', :author => post.reader.name)
+    - if post.comment?
+      = t('forum_extension.confirm_removal_of_comment', :author => post.reader.name)
+    - elsif post.first?
+      = t('forum_extension.confirm_removal_of_topic', :author => post.reader.name)
+    - else
+      = t('forum_extension.confirm_removal_of_post', :author => post.reader.name)
   %p.buttons
     - form_for post, :html => {:method => 'delete', :class => 'friendly'} do |f|
       = f.submit t('forum_extension.definitely_remove_post')
-      = t('forum_extension.or')
-      = link_to t('forum_extension.cancel'), paginated_post_url(post), :class => 'cancel'
+      = t('or')
+      = link_to t('cancel'), paginated_post_url(post), :class => 'cancel'
   

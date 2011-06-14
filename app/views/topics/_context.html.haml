@@ -1,12 +1,15 @@
 - topic ||= @topic
 - post = topic.posts.first
 
-= t('forum_extension.new_topic_started')
-= t('forum_extension.on_date', :date => friendly_date(post.created_at))
-- if topic.reader
-  = t('forum_extension.by')
-  = link_to post.reader.name, reader_url(post.reader), :class => 'person'
-- if topic.forum
-  = t('forum_extension.under')
-  = link_to(topic.forum.name, forum_url(topic.forum), :class => 'forum')
+%p.context
+  - if topic.reader
+    = t('forum_extension.started_by')
+    = link_to post.reader.name, reader_url(post.reader), :class => 'person'
+  = friendly_date(post.created_at)
+
+  - if topic.forum
+    = t('forum_extension.under')
+    = link_to(topic.forum.name, forum_url(topic.forum), :class => 'forum')
+
+  = render :partial => 'posts/edit_links', :locals => {:post => post}
 

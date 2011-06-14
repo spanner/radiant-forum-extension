@@ -1,16 +1,16 @@
-= render :partial => 'forums/standard_parts'
-
 - content_for :title do
   = t('forum_extension.forums_heading')
 
 - content_for :introduction do
-  %p
-    = t('forum_extension.forums_introduction')
+  %div.introduction
+    %p
+      = t('forum_extension.forums_introduction')
 
 - content_for :sidebar do
-  = render :partial => 'posts/search_form', :locals => {:minimal => true}
-  = render :partial => 'topics/latest'
-  = render :partial => 'topics/busiest'
+  %div.introduction
+    = render :partial => 'posts/search_form', :locals => {:minimal => true}
+    = render :partial => 'topics/latest'
+    = render :partial => 'topics/busiest'
 
 - content_for :messages do
   - if @forums.empty?
@@ -35,6 +35,9 @@
   = t('reader_extension.separator')
   = yield :title
 
-#forum
-  = yield :messages
-  = yield :newtopic
+- content_for :body do
+  .forum
+    = yield :messages
+    = yield :newtopic
+
+= render :partial => 'shared/standard_forum_parts'

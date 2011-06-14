@@ -1,7 +1,5 @@
-require 'sanitize'
-require "sanitize/config/forum"
-
 module ForumHelper
+  include ReaderHelper
   mattr_accessor :forums_found
   
   def using_forums?

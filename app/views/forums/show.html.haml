@@ -1,5 +1,3 @@
-= render :partial => 'forums/standard_parts'
-
 - content_for :title do
   = @forum.name
 
@@ -7,8 +5,8 @@
   = clean(@forum.description)
 
 - content_for :sidebar do
-  = render :partial => 'posts/search_form'
-  = render :partial => "topics/latest"
+  %div.introduction
+    = render :partial => "topics/latest"
 
 - content_for :pagination do
   = pagination_and_summary_for @topics, 'topics'
@@ -20,11 +18,15 @@
   = feed_link(forum_path(@forum, :format => :rss))
 
 - content_for :breadhead do
-  = link_to t('forum_extension.forum').titlecase + t('reader_extension.separator'), topics_url
-  = link_to t('forum_extension.forums'), forums_url
+  %span.breadhead
+    = link_to t('forum_extension.forum').titlecase, topics_url
+    = t('reader_extension.separator')
+    = link_to t('forum_extension.forums'), forums_url
 
 - content_for :breadcrumbs do
-  = yield :breadhead
+  = link_to t('forum_extension.forum').titlecase, topics_url
+  = t('reader_extension.separator')
+  = link_to t('forum_extension.forums'), forums_url
   = t('reader_extension.separator')
   = yield :title
 
@@ -37,8 +39,9 @@
     = render :partial => 'topics/topic', :collection => @topics, :locals => { :with_context => false }
     = yield :pagination if @topics.next_page
 
+- content_for :body do
+  .forum
+    = yield :messages
+    = yield :newtopic
 
-
-#forum
-  = yield :messages
-  = yield :newtopic
+= render :partial => 'shared/standard_forum_parts'

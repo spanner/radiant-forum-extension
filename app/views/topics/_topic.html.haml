@@ -3,16 +3,13 @@
 %div{:id => topic.dom_id}
   .post
     .wrapper
-      .speaker
-        = standard_gravatar_for(post.reader, topic_url(topic))
+      = standard_gravatar_for(post.reader, topic_url(topic))
       .post_header
         %h2
           = link_to_topic(topic)
           = feed_link(topic_path(topic, :format => :rss))
           
-        %p.context
-          = render :partial => "topics/context", :locals => {:topic => topic}
-          = render :partial => 'posts/edit_links', :locals => {:post => post}
+        = render :partial => "topics/context", :locals => {:topic => topic}
 
       .post_body
         = truncate_words(scrub(post.body), 24)
@@ -20,7 +17,6 @@
 
       - if topic.has_replies?
         .post_replies
-          %p.voices
-            = render :partial => 'topics/voices', :locals => {:topic => topic}
           %p.replies
+            = render :partial => 'topics/voices', :locals => {:topic => topic}
             = render :partial => 'topics/replies', :locals => {:topic => topic}

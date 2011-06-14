@@ -1,4 +1,13 @@
 en:
+  activerecord:
+    attributes:
+      post:
+        body: "Your message"
+      topic:
+        forum_id: "File in category"
+        name: "Discussion title"
+        sticky: "Sticky"
+        locked: "Locked"
   config:
     forum:
       allow_attachments?: "Posts have attachments?"
@@ -12,6 +21,11 @@ en:
       offer_rss?: "Show RSS links"
       public?: "Forum public?"
       toolbar?: "Enable editing toolbar"
+  forum: "Forum"
+  topics: "Topics"
+  forums: "Categories"
+  posts: "Posts"
+  settings: "Settings"
   forum_extension:
     a_reply_to: "A reply to"
     add_post: "Add a %{message_type}"
@@ -37,7 +51,9 @@ en:
     comments_closed: "Comments closed."
     comments_on: "Comments on"
     comments: "comments"
-    confirm_removal_of: "Are you sure you want to delete this post from %{author}? There's no way to get it back if you change your mind."
+    confirm_removal_of_comment: "Are you sure you want to delete this comment from %{author}? There's no way to get it back if you change your mind."
+    confirm_removal_of_post: "Are you sure you want to delete this post from %{author}? There's no way to get it back if you change your mind."
+    confirm_removal_of_topic: "Are you sure you want to delete this topic and all of its replies? There's no way to get any of it back if you change your mind."
     confirm_remove_forum: "Delete forum?"
     confirm_remove_post: "Delete post?"
     confirm_remove_topic: "Delete topic?"
@@ -62,19 +78,12 @@ en:
     forum_show_introduction: ""
     forums_heading: "Forum categories"
     forums_introduction: 'These are the broad filing areas we use to organise the forum. You can also see lists of <a href="/forum/topics">all the latest topics</a> or <a href="/forum/posts">posts</a> across all these categories.'
+    from: "from"
     from_reader: "from %{name}"
     if_you_not: "If you're not %{name}, please"
     in: "in"
     in_forum: "filed under"
     in_reply_to: "in reply to"
-    label:
-      post:
-        body: "Your message"
-      topic:
-        forum: "File in category"
-        name: "Discussion title"
-        sticky: "Sticky"
-        locked: "Locked"
     last_seen: "last here"
     latest_activity: "latest activity"
     latest_discussion: "Latest topics"
@@ -119,10 +128,10 @@ en:
     page_locked: "Sorry: comments are not allowed on this page"
     post: "comment"
     post_body: "Post body"
-    post_count_from: 
+    post_count: 
       zero: ""
-      one: "One reply, from"
-      other: "%{count} replies, most recently from"
+      one: "One reply"
+      other: "%{count} replies"
     post_post: "Post %{message_type}"
     post_removed: "Post removed"
     posted: "posted"
@@ -197,8 +206,8 @@ en:
     unknown_date: "unknown date"
   time:
     formats:
-      recently: "%A at %l:%M%p"
+      recently: "on %A at %l:%M%p"
       standard: "on %B %e, %Y at %l:%M%p"
-      this_year: "%B %e at %l:%M%p"
+      this_year: "on %B %e at %l:%M%p"
       today: "today at %l:%M%p"
       yesterday: "yesterday at %l:%M%p"

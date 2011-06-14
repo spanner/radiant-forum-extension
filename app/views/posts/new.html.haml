@@ -1,20 +1,10 @@
-= render :partial => 'forums/standard_parts'
-
-- content_for :form do
-  .post
-    .wrapper
-      .post_header
-        .speaker
-          = standard_gravatar_for(current_reader)
-        %h2.person
-          = current_reader.name
-        %p.context
-          = t('forum_extension.if_you_not', :name => current_reader.name)
-          = link_to(t('reader_extension.log_out'), reader_logout_url) + '.'
-      = render :partial => 'form', :locals => {:post => @post}
-
 - content_for :person do
-  - standard_gravatar_for(current_reader)
+  = standard_gravatar_for(current_reader)
+  
+- content_for :context do
+  %p.context
+    = t('forum_extension.if_you_not', :name => current_reader.name)
+    = link_to(t('reader_extension.log_out'), reader_logout_url) + '.'
 
 - content_for :title do
   - if @page
@@ -30,5 +20,12 @@
   - elsif @topic 
     = link_to_topic(@topic, :class => 'breadhead')
 
-#forum
-  = yield :form
+- content_for :form do
+  = yield :context
+  = render :partial => 'form', :locals => {:post => @post}
+
+- content_for :body do
+  .forum
+    = yield :form
+
+= render :partial => 'shared/standard_forum_parts'

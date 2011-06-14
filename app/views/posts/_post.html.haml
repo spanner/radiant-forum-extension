@@ -9,29 +9,28 @@
 - cssclasses << 'deleted' if post.frozen?
   
 .post{:id => post.dom_id, :class => cssclasses.join(' ')}
-  .wrapper
+  - unless headless
+    = standard_gravatar_for(post.reader)
+  .post_header
     - unless headless
-      .speaker
-        = standard_gravatar_for(post.reader)
-    .post_header
-      - unless headless
-        - if with_context
-          %h2.reply
-            - if post.comment?
-              = t('forum_extension.comment_on')
-            -elsif post.reply?
-              = t('forum_extension.reply_to')
-            = link_to post.topic.name, paginated_post_url(post)
-        - else
-          %h2
-            = post.reader.name
+      - if with_context
+        %h2.reply
+          - if post.comment?
+            = t('forum_extension.comment_on')
+          -elsif post.reply?
+            = t('forum_extension.reply_to')
+          = link_to post.topic.name, paginated_post_url(post)
+      - else
+        %h2
+          = post.reader.name
 
-      %p.context
-        - if with_context
-          = render :partial => 'posts/context', :locals => {:post => post}
-        = friendly_date(post.created_at) + '.'
-        = render :partial => 'posts/edit_links', :locals => {:post => post}
+    %p.context
+      - if with_context
+        = render :partial => 'posts/context', :locals => {:post => post}
+      = friendly_date(post.created_at) + '.'
+      = render :partial => 'posts/edit_links', :locals => {:post => post}
 
+  .wrapper
     .post_body
       = clean(post.body)
       = render :partial => 'posts/attachments', :locals => {:post => post}

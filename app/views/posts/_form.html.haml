@@ -7,20 +7,20 @@
   - elsif post.first?
     - f.fields_for :topic do |tf|
       %p
-        = tf.label :name, t('forum_extension.label.topic.name'), :class => 'required'
+        = tf.label :name, nil, :class => 'required'
         %br
         = tf.text_field :name, :class => 'titular'
         - if admin?
           %br
           %span.quiet
             = tf.check_box :sticky
-            = tf.label :sticky, t('forum_extension.label.topic.sticky'), :class => 'minor'
+            = tf.label :sticky, nil, :class => 'minor'
             = tf.check_box :locked
-            = tf.label :locked, t('forum_extension.label.topic.locked'), :class => 'minor'
+            = tf.label :locked, nil, :class => 'minor'
 
       - if using_forums?
         %p
-          = tf.label :forum_id, t('forum_extension.label.topic.forum'), :class => "required"
+          = tf.label :forum_id, nil, :class => "required"
           %br
           = tf.select :forum_id, Forum.all.collect {|forum| [ forum.name, forum.id ] }, :class=> 'standard'
 
@@ -29,7 +29,7 @@
 
   %p
     - unless omit_label
-      = f.label :body, t('forum_extension.label.post.body'), :class => 'required'
+      = f.label :body, nil, :class => 'required'
       %br
     = f.text_area :body, :rows => 12, :class => Radiant::Config['forum.toolbar?'] ? 'toolbarred' : ''
 

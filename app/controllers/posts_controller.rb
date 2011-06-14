@@ -33,11 +33,13 @@ class PostsController < ForumBaseController
       end
     end
     respond_to do |format|
-      format.html { expires_now }
+      format.html
       format.js {
         if @post.page
+          # page comment form is usually brought in by xhr so that page itself can be cached
           render :partial => 'pages/add_comment', :layout => false
         else
+          # this is a much less common case, but you can cache topics too if you want to
           render :partial => 'topics/reply', :layout => false
         end
       }
@@ -55,14 +57,14 @@ class PostsController < ForumBaseController
     flash[:error] = t("forum_extension.validation_failure")
     respond_to do |format|
       format.html { render :action => 'new' }
-      format.js { render :template => 'posts/new', :layout => false }
+      format.js { render :partial => 'form' }
     end
   end
 
   def edit
     respond_to do |format| 
-      format.html { expires_now }
-      format.js { render :template => 'posts/edit', :layout => false }
+      format.html
+      format.js { render :partial => 'form' }
     end
   end
   
@@ -78,7 +80,7 @@ class PostsController < ForumBaseController
     flash[:error] = t("forum_extension.validation_failure")
     respond_to do |format|
       format.html { render :action => 'edit' }
-      format.js { render :template => 'posts/edit', :layout => false }
+      format.js { render :partial => 'form' }
     end
   end
 

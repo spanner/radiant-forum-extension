@@ -31,22 +31,18 @@
 
             - tbody.latest_cell do
               %td.forum_latest
-                - if forum.posts_count > 0
-                  %ul.latest
-                    - forum.topics.latest(1).each do |topic|
-                      %li.topic
-                        = friendly_date(topic.replied_at) + ":"
-                        - if topic.replied_by
-                          = t('forum_extension.new_reply_to')
-                          = link_to_topic(topic, :class => 'topic')
-                          = t('forum_extension.from_reader', :name => topic.replied_by.name)
-                        - else 
-                          = t('forum_extension.new_topic')
-                          = link_to_topic(topic, :class => 'topic')
-                          = t('forum_extension.from_reader', :name => topic.reader.name)
-                -else
-                  %p
-                    = t('forum_extension.no_topics')
+                %ul.latest
+                  - forum.topics.latest(1).each do |topic|
+                    %li.topic
+                      = friendly_date(topic.replied_at) + ":"
+                      - if topic.replied_by
+                        = t('forum_extension.new_reply_to')
+                        = link_to_topic(topic, :class => 'topic')
+                        = t('forum_extension.from_reader', :name => topic.replied_by.name)
+                      - else 
+                        = t('forum_extension.new_topic')
+                        = link_to_topic(topic, :class => 'topic')
+                        = t('forum_extension.from_reader', :name => topic.reader.name)
 
             - tbody.modify_cell do
               %td.actions

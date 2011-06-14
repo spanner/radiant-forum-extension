@@ -1,5 +1,3 @@
-= render :partial => 'forums/standard_parts'
-
 - content_for :messages do
   - if @topics.empty?
     %p 
@@ -28,11 +26,18 @@
 - content_for :feedlink do
   = feed_link(topics_url(:format => :rss))
 
-- content_for :introduction do
-  %p
-    =t('forum_extension.topics_introduction')
+- content_for :head do
+  %h1
+    = yield :title
 
-#forum
+- content_for :introduction do
+  %div.introduction
+    %p
+      =t('forum_extension.topics_introduction')
+
+= render :partial => 'shared/standard_forum_parts'
+
+.forum
   = yield :pagination if @topics.previous_page
   = yield :messages
   = yield :pagination if @topics.next_page

@@ -1,15 +1,9 @@
-= render :partial => 'forums/standard_parts'
+- content_for :context do
+  %p.context
+    = render :partial => 'posts/context'
 
-- content_for :form do
-  .wrapper
-    .post_header
-      .speaker
-        = standard_gravatar_for(@post.reader)
-      %h2.person
-        = current_reader.name
-      %p.context
-        = friendly_date(@post.created_at)
-    = render :partial => 'form', :locals => {:post => @post}
+- content_for :person do
+  = standard_gravatar_for(@post.reader)
 
 - content_for :title do
   - if @post.page
@@ -20,11 +14,17 @@
     = t('forum_extension.edit_reply')
 
 - content_for :breadhead do
-  - if @post.page
-    = link_to @page.title, @page.url, :class => 'breadhead'
-  - elsif @post.topic && !@post.first?
-    = link_to_topic(@post.topic, :class => 'breadhead')
+  %span.breadhead
+    - if @post.page
+      = link_to @page.title, @page.url, :class => 'breadhead'
+    - elsif @post.topic && !@post.first?
+      = link_to_topic(@post.topic, :class => 'breadhead')
 
+- content_for :form do
+  = render :partial => 'form', :locals => {:post => @post}
 
-#forum
-  = yield :form
+- content_for :body do
+  .forum
+    = yield :form
+  
+= render :partial => 'shared/standard_forum_parts'
