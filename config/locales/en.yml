@@ -172,6 +172,7 @@ en:
     search_whole_forum: "search the whole forum"
     separator: ':'
     showing: "showing"
+    sorry_cannot_edit: "Sorry: either you don't have the authority to edit this post, or its editable period has finished."
     sorry_locked: "Sorry: this topic is locked."
     start_topic: "Start a new conversation"
     started: "started"

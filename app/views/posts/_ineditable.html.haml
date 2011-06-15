@@ -1,0 +1,7 @@
+- post ||= @post
+.ineditable
+  %p.warning
+    = t('forum_extension.sorry_cannot_edit')
+  %p.buttons
+    = link_to t('cancel'), paginated_post_url(post), :class => 'cancel'
+  

@@ -21,7 +21,10 @@
       = link_to_topic(@post.topic, :class => 'breadhead')
 
 - content_for :form do
-  = render :partial => 'form', :locals => {:post => @post}
+  - if post.editable_by?(current_reader)
+    = render :partial => 'form', :locals => {:post => @post}
+  - else
+    = render :partial => 'ineditable', :locals => {:post => @post}
 
 - content_for :body do
   .forum

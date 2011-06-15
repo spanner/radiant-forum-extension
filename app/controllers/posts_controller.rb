@@ -64,7 +64,13 @@ class PostsController < ForumBaseController
   def edit
     respond_to do |format| 
       format.html
-      format.js { render :partial => 'form' }
+      format.js { 
+        if post.editable_by?(current_reader)
+          render :partial => 'form' 
+        else
+          render :partial => 'ineditable' 
+        end
+      }
     end
   end
   
