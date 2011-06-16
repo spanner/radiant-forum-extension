@@ -129,7 +129,7 @@ class Post < ActiveRecord::Base
   def body_html
     if body
       html = RedCloth.new(body, [ :hard_breaks, :filter_html ]).to_html(:textile, :smilies)
-      clean(html, Sanitize::Config::RELAXED)
+      Sanitize.clean(html, Sanitize::Config::RELAXED)
     else
       ""
     end

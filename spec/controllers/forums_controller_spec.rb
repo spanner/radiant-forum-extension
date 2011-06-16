@@ -30,11 +30,4 @@ describe ForumsController do
       response.should render_template("show")
     end
   end
-  
-  [:new, :edit, :update, :create, :destroy].each do |action|
-    it "should fail #{action} requests" do
-      lambda { get action, :id => forum_id(:public) }.should raise_error ActionController::RoutingError
-    end
-  end
-
 end

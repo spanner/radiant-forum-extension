@@ -34,10 +34,4 @@ describe TopicsController do
     end
   end
 
-  [:new, :edit, :update, :create, :destroy].each do |action|
-    it "should fail #{action} requests" do
-      lambda { get action, :id => forum_id(:public) }.should raise_error ActionController::RoutingError
-    end
-  end
-
 end

@@ -197,10 +197,9 @@ describe PostsController do
 
           it "should re-render the bare post form" do
             response.should be_success
-            response.should render_template('posts/new')
+            response.should render_template('posts/_form')
             response.layout.should be_nil
           end
-          
         end
       end
     end
