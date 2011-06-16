@@ -30,16 +30,20 @@
       },
       submit: function (e) {
         var ajaxable = true;
+        // file to upload means not ajaxable at all
         self.container.find('input:file').each(function () {
           var file = $(this).val();
           if (file && file != "") ajaxable = false;
         });
+        // presence of title field means not ajaxable because that appears elsewhere on the page
+        if (self.container.find('input:text').length > 0) ajaxable = false;
+
         if (ajaxable) {
           e.preventDefault();
           self.form.find('textarea.toolbarred').read_editor();
           $.post(self.form.attr('action'), self.form.serialize(), self.step, 'html');  
         } else {
-          return true;  // allow event through so that uploads are sent by normal HTTP POST
+          return true;  // allow event through so that form is sent by normal HTTP POST
                         // toolbar is read in onSubmit
         }
       },
@@ -277,6 +281,28 @@
     });
     return this;
   };
+  
+  $.fn.capture_search = function() { 
+    this.each(function() { 
+      var self = $(this);
+      var target = $('#results');
+      if (target.length >= 1) {
+        self.submit(function (e) {
+          if(e) e.preventDefault();
+          self.addClass("waiting");
+          target.addClass("waiting");
+          target.load(self.attr('action'), self.serialize(), function () { 
+            self.removeClass("waiting"); 
+            target.removeClass("waiting");
+          });  
+        });
+      } else {
+        return true;
+      }
+    });
+    return this;
+  };
+  
 
 })(jQuery);
 
@@ -286,6 +312,7 @@ $(function() {
   $(".post.first").hideable_post({});
   $(".upload_stack").upload_stack({});
   $(".toolbarred").add_editor({});
+  $(".forum_search").capture_search({});
   $("input:submit").live('click', function (event) {
     var self = $(this);
     self.after('<span class="waiting">Please wait</span>');

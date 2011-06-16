@@ -14,7 +14,11 @@ class PostsController < ForumBaseController
     posts = posts.in_forum(@forum) if @forum
     posts = posts.in_topic(@topic) if @topic
     @posts = posts.paginate(pagination_parameters)
-    render_page_or_feed
+    respond_to do |format|
+      format.html
+      format.js { render :partial => 'search_results' }
+      format.rss { render :layout => 'feed' }
+    end
   end
 
   def show
