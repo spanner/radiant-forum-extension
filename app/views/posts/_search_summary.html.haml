@@ -1,0 +1,13 @@
+- @searching = !@term.blank? || @reader || @forum || @topic
+
+- if @searching
+  = t('forum_extension.topics_and_posts')
+  - if @forum
+    = t('forum_extension.in') + ' ' + link_to(@forum.name, forum_url(@forum))
+  - unless @term.blank?
+    = t('forum_extension.containing') 
+    %strong= @term
+  - if @reader
+    = t('forum_extension.posted_by') + ' ' + link_to(@reader.name, reader_url(@reader))
+  - if @topic
+    - summary << t('forum_extension.in_topic') + ' ' + link_to_topic(@topic)

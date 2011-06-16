@@ -1,0 +1,15 @@
+%h2= t('forum_extension.search_results')
+%p
+  = render :partial => 'search_summary'
+
+- if @posts.empty?
+  - if @searching
+    %p.has_error
+      = t('forum_extension.no_search_results')
+    = render :partial => 'posts/search_form'
+  - else
+    %p 
+      = t('forum_extension.no_posts')
+- else
+  %ul.search_results
+    = render :partial => 'posts/minimal', :collection => @posts

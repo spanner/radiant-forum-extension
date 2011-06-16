@@ -2,9 +2,4 @@
   = t('forum_extension.recent_posts')
 %ul
   - Post.latest(10).each do |post|
-    %li.post
-      %span.subject
-        = link_to_post(post, :class => 'title')
-      %span.context
-        = render :partial => 'posts/context', :locals => {:post => post}
-        = friendly_date(post.created_at)
+    = render :partial => 'posts/minimal', :locals => {:post => post}

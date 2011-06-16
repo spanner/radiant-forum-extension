@@ -1,6 +1,6 @@
 - minimal ||= false
 
-%form.friendly{:action => posts_url, :method => :get}
+%form.friendly.forum_search{:action => posts_url, :method => :get}
   - unless minimal
     %h2
       =t('forum_extension.search_header')
