@@ -2,15 +2,13 @@
   = t('forum_extension.forums_heading')
 
 - content_for :introduction do
-  %div.introduction
-    %p
-      = t('forum_extension.forums_introduction')
+  %p
+    = t('forum_extension.forums_introduction')
 
 - content_for :sidebar do
-  %div.introduction
-    = render :partial => 'posts/search_form', :locals => {:minimal => true}
-    = render :partial => 'topics/latest'
-    = render :partial => 'topics/busiest'
+  = render :partial => 'posts/search_form', :locals => {:minimal => true}
+  = render :partial => 'topics/latest'
+  = render :partial => 'topics/busiest'
 
 - content_for :messages do
   - if @forums.empty?

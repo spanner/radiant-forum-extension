@@ -2,11 +2,10 @@
   = @forum.name
 
 - content_for :introduction do
-  = clean(@forum.description)
+  = clean_html(@forum.description)
 
 - content_for :sidebar do
-  %div.introduction
-    = render :partial => "topics/latest"
+  = render :partial => "topics/latest"
 
 - content_for :pagination do
   = pagination_and_summary_for @topics, 'topics'

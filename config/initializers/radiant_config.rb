@@ -1,6 +1,8 @@
 Radiant.config do |config|
   config.namespace('forum') do |forum|
     forum.define 'public?', :default => true
+    forum.define 'cached?', :default => true
+    forum.define 'cache_duration', :default => 60, :type => :integer, :units => "minutes"
     forum.define 'toolbar?', :default => true
     forum.define 'editable_period', :type => :integer, :default => 30, :units => "minutes"
     forum.define 'offer_rss?', :default => false

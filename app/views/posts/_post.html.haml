@@ -32,5 +32,5 @@
 
   .wrapper
     .post_body
-      = clean(post.body)
+      = clean_html(post.body)
       = render :partial => 'posts/attachments', :locals => {:post => post}

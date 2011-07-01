@@ -31,9 +31,8 @@
     = yield :title
 
 - content_for :introduction do
-  %div.introduction
-    %p
-      =t('forum_extension.topics_introduction')
+  %p
+    =t('forum_extension.topics_introduction')
 
 = render :partial => 'shared/standard_forum_parts'
 

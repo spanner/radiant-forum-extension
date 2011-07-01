@@ -12,7 +12,7 @@
         = render :partial => "topics/context", :locals => {:topic => topic}
 
       .post_body
-        = truncate_words(scrub(post.body), 24)
+        = truncate_words(scrub_html(post.body), 24)
         = render :partial => 'posts/attachments', :locals => {:post => post}
 
       - if topic.has_replies?

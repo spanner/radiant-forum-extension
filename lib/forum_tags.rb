@@ -6,6 +6,23 @@ module ForumTags
   
   class TagError < StandardError; end
 
+  tag 'forum_css' do |tag|
+    styles = []
+    styles << %{<link rel="stylesheet" href="/cleditor/jquery.cleditor.css" media="all" />} if Radiant.config['forum.toolbar?']
+    styles << %{<link rel="stylesheet" href="/stylesheets/forum.css" media="all" />}
+  end
+
+  tag 'forum_js' do |tag|
+    scripts = []
+    scripts << %{
+      <script type="text/javascript" src="/cleditor/jquery.cleditor.js"></script>
+      <script type="text/javascript" src="/cleditor/jquery.cleditor.icon.js"></script>
+      <script type="text/javascript" src="/cleditor/jquery.cleditor.xhtml.js"></script>
+    } if Radiant.config['forum.toolbar?']
+    scripts << %{<script type="text/javascript" src="/javascripts/forum.js"></script>}
+    scripts.join
+  end
+
   tag 'forum' do |tag|
     tag.expand
   end
@@ -309,7 +326,7 @@ module ForumTags
   end
 
   tag 'comments' do |tag|
-    tag.expand if tag.locals.page.commentable?
+    tag.expand if tag.locals.page.show_comments?
   end
 
   desc %{
@@ -364,7 +381,7 @@ module ForumTags
       tag.locals.post = post
       results << tag.render('comment')
     end
-    results << %{<div class="new_post"><div class="wrapper"><p class="add_comment">#{tag.render('comment_link', 'class' => 'remote')}</p></div></div>}
+    results << %{<div class="new_post"><div class="wrapper"><p>#{tag.render('comment_link', 'class' => 'remote post')}</p></div></div>}
     results << tag.render('pagination', tag.attr.dup)
     results << "</div>"
     results

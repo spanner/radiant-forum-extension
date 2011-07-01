@@ -110,7 +110,7 @@ class Post < ActiveRecord::Base
   
   def editable_by?(reader=nil)
     return false unless reader
-    still_editable? && reader && (reader.id == reader_id)
+    still_editable? && reader.id == reader_id
   end
 
   def visible_to?(reader=nil)

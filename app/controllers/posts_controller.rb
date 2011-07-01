@@ -37,13 +37,17 @@ class PostsController < ForumBaseController
       end
     end
     respond_to do |format|
-      format.html
+      format.html {
+        @inline = false
+        render
+      }
       format.js {
+        @inline = true
         if @post.page
           # page comment form is usually brought in by xhr so that page itself can be cached
           render :partial => 'pages/add_comment', :layout => false
         else
-          # this is a much less common case, but you can cache topics too if you want to
+          # this is a much less common case, but you can cache topic pages if you really want to
           render :partial => 'topics/reply', :layout => false
         end
       }
@@ -67,9 +71,13 @@ class PostsController < ForumBaseController
 
   def edit
     respond_to do |format| 
-      format.html
+      format.html {
+        @inline = false
+        render
+      }
       format.js { 
-        if post.editable_by?(current_reader)
+        @inline = true
+        if current_reader.is_moderator?(@post) || @post.editable_by?(current_reader)
           render :partial => 'form' 
         else
           render :partial => 'ineditable' 

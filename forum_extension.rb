@@ -20,15 +20,23 @@ class ForumExtension < Radiant::Extension
       Radiant::AdminUI.load_forum_extension_regions
     end
     
-    admin.pages.edit.add :parts_bottom, "edit_commentability", :after => "edit_layout_and_type"
+    admin.page.edit.add :layout, "edit_commentability"
     admin.reader_configuration.show.add :settings, "forum", :after => "administration"
     admin.reader_configuration.edit.add :form, "edit_forum", :after => "administration"
-    
+
+    ReaderHelper.add_css_paths('/stylesheets/editor.css', '/stylesheets/forum.css')
+    ReaderHelper.add_js_paths('/cleditor/jquery.cleditor.js', '/cleditor/jquery.cleditor.xhtml.js', '/cleditor/jquery.cleditor.icon.js', '/javascripts/forum.js')
+
     if defined? RedCloth::DEFAULT_RULES
       RedCloth.send :include, ForumRedCloth3
       RedCloth::DEFAULT_RULES.push(:smilies)
     else
       RedCloth::TextileDoc.send :include, ForumRedCloth4
+    end
+    
+    if admin.respond_to?(:dashboard)
+      Admin::DashboardController.send :helper, ForumHelper
+      admin.dashboard.index.add :main, 'forum_dashboard', :after => 'draft_pages'
     end
 
     tab("Forum") do

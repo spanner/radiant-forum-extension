@@ -9,6 +9,14 @@ class ForumBaseController < ReaderActionController
 
 protected
 
+  def set_cache_header
+    if Radiant.config['forum.cached?']
+      expires_in (Radiant.config['forum.cache_duration'] || 60).to_i.minutes, :public => true
+    else
+      expires_now
+    end
+  end
+  
   def require_login_unless_public
     return false unless Radiant::Config['forum.public?'] || require_reader && require_activated_reader
   end
@@ -66,15 +74,14 @@ protected
   def render_page_or_feed(template_name = action_name)
     respond_to do |format|
       format.html { 
-        expires_now
+        set_cache_header
         render :action => template_name 
       }
       format.rss { 
-        expires_now
-        render :action => template_name, :layout => 'feed' 
+        render :action => template_name, :layout => 'feed'
       }
       format.js { 
-        render :action => template_name, :layout => false 
+        render :action => template_name, :layout => false
       }
     end
   end

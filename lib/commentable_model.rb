@@ -2,15 +2,18 @@ module CommentableModel # for inclusion into ActiveRecord::Base
   def self.included(base)
     base.extend ClassMethods
     base.class_eval do
-      named_scope :most_commented, lambda { |count|
-        {
-          :select => "topics.*, count(posts.id) AS post_count", 
-          :joins => "INNER JOIN posts ON posts.topic_id = topics.id",
-          :group => "topics.id",
-          :order => "post_count DESC",
-          :limit => count
-        }
-      }
+      named_scope :last_commented, lambda { |count| {
+        :conditions => "replied_at IS NOT NULL",
+        :order => "replied_at DESC",
+        :limit => count
+      }}
+      named_scope :most_commented, lambda { |count| {
+        :select => "topics.*, count(posts.id) AS post_count", 
+        :joins => "INNER JOIN posts ON posts.topic_id = topics.id",
+        :group => "topics.id",
+        :order => "post_count DESC",
+        :limit => count
+      }}
     end
   end
 
@@ -22,6 +25,7 @@ module CommentableModel # for inclusion into ActiveRecord::Base
     def has_comments
       return if has_comments?
       has_many :posts, :order => 'posts.created_at ASC', :dependent => :destroy
+      belongs_to :replied_by, :class_name => 'Reader' if column_names.include? 'replied_by_id'
       class_eval {
         extend CommentableModel::CommentableClassMethods
         include CommentableModel::CommentableInstanceMethods

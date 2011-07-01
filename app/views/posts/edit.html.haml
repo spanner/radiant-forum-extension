@@ -25,9 +25,8 @@
     = render :partial => 'form', :locals => {:post => @post}
   - else
     = render :partial => 'ineditable', :locals => {:post => @post}
-
-- content_for :body do
-  .forum
-    = yield :form
   
 = render :partial => 'shared/standard_forum_parts'
+
+.forum
+  = yield :form

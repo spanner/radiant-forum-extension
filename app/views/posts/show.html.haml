@@ -28,8 +28,7 @@
     = t('forum_extension.reply_to') + @post.topic.name
 
 - content_for :sidebar do
-  %div.introduction
-    = render :partial => 'topics/latest'
+  = render :partial => 'topics/latest'
 
 - content_for :body do
   .forum

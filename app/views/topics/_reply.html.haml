@@ -3,6 +3,12 @@
 - if topic.locked?
   %p.administrative
     = t("forum_extension.topic_locked")
+
+- elsif Radiant.config['forum.cached?'] && !@inline
+  .new_post
+    .wrapper
+      = link_to t("forum_extension.add_reply"), new_topic_post_url(topic), :class => 'remote post'
+
 - else
   - if current_reader
     - if current_reader.activated?

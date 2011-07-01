@@ -31,13 +31,13 @@
     - unless omit_label
       = f.label :body, nil, :class => 'required'
       %br
-    = f.text_area :body, :rows => 12, :class => Radiant::Config['forum.toolbar?'] ? 'toolbarred' : ''
+    = f.text_area :body, :rows => 12, :class => Radiant::Config['forum.toolbar?'] ? 'rte' : ''
 
   = render :partial => 'posts/uploader', :locals => {:post => post, :f => f}
 
   %p.buttons
     = f.submit t('forum_extension.save_post')
-    - unless post.new_record?
+    - if @inline
       = t('or')
-      = link_to t("cancel"), paginated_post_url(post), :class => 'cancel'
+      = link_to t("cancel"), '#', :class => 'cancel'
 

@@ -9,7 +9,6 @@
 */
 
 (function($) { 
-
   $.ajaxSettings.accepts.html = $.ajaxSettings.accepts.script;
 
   function RemoteAction (url, holder) {
@@ -40,7 +39,11 @@
 
         if (ajaxable) {
           e.preventDefault();
-          self.form.find('textarea.toolbarred').read_editor();
+          var editor = $(this).data('editor');
+          self.form.find('textarea').each(function (box) {
+            var editor = $(box).data('editor');
+            if (editor) editor.save();
+          });
           $.post(self.form.attr('action'), self.form.serialize(), self.step, 'html');  
         } else {
           return true;  // allow event through so that form is sent by normal HTTP POST
@@ -50,14 +53,14 @@
       step: function (results) {
         self.unwait();
         if (results) self.container.html(results);
+        self.container.find('.cancel').click(self.cancel);
         self.form = self.container.find('form');
         if (self.form.length > 0) {
           self.form.submit(self.submit);
-          self.form.find('div.upload_stack').upload_stack();
-          self.form.find('a.cancel').click(self.cancel);
-          self.form.find("textarea.toolbarred").add_editor({});
+          self.form.init_forum();
           self.show();
         } else {
+          $(results).init_forum();
           holder.replaceWith(results);
         }
       },
@@ -150,7 +153,7 @@
   }
   
   $.fn.enable_remote_actions = function(conf) {
-    this.each(function() {      
+    this.each(function() {
       new ActionHolder($(this), conf);
     });
     return this;
@@ -257,31 +260,23 @@
   };
 
   $.fn.add_editor = function() { 
-    this.each(function() { 
-      var self = $(this);
-      var editor = new punymce.Editor({
-        id : self.attr('id'),
-        plugins : 'Link,Image,Emoticons,EditSource',
-        toolbar : 'bold,italic,link,unlink,image,emoticons,editsource',
-        width : 510,
-        height : 375,
-        resize : true
+    if(window.punymce !== undefined) {
+      this.each(function() {
+        var self = $(this);
+        var editor = new punymce.Editor({
+          id : self.attr('id'),
+          plugins : 'Link,Image,Emoticons,EditSource',
+          toolbar : 'bold,italic,link,unlink,image,emoticons,editsource',
+          width : 510,
+          height : 375,
+          resize : true
+        });
+        self.data('editor', editor);
       });
-      self.data('editor', editor);
-    });
+    }
     return this;
   };
 
-  $.fn.read_editor = function() { 
-    this.each(function() { 
-      var self = $(this);
-      if (self.data('editor')) {
-        self.val(self.data('editor').getContent());
-      }
-    });
-    return this;
-  };
-  
   $.fn.capture_search = function() { 
     this.each(function() { 
       var self = $(this);
@@ -303,16 +298,31 @@
     return this;
   };
   
-
+  $.fn.add_rte = function() { 
+    this.cleditor({
+      width: 630,
+      height: 400,
+      controls: "bold italic underline strikethrough size removeformat | bullets numbering outdent indent | icon image link unlink | source"
+    });
+  };
+  
+  $.fn.init_forum = function () {
+    this.each(function() { 
+      var self = $(this);
+      self.find(".post").enable_remote_actions();
+      self.find(".new_post").enable_remote_actions();
+      self.find(".post.first").hideable_post();
+      self.find(".upload_stack").upload_stack();
+      self.find(".forum_search").capture_search();
+      self.find("textarea.rte").add_rte();
+    });
+    return this;
+  };
 })(jQuery);
 
 $(function() {
-  $(".post").enable_remote_actions({});
-  $(".new_post").enable_remote_actions({});
-  $(".post.first").hideable_post({});
-  $(".upload_stack").upload_stack({});
-  $(".toolbarred").add_editor({});
-  $(".forum_search").capture_search({});
+  $(document).init_forum();
+  
   $("input:submit").live('click', function (event) {
     var self = $(this);
     self.after('<span class="waiting">Please wait</span>');

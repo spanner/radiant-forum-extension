@@ -15,4 +15,11 @@ module ForumReader
       }
     }
   end
+  
+  # This will get more useful soon. For now I'm just establishing an interface.
+  # Moderation will be a global flag but can also come from group-leadership or forum-ownership
+  
+  def is_moderator?(thing=nil)
+    true if is_admin?
+  end
 end

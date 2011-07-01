@@ -11,15 +11,13 @@
   = t('forum_extension.posts_heading')
 
 - content_for :introduction do
-  %div.introduction
-    %p
-      = render :partial => 'search_summary'
+  %p
+    = render :partial => 'search_summary'
   
 - content_for :sidebar do
-  %div.sidebar
-    - unless @searching && @posts.empty?
-      = render :partial => 'posts/search_form'
-    = render :partial => "topics/latest"
+  - unless @searching && @posts.empty?
+    = render :partial => 'posts/search_form'
+  = render :partial => "topics/latest"
 
 - content_for :pagination do
   = pagination_and_summary_for(@posts, t('forum_extension.post'))

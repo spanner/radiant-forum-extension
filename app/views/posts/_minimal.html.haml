@@ -4,4 +4,4 @@
   %span.context
     = render :partial => 'posts/context', :locals => {:post => minimal}
   %br
-  = truncate_words(scrub(minimal.body), 12)
+  = truncate_words(scrub_html(minimal.body), 12)
