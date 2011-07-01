@@ -19,7 +19,7 @@ module ForumPage
       return false unless Radiant::Config['forum.allow_page_comments?'] && commentable?
       return false if comments_closed?
       return true unless commentable_period && commentable_period > 0
-      return Time.now - self.created_at < commentable_period
+      return Time.now - self.published_at < commentable_period
     end
     
     def locked?
