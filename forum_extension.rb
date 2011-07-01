@@ -24,9 +24,6 @@ class ForumExtension < Radiant::Extension
     admin.reader_configuration.show.add :settings, "forum", :after => "administration"
     admin.reader_configuration.edit.add :form, "edit_forum", :after => "administration"
 
-    ReaderHelper.add_css_paths('/stylesheets/editor.css', '/stylesheets/forum.css')
-    ReaderHelper.add_js_paths('/cleditor/jquery.cleditor.js', '/cleditor/jquery.cleditor.xhtml.js', '/cleditor/jquery.cleditor.icon.js', '/javascripts/forum.js')
-
     if defined? RedCloth::DEFAULT_RULES
       RedCloth.send :include, ForumRedCloth3
       RedCloth::DEFAULT_RULES.push(:smilies)

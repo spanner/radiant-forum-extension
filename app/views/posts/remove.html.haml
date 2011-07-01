@@ -22,8 +22,6 @@
   - else
     = t('forum_extension.confirm_remove_post')
 
-- content_for :body do
-  = render :partial => 'confirm_delete', :locals => {:post => @post}
-
 = render :partial => 'shared/standard_forum_parts'
 
+= render :partial => 'confirm_delete', :locals => {:post => @post}

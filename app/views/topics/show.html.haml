@@ -48,11 +48,10 @@
 - content_for :reply_form do
   = render :partial => 'topics/reply'
 
-- content_for :body do
-  .forum
-    = yield :first_post
-    = yield :messages
-    = yield :reply_form unless @posts.next_page
-
 = render :partial => 'shared/standard_forum_parts'
+
+.forum
+  = yield :first_post
+  = yield :messages
+  = yield :reply_form unless @posts.next_page
 

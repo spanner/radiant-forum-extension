@@ -47,9 +47,8 @@
     = render :partial => 'posts/post', :collection => @posts, :locals => {:with_context => true, :headless => false}
     = yield :pagination if @posts.next_page
 
-- content_for :body do
-  .forum
-    = yield :messages
-
 = render :partial => 'shared/standard_forum_parts'
+
+.forum
+  = yield :messages
 

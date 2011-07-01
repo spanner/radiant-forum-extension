@@ -33,9 +33,8 @@
   = t('reader_extension.separator')
   = yield :title
 
-- content_for :body do
-  .forum
-    = yield :messages
-    = yield :newtopic
-
 = render :partial => 'shared/standard_forum_parts'
+
+.forum
+  = yield :messages
+  = yield :newtopic

@@ -89,7 +89,7 @@ class PostsController < ForumBaseController
   def update
     @post.attributes = params[:post]
     @post.save!
-    Radiant::Cache.clear if @post.page
+    Radiant::Cache.clear if @post.page || (@post.topic && Radiant.config['forum.cached?'])
     respond_to do |format|
       format.html { redirect_to_post }
       format.js { render :partial => 'post' }
