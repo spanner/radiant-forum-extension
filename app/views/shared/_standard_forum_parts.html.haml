@@ -34,8 +34,8 @@
 - content_for :newtopic do
   .newmessage
     - if using_forums? && @forum
-      = link_to t('forum_extension.new_topic_here'), new_post_url(:forum_id => @forum.id)
+      = link_to t('forum_extension.new_topic_here'), new_post_url(:forum_id => @forum.id), :class => "post"
     - else
-      = link_to t('forum_extension.new_topic'), new_post_url()
+      = link_to t('forum_extension.new_topic'), new_post_url(), :class => "post"
 
 = render :partial => 'shared/standard_reader_parts'

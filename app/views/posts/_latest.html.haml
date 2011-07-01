@@ -1,5 +1,5 @@
 %h2
   = t('forum_extension.recent_posts')
 %ul
-  - Post.latest(10).each do |post|
+  - Post.visible_to(current_reader).latest(10).each do |post|
     = render :partial => 'posts/minimal', :locals => {:post => post}

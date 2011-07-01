@@ -1,5 +1,5 @@
 %h2
   = t('forum_extension.recent_topics')
 %ul
-  - Topic.latest(5).each do |topic|
+  - Topic.visible_to(current_reader).latest(5).each do |topic|
     = render :partial => 'topics/minimal', :locals => {:topic => topic}
