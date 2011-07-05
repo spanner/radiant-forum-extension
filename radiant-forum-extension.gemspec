@@ -1,16 +1,18 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "radiant-forum-extension/version"
+require 'radiant-forum-extension'
 
 Gem::Specification.new do |s|
   s.name        = "radiant-forum-extension"
   s.version     = RadiantForumExtension::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["William Ross"]
-  s.email       = ["radiant@spanner.org"]
-  s.homepage    = "radiant.spanner.org"
-  s.summary     = %q{Forum and Comment Extension for Radiant CMS}
-  s.description = %q{Nice clean forums and page comments for inclusion in your radiant site. Derived very long ago from beast. Requires the reader extension.}
+  s.authors     = RadiantForumExtension::AUTHORS
+  s.email       = RadiantForumExtension::EMAIL
+  s.homepage    = RadiantForumExtension::URL
+  s.summary     = RadiantForumExtension::SUMMARY
+  s.description = RadiantForumExtension::DESCRIPTION
+
+  s.add_dependency 'radiant-reader-extension', "~> 2.0.0.rc3"
 
   ignores = if File.exist?('.gitignore')
     File.read('.gitignore').split("\n").inject([]) {|a,p| a + Dir[p] }
@@ -28,6 +30,4 @@ Gem::Specification.new do |s|
     config.gem 'radiant-forum-extension', :version => '~> #{RadiantForumExtension::VERSION}'
 
   }
-
-  s.add_dependency 'radiant-reader-extension', "~> 2.0.0.rc1"
 end

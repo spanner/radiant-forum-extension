@@ -2,7 +2,7 @@
   %h2
     = t('forum_extension.forums')
   %ul
-    - Forum.all.each do |forum|
+    - Forum.visible_to(current_reader).each do |forum|
       - if topic = forum.topics.bydate.first
         %li
           = link_to forum.name, forum_url(forum), :class => 'title'
