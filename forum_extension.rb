@@ -37,7 +37,7 @@ class ForumExtension < Radiant::Extension
     
     if admin.respond_to?(:dashboard)
       Admin::DashboardController.send :helper, ForumHelper
-      admin.dashboard.index.add :main, 'forum_dashboard', :after => 'user_info'
+      admin.dashboard.index.add :main, 'forum_dashboard', :before => 'recent_assets'
     end
 
     tab("Forum") do

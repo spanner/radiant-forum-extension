@@ -1,25 +1,5 @@
 - include_stylesheet 'admin/forum_dashboard'
 
-#recent_comments.dashboard_module
-  .header
-    %h2
-      = t('forum_extension.pages_with_latest_comments')
-  .blockcontent
-    - latest = Page.last_commented(6)
-    - if latest.any?
-      - latest.each do |page|
-        .page
-          %h3
-            = link_to("#{icon} #{node_title}", edit_admin_page_url(page), :title => page.url, :class => 'page')
-            = link_to("&rarr;", page.path, :class => 'public')
-          %p.minor
-            =t('forum_extension.comment_count_from', :count => page.posts.count)
-            = link_to topic.replied_by.name, reader_url(topic.replied_by)
-            = friendly_date(topic.replied_at)
-    - else
-      %p.minor
-        =t('dashboard_extension.no_show')
-        
 #recent_topics.dashboard_module
   .header
     %h2
@@ -47,5 +27,25 @@
     - else
       %p.minor
         =t('dashboard_extension.no_show')
-        
       
+
+- if Radiant.config['forum.pages_commentable?']
+  #recent_comments.dashboard_module
+    .header
+      %h2
+        = t('forum_extension.pages_with_latest_comments')
+    .blockcontent
+      - latest = Page.last_commented(6)
+      - if latest.any?
+        - latest.each do |page|
+          .page
+            %h3
+              = link_to("#{icon} #{node_title}", edit_admin_page_url(page), :title => page.url, :class => 'page')
+              = link_to("&rarr;", page.path, :class => 'public')
+            %p.minor
+              =t('forum_extension.comment_count_from', :count => page.posts.count)
+              = link_to topic.replied_by.name, reader_url(topic.replied_by)
+              = friendly_date(topic.replied_at)
+      - else
+        %p.minor
+          =t('dashboard_extension.no_show')
