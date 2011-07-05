@@ -6,6 +6,10 @@ class ForumExtension < Radiant::Extension
   description RadiantForumExtension::DESCRIPTION
   url RadiantForumExtension::URL
 
+  extension_config do |config|
+    config.gem 'acts_as_list', :version => "~> 0.1.2"
+  end
+
   def activate
     ActiveRecord::Base.send :include, CommentableModel                         # provides has_comments class method that is used here by topics and pages but can be called from any model
     Reader.send :include, ForumReader                                          # has topics and posts
@@ -33,7 +37,7 @@ class ForumExtension < Radiant::Extension
     
     if admin.respond_to?(:dashboard)
       Admin::DashboardController.send :helper, ForumHelper
-      admin.dashboard.index.add :main, 'forum_dashboard', :after => 'draft_pages'
+      admin.dashboard.index.add :main, 'forum_dashboard', :after => 'user_info'
     end
 
     tab("Forum") do

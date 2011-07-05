@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.description = RadiantForumExtension::DESCRIPTION
 
   s.add_dependency 'radiant-reader-extension', "~> 2.0.0.rc3"
+  s.add_dependency 'acts_as_list', "~> 0.1.2"
 
   ignores = if File.exist?('.gitignore')
     File.read('.gitignore').split("\n").inject([]) {|a,p| a + Dir[p] }
