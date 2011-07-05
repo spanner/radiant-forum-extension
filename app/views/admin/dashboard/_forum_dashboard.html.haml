@@ -5,7 +5,7 @@
     %h2
       = t('forum_extension.latest_forum_activity')
   .blockcontent
-    - latest = Topic.latest(4)
+    - latest = Topic.latest(8)
     - if latest.any?
       - latest.each do |topic|
         - post = topic.posts.last
@@ -29,13 +29,13 @@
         =t('dashboard_extension.no_show')
       
 
-- if Radiant.config['forum.pages_commentable?']
-  #recent_comments.dashboard_module
-    .header
-      %h2
-        = t('forum_extension.pages_with_latest_comments')
-    .blockcontent
-      - latest = Page.last_commented(6)
+#recent_comments.dashboard_module
+  .header
+    %h2
+      = t('forum_extension.pages_with_latest_comments')
+  .blockcontent
+    - if Radiant.config['forum.allow_page_comments?']
+      - latest = Page.last_commented(8)
       - if latest.any?
         - latest.each do |page|
           .page
@@ -49,3 +49,7 @@
       - else
         %p.minor
           =t('dashboard_extension.no_show')
+    - else
+      %p.minor
+        =t('forum_extension.comments_disabled')
+    
