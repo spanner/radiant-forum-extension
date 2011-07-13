@@ -12,6 +12,13 @@ class Topic < ActiveRecord::Base
   named_scope :latest, lambda { |count|
     { :order => 'replied_at DESC', :limit => count }
   }
+  named_scope :busiest, lambda { |count| {
+    :select => "topics.*, count(posts.id) AS post_count", 
+    :joins => "INNER JOIN posts ON posts.topic_id = topics.id",
+    :group => column_names.map { |n| 'topics.' + n }.join(','),
+    :order => "post_count DESC",
+    :limit => count
+  }}
   # adapted from the usual scope defined in has_groups, since here visibility is set at the forum level
   named_scope :visible_to, lambda { |reader| 
     conditions = "forums.id IS NULL OR pp.group_id IS NULL"

@@ -3,6 +3,15 @@ module ForumPage
   def self.included(base)
     base.class_eval {
       has_comments
+
+      named_scope :busiest, lambda { |count| {
+        :select => "pages.*, count(posts.id) AS post_count", 
+        :joins => "INNER JOIN posts ON posts.page_id = pages.id",
+        :group => column_names.map { |n| 'pages.' + n }.join(','),
+        :order => "post_count DESC",
+        :limit => count
+      }}
+      
       include InstanceMethods
     }
   end

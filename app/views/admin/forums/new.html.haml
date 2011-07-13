@@ -1,5 +1,6 @@
 - render_region :main do |main|
   - main.edit_header do
-    %h1 New Forum
+    %h1 
+      = t('forum_extension.create_forum').titlecase
   - main.edit_form do
     = render :partial => 'form'

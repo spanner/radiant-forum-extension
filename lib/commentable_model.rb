@@ -21,13 +21,6 @@ module CommentableModel # for inclusion into ActiveRecord::Base
         :order => "replied_at DESC",
         :limit => count
       }}
-      named_scope :most_commented, lambda { |count| {
-        :select => "#{self.table_name}.*, count(posts.id) AS post_count", 
-        :joins => "INNER JOIN posts ON posts.#{self.class.to_s.downcase}_id = #{self.table_name}.id",
-        :group => "#{self.table_name}.id",
-        :order => "post_count DESC",
-        :limit => count
-      }}
     end
   end
   

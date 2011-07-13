@@ -16,7 +16,7 @@ class ForumExtension < Radiant::Extension
     ReaderNotifier.send :include, ForumReaderNotifier                          # sets up post-notification email
     Page.send :include, ForumPage                                              # makes commentable and reads some configuration
     Page.send :include, ForumTags                                              # defines radius tags for highlighting forum content on other pages
-    ReadersController.send :include, ForumReadersController                    # adds some partials and helpers to the reader pages
+    AccountsController.send :helper, ForumHelper                               # provides some linking and other helpers on reader pages
     ReaderSessionsController.send :include, ForumReaderSessionsController      # changes default login destination to the forum front page
     
     unless defined? admin.forum # UI is a singleton
@@ -27,7 +27,9 @@ class ForumExtension < Radiant::Extension
     admin.page.edit.add :layout, "edit_commentability"
     admin.reader_configuration.show.add :settings, "forum", :after => "administration"
     admin.reader_configuration.edit.add :form, "edit_forum", :after => "administration"
-
+    admin.account.dashboard.add :main, 'dashboard/posts'
+    admin.account.show.add :main, 'accounts/posts'
+  
     if defined? RedCloth::DEFAULT_RULES
       RedCloth.send :include, ForumRedCloth3
       RedCloth::DEFAULT_RULES.push(:smilies)

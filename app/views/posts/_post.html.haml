@@ -19,7 +19,7 @@
             = t('forum_extension.comment_on')
           -elsif post.reply?
             = t('forum_extension.reply_to')
-          = link_to post.topic.name, paginated_post_url(post)
+          = link_to_post(post)
       - else
         %h2
           = post.reader.name

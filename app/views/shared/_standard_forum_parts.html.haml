@@ -19,6 +19,12 @@
   .footer
     = yield :controls
 
+- content_for :controls do
+  = render :partial => 'readers/controls'
+
+- content_for :signals do
+  = render :partial => 'readers/flasher'
+
 - content_for :search do
   = render :partial => 'posts/search_form', :locals => {:minimal => true}
 
@@ -37,5 +43,3 @@
       = link_to t('forum_extension.new_topic_here'), new_post_url(:forum_id => @forum.id), :class => "post"
     - else
       = link_to t('forum_extension.new_topic'), new_post_url(), :class => "post"
-
-= render :partial => 'shared/standard_reader_parts'

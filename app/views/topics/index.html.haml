@@ -26,10 +26,6 @@
 - content_for :feedlink do
   = feed_link(topics_url(:format => :rss))
 
-- content_for :head do
-  %h1
-    = yield :title
-
 - content_for :introduction do
   %p
     =t('forum_extension.topics_introduction')

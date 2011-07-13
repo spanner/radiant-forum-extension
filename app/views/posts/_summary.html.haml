@@ -1,0 +1,18 @@
+- post ||= summary
+
+%li.post
+  %strong
+    = link_to_post(post, :class => 'title')
+  %span.context
+    - if post.comment?
+      = t('forum_extension.comment_on')
+      = link_to post.page.title, post.page.url
+      = t('forum_extension.posted')
+    - elsif post.first?
+      = t('forum_extension.new_topic_started')
+    - else
+      = t('forum_extension.reply_posted')
+    = friendly_date(post.created_at)
+  %br
+  %span.excerpt
+    = truncate_words(scrub_html(post.body), 12)

@@ -20,8 +20,6 @@
               = t('forum_extension.started_by')
               = link_to topic.reader.name, reader_url(topic.reader)
               = friendly_date(topic.created_at)
-        %p.excerpt
-          = truncate_words(scrub_html(post.body), 16)
       %p.minor
         =t('forum_extension.administer_by_browsing')
     - else

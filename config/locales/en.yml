@@ -15,6 +15,7 @@ en:
       attachment:
         content_types: "Permitted content types"
         max_size: "Maximum attachment size"
+      cached?: "Forum pages cached?"
       commentable_period: "Pages commentable for"
       editable_period: "Posts editable for"
       layout: "Forum layout"
@@ -64,6 +65,13 @@ en:
     confirm_remove_post: "Delete post?"
     confirm_remove_topic: "Delete topic?"
     containing: "containing the phrase"
+    count_forum_messages: 
+      zero: "No forum messages"
+      one: "One forum message"
+      other: "%{count} forum messages"
+    dashboard:
+      new_topic: "Start discussion"
+      posts_and_comments: "Your latest forum posts and page comments"
     definitely_remove_post: "Yes: delete it"
     description: Description
     edit_forum: "Edit forum"
@@ -79,7 +87,8 @@ en:
     forum: "Forum"
     forums: "Discussion categories"
     forum_configuration: "Forum settings"
-    forum_messages: "Forum messages from %{name}"
+    forum_messages: "Forum messages"
+    forum_messages_from: "Forum messages from %{name}"
     forum_search: "Forum Search"
     forum_show_introduction: ""
     forums_heading: "Forum categories"
@@ -114,7 +123,7 @@ en:
     new_forum: "New forum"
     new_reply_to: "New reply to"
     new_reply_from: "New reply from"
-    new_topic: "Start a new discussion"
+    new_topic: "Start discussion"
     new_topic_button: "Submit topic"
     new_topic_heading: "Start a new topic"
     new_topic_introduction: ""
@@ -214,10 +223,3 @@ en:
     topics_introduction: 'This is a list of all the discussions going on here, with the most recently updated first. You can also see a more organised list of <a href="/forum/forums">discussion categories</a> or  <a href="/forum/posts">search</a> for particular posts and people.'
     under: "under"
     unknown_date: "unknown date"
-  time:
-    formats:
-      recently: "on %A at %l:%M%p"
-      standard: "on %B %e, %Y at %l:%M%p"
-      this_year: "on %B %e at %l:%M%p"
-      today: "today at %l:%M%p"
-      yesterday: "yesterday at %l:%M%p"

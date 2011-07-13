@@ -47,24 +47,4 @@ module ForumHelper
     link_to t('forum_extension.delete'), topic_post_url(post.topic, post), :method => 'delete', :class => 'delete_post', :id => "delete_post_#{post.id}", :title => t("remove_post"), :confirm => t('forum_extension.really_remove_post')
   end
   
-  def friendly_date(datetime)
-    I18n.l(datetime, :format => friendly_date_format(datetime)) if datetime
-  end
-  
-  def friendly_date_format(datetime)
-    if datetime && date = datetime.to_date
-      if (date.to_datetime == Date.today)
-        :today
-      elsif (date.to_datetime == Date.yesterday)
-        :yesterday
-      elsif (date.to_datetime > 6.days.ago)
-        :recently
-      elsif (date.year == Date.today.year)
-        :this_year
-      else
-        :standard
-      end
-    end
-  end
-  
 end  

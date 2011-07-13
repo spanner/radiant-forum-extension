@@ -1,7 +1,7 @@
 %h2
   = t('forum_extension.top_topics')
 %ul
-  - Topic.visible_to(current_reader).most_commented(10).each do |topic|
+  - Topic.visible_to(current_reader).busiest(10).each do |topic|
     %li
       = link_to_topic(topic, :class => 'title')
       %br

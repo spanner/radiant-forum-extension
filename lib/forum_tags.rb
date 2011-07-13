@@ -7,20 +7,19 @@ module ForumTags
   class TagError < StandardError; end
 
   tag 'forum_css' do |tag|
-    styles = []
+    styles = tag.render("reader_css")
     styles << %{<link rel="stylesheet" href="/cleditor/jquery.cleditor.css" media="all" />} if Radiant.config['forum.toolbar?']
     styles << %{<link rel="stylesheet" href="/stylesheets/forum.css" media="all" />}
   end
 
   tag 'forum_js' do |tag|
-    scripts = []
+    scripts = tag.render("reader_js")
     scripts << %{
       <script type="text/javascript" src="/cleditor/jquery.cleditor.js"></script>
       <script type="text/javascript" src="/cleditor/jquery.cleditor.icon.js"></script>
       <script type="text/javascript" src="/cleditor/jquery.cleditor.xhtml.js"></script>
     } if Radiant.config['forum.toolbar?']
     scripts << %{<script type="text/javascript" src="/javascripts/forum.js"></script>}
-    scripts.join
   end
 
   tag 'forum' do |tag|

@@ -1,0 +1,12 @@
+- posts ||= @reader.posts.paginate(pagination_parameters)
+
+%h2
+  =t('forum_extension.count_forum_messages', :count => posts.total_entries)
+
+- if posts.empty?
+  %p 
+    = t('forum_extension.no_posts')
+- else
+  = pagination_and_summary_for(posts, t('forum_extension.post')) if posts.previous_page
+  = render :partial => 'posts/summary', :collection => posts
+  = pagination_and_summary_for(posts, t('forum_extension.post')) if posts.next_page

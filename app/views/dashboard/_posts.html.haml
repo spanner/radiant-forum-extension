@@ -1,0 +1,10 @@
+- posts = current_reader.posts.latest(10)
+- if posts.any?
+  .dashboard_module
+    %h3
+      =t('forum_extension.dashboard.posts_and_comments')
+    %ul
+      = render :partial => 'posts/summary', :collection => posts
+
+    %p
+      = link_to t('forum_extension.new_topic'), new_post_url, :class => 'post'
