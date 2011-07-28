@@ -29,7 +29,11 @@
 
             - tbody.author_cell do
               %td.post_author
-                = link_to post.reader.name, admin_reader_url(post.reader)
+                - if post.reader
+                  = link_to post.reader.name, admin_reader_url(post.reader)
+                - else
+                  %span.deleted
+                    = t('forum_extension.reader_deleted')
                     
             - tbody.date_cell do
               %td.post_date

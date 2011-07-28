@@ -20,10 +20,10 @@
     = yield :controls
 
 - content_for :controls do
-  = render :partial => 'readers/controls'
+  = render :partial => 'accounts/controls'
 
 - content_for :signals do
-  = render :partial => 'readers/flasher'
+  = render :partial => 'accounts/flasher'
 
 - content_for :search do
   = render :partial => 'posts/search_form', :locals => {:minimal => true}
