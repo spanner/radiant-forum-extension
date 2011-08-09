@@ -22,7 +22,7 @@
           = link_to_post(post)
       - else
         %h2
-          = post.reader.name
+          = post.reader.name if post.reader
 
     %p.context
       - if with_context
