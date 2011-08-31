@@ -2,8 +2,11 @@
 
 - fields_for :page do |f|
   .commentability
+    %label
+      = t('forum_extension.comments').titlecase
+    %br
     = f.check_box :commentable, {:onclick => "if (this.checked) { $('page_comments_closed').enable(); $('comments_closed_label').removeClassName('disabled'); } else { $('page_comments_closed').disable(); $('comments_closed_label').addClassName('disabled'); }"}
-    = f.label :commentable, "Show comments"
+    = f.label :commentable
     %br
     = f.check_box :comments_closed, :disabled => !@page.commentable?
-    = f.label :comments_closed, 'Comments closed', :id => 'comments_closed_label', :class => !@page.commentable? ? 'disabled' : ''
+    = f.label :comments_closed, nil, :id => 'comments_closed_label', :class => !@page.commentable? ? 'disabled' : ''

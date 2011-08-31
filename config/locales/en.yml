@@ -1,6 +1,9 @@
 en:
   activerecord:
     attributes:
+      page:
+        commentable: 'visible'
+        comments_closed: 'closed'
       post:
         body: "Your message"
       topic:
