@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary     = RadiantForumExtension::SUMMARY
   s.description = RadiantForumExtension::DESCRIPTION
 
-  s.add_dependency 'radiant-reader-extension', "~> 3.0.0.rc1"
+  s.add_dependency 'radiant-reader-extension', "~> 3.0.0"
   s.add_dependency 'acts_as_list', "~> 0.1.2"
 
   ignores = if File.exist?('.gitignore')
@@ -26,9 +26,9 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.post_install_message = %{
-  Add this to your radiant project with:
+  Add this to the Gemfile in your radiant project:
 
-    config.gem 'radiant-forum-extension', :version => '~> #{RadiantForumExtension::VERSION}'
+    gem 'radiant-forum-extension', '~> #{RadiantForumExtension::VERSION}'
 
   }
 end
