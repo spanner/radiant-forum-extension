@@ -64,11 +64,11 @@ module CommentableModel # for inclusion into ActiveRecord::Base
     end
 
     def paged?
-      Radiant::Config['forum.paginate_posts?'] && posts.count > posts_per_page
+      Radiant.config['forum.paginate_posts?'] && posts.count > posts_per_page
     end
 
     def posts_per_page
-      (Radiant::Config['forum.posts_per_page'] || 25).to_i
+      (Radiant.config['forum.posts_per_page'] || 25).to_i
     end
   
     def last_page

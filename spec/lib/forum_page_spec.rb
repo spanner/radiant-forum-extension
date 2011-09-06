@@ -29,7 +29,7 @@ describe 'Forum-extended page' do
       page = pages(:commentable)
       page.send(:commentable_period).should == 28.days
       page.locked?.should be_false
-      page.created_at = Time.now - 30.days
+      page.published_at = Time.now - 30.days
       page.locked?.should be_true
     end
   end

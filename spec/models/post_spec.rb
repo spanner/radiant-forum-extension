@@ -82,13 +82,14 @@ describe Post do
   end
   
   it "should report on which page of its topic it can be found" do
-    Radiant::Config['forum.paginate_posts?'] = true
-    Radiant::Config['forum.posts_per_page'] = 25
-    firstpost = topics(:older).posts.create!(:body => 'foo', :reader => readers(:normal))
+    Radiant.config['forum.paginate_posts?'] = true
+    Radiant.config['forum.posts_per_page'] = 25
+    topic = topics(:older)
+    firstpost = topic.posts.create!(:body => 'foo', :reader => readers(:normal))
     55.times do |i| 
-      topics(:older).posts.create!(:body => 'rhubarb', :reader => readers(:normal))
+      topic.posts.create!(:body => "rhubarb_#{i}", :reader => readers(:normal))
     end
-    lastpost = topics(:older).posts.create!(:body => 'bar', :reader => readers(:normal))
+    lastpost = topic.posts.create!(:body => 'bar', :reader => readers(:normal))
     firstpost.page_when_paginated.should == 1
     lastpost.page_when_paginated.should == 3
   end
