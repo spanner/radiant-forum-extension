@@ -1,4 +1,4 @@
-forum_prefix = Radiant.config['forum.path'] || "/forum"
+forum_prefix = Radiant.config['forum.path'] || "forum"
 
 ActionController::Routing::Routes.draw do |map|
   map.with_options :path_prefix => forum_prefix do |forum|
@@ -14,6 +14,6 @@ ActionController::Routing::Routes.draw do |map|
     admin.resources :posts
   end
   
-  map.forum_home "/#{forum_prefix}.:format", :controller => 'topics', :action => 'index'
+  map.forum_home "#{forum_prefix}.:format", :controller => 'topics', :action => 'index'
   map.add_comment "/pages/:page_id/posts/new.:format", :controller => 'posts', :action => 'new'
 end
