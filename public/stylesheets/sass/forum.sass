@@ -140,6 +140,9 @@ div.upload_stack, div.post_attachments
   li
     clear: none
     margin: 0
+    &.unsaved
+      background-image: url(/images/furniture/attachment_over.png)
+      padding-left: 18px
   a.attachment
     background: url(/images/furniture/attachment_link.png) no-repeat 0 2px
     padding-left: 18px
@@ -158,7 +161,7 @@ div.upload_stack, div.post_attachments
     img
       border: 4px solid white
       +box-shadow
-
+  
 div.upload_stack
   ul.attachments input, ul.uploads input
     display: none
@@ -273,3 +276,6 @@ img.emoticon
   &.cool
     background-position: -176px 0
 
+span.excerpt
+  +small
+  line-height: 1.2
