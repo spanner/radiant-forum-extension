@@ -1,12 +1,10 @@
 - include_stylesheet 'admin/forum'
 
 - fields_for :page do |f|
-  .commentability
+  %p.commentability
     %label
       = t('forum_extension.comments').titlecase
-    %br
     = f.check_box :commentable, {:onclick => "if (this.checked) { $('page_comments_closed').enable(); $('comments_closed_label').removeClassName('disabled'); } else { $('page_comments_closed').disable(); $('comments_closed_label').addClassName('disabled'); }"}
-    = f.label :commentable
-    %br
+    = f.label :commentable, nil, :class => 'checkbox'
     = f.check_box :comments_closed, :disabled => !@page.commentable?
-    = f.label :comments_closed, nil, :id => 'comments_closed_label', :class => !@page.commentable? ? 'disabled' : ''
+    = f.label :comments_closed, nil, :id => 'comments_closed_label', :class => !@page.commentable? ? 'checkbox disabled' : 'checkbox'

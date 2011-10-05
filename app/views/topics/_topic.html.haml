@@ -7,7 +7,6 @@
       .post_header
         %h2
           = link_to_topic(topic)
-          = feed_link(topic_path(topic, :format => :rss))
           
         = render :partial => "topics/context", :locals => {:topic => topic}
 

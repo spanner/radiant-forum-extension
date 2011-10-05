@@ -297,6 +297,7 @@
           $.get(self.url, self.step, 'html');  
         }
       },
+      
       submit: function (e) {
         var ajaxable = true;
         // file to upload means not ajaxable at all
@@ -305,7 +306,7 @@
           if (file && file != "") ajaxable = false;
         });
         // presence of title field means not ajaxable because that appears elsewhere on the page
-        if (self.container.find('input:text').length > 0) ajaxable = false;
+        if (self.container.find('input.titular').length > 0) ajaxable = false;
 
         if (ajaxable) {
           e.preventDefault();
@@ -326,10 +327,12 @@
         self.container.find('.cancel').click(self.cancel);
         self.form = self.container.find('form');
         if (self.form.length > 0) {
+          // intermediate step: hook up the new form
           self.form.submit(self.submit);
           self.form.init_forum();
           self.show();
         } else {
+          // final step: complete replacement with outcome
           $(results).init_forum();
           holder.replaceWith(results);
         }
