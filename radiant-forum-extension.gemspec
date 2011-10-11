@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary     = RadiantForumExtension::SUMMARY
   s.description = RadiantForumExtension::DESCRIPTION
 
-  s.add_dependency 'radiant-reader-extension', "~> 3.0.0"
+  s.add_dependency 'radiant-reader-extension', "~> 3.0.8"
   s.add_dependency 'acts_as_list', "~> 0.1.2"
 
   ignores = if File.exist?('.gitignore')
