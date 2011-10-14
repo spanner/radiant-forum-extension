@@ -2,7 +2,7 @@ class ForumBaseController < ReaderActionController
 
   include Radiant::Pagination::Controller
   radiant_layout { |c| Radiant::Config['forum.layout'] || Radiant::Config['reader.layout'] }
-  before_filter :require_login_unless_public
+  before_filter :require_reader_unless_public
   before_filter :establish_context
   before_filter :require_visibility_to_reader
   helper :forum, :reader
@@ -17,7 +17,7 @@ protected
     end
   end
   
-  def require_login_unless_public
+  def require_reader_unless_public
     return false unless Radiant::Config['forum.public?'] || require_reader && require_activated_reader
   end
   

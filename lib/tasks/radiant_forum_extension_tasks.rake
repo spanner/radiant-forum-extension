@@ -55,7 +55,7 @@ namespace :radiant do
                 reader.update_attributes(
                   :old_id => row['UserID'],
                   :name => reader_name,
-                  :login => row['Name'],
+                  :nickname => row['Name'],
                   :last_login_ip => row['RemoteIp'],
                   :last_request_at => row['DateLastActive'],
                   :password => 'import',
