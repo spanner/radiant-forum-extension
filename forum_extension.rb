@@ -11,6 +11,7 @@ class ForumExtension < Radiant::Extension
     Reader.send :include, ForumReader                                          # has topics and posts
     ReaderNotifier.send :include, ForumReaderNotifier                          # sets up post-notification email
     Page.send :include, ForumPage                                              # makes commentable and reads some configuration
+    RailsPage.send :include, ForumRailsPage                                    # set cache? response based on radiant configuration
     Page.send :include, ForumTags                                              # defines radius tags for highlighting forum content on other pages
     AccountsController.send :helper, ForumHelper                               # provides some linking and other helpers on reader pages
     ReaderSessionsController.send :include, ForumReaderSessionsController      # changes default login destination to the forum front page

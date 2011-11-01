@@ -32,11 +32,13 @@
 
 = render :partial => 'shared/standard_forum_parts'
 
-.forum
-  = yield :pagination if @topics.previous_page
-  = yield :messages
-  = yield :pagination if @topics.next_page
-  = yield :newtopic
+- content_for :index do
+  .forum
+    = yield :pagination if @topics.previous_page
+    = yield :messages
+    = yield :pagination if @topics.next_page
+    = yield :newtopic
 
+= yield :index
 
 
